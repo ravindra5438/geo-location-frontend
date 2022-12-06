@@ -1,11 +1,14 @@
-import axios from "axios"
-import {REACT_APP_URL} from "@env"
-import React, { useState } from 'react';
+import axios from "axios";
+import { REACT_APP_URL } from "@env";
+import React, { useState } from "react";
+import Alert from "../components/alert";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = React.createContext({
-  token: '',
+  token: "",
   isLoggedIn: false,
   login: (props) => {},
+  signUp: (props) => {},
   logout: () => {},
 });
 
@@ -13,27 +16,63 @@ export const AuthContextProvider = (props) => {
   const [token, setToken] = useState(null);
 
   const userIsLoggedIn = !!token;
+  AsyncStorage.getItem("token").then((data) => {
+    setToken(data);
+  });
 
-  const loginHandler = async({email,password}) => {
-      console.log("auth context",email,password);
-      console.log("URL",REACT_APP_URL)
-      try {
-          const data = await axios({
-              url:`${REACT_APP_URL}/login`,
-              method:"post",
-              data:{
-                  email:email,
-                  password:password,
-                }
-            })
-            console.log(data.data);
-            setToken(data.data.token);
-} catch (err) {
-    console.log(err);
-}
-console.log("token in auth",token);
+  const loginHandler = async ({ email, password }) => {
+    try {
+      await axios({
+        url: `${REACT_APP_URL}/login`,
+        method: "post",
+        data: {
+          email: email,
+          password: password,
+        },
+      })
+        .then((res) => {
+          setToken(res.data.token);
+          AsyncStorage.setItem("token", res.data.token);
+          AsyncStorage.setItem("name", res.data.user.name);
+          AsyncStorage.setItem("role", res.data.user.role);
+        })
+        .catch((err) => {
+          Alert("error", "Sorry", err.response.data.message);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-
+  const signUpHandler = async ({
+    name,
+    email,
+    password,
+    role,
+    registrationNo,
+  }) => {
+    try {
+      const data = await axios({
+        url: `${REACT_APP_URL}/signUp`,
+        method: "post",
+        data: {
+          name: name,
+          role: role,
+          registrationNo: registrationNo,
+          email: email,
+          password: password,
+        },
+      })
+        .then((res) => {
+          setToken(res.data.token);
+          AsyncStorage.setItem("token", res.data.token);
+          AsyncStorage.setItem("name", res.data.user.name);
+          AsyncStorage.setItem("role", res.data.user.role);
+        })
+        .catch((err) => Alert("error", "Sorry", err.response.data.message));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const logoutHandler = () => {
@@ -45,6 +84,7 @@ console.log("token in auth",token);
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,
+    signUp: signUpHandler,
   };
 
   return (

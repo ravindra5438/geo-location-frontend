@@ -67,7 +67,7 @@ const data = [
   },
 ];
 
-export default StudentCourses = () => {
+export default TeacherCourses = () => {
   const theme = useTheme();
   const styles = StyleSheet.create({
     courseContainerShrink: {
