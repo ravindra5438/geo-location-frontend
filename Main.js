@@ -50,7 +50,8 @@ export default function Main() {
     AsyncStorage.getItem("role").then((data) => {
       setStudent(data == "student" ? true : false);
     });
-  }, []);
+    console.log("authCtx", authCtx);
+  }, [authCtx]);
 
   return (
     <NavigationContainer>
