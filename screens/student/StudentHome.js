@@ -47,6 +47,7 @@ export default StudentHome = () => {
       marginVertical: 8,
       width: "100%",
       height: 2,
+      backgroundColor: theme.colors.primary,
     },
     headingText: {
       alignItems: "center",
@@ -116,13 +117,20 @@ export default StudentHome = () => {
           contentContainerStyle={styles.portalContainer}
         >
           <View style={{ alignItems: "center" }}>
-            <Text variant="titleLarge" style={{ color: theme.colors.primary }}>
+            <Text
+              variant="titleLarge"
+              style={{ color: theme.colors.primary, fontWeight: "700" }}
+            >
               Join Course
             </Text>
           </View>
           <Divider bold={true} style={styles.divider} />
           <TextInput
-            style={{ width: "100%" }}
+            style={{
+              width: "100%",
+              textAlign: "center",
+              justifyContent: "center",
+            }}
             value={courseCode}
             mode="outlined"
             label="Course Code"

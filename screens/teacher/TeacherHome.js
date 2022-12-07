@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   Divider,
+  useTheme,
 } from "react-native-paper";
 import Alert from "../../components/alert";
 import { REACT_APP_URL } from "@env";
@@ -17,6 +18,48 @@ const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default TeacherHome = () => {
+  const theme = useTheme();
+
+  const styles = StyleSheet.create({
+    buttonContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    container: {
+      height: deviceHeight,
+    },
+    button: {
+      width: 200,
+      marginVertical: 8,
+      borderRadius: 8,
+    },
+    portalContainer: {
+      backgroundColor: "white",
+      alignItems: "center",
+      marginHorizontal: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 8,
+      borderWidth: 4,
+      borderColor: theme.colors.primary,
+    },
+    divider: {
+      marginVertical: 8,
+      width: "100%",
+      height: 2,
+      backgroundColor: theme.colors.primary,
+    },
+    headingText: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginHorizontal: 80,
+      marginTop: 80,
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+  });
+
   const authCtx = React.useContext(AuthContext);
   const [portalVisibility, setPortalVisibility] = React.useState(false);
   const [courseName, setCourseName] = React.useState(null);
@@ -69,7 +112,10 @@ export default TeacherHome = () => {
             contentContainerStyle={styles.portalContainer}
           >
             <View style={{ alignItems: "center" }}>
-              <Text variant="titleLarge" style={{ color: "purple" }}>
+              <Text
+                variant="titleLarge"
+                style={{ color: theme.colors.primary, fontWeight: "700" }}
+              >
                 Create Course
               </Text>
             </View>
@@ -96,40 +142,3 @@ export default TeacherHome = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    height: deviceHeight,
-  },
-  button: {
-    width: 200,
-    marginVertical: 8,
-    borderRadius: 8,
-  },
-  portalContainer: {
-    backgroundColor: "white",
-    alignItems: "center",
-    marginHorizontal: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  divider: {
-    marginVertical: 8,
-    width: "100%",
-    height: 2,
-  },
-  headingText: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 80,
-    marginTop: 80,
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});
