@@ -48,6 +48,14 @@ export default StudentHome = () => {
       width: "100%",
       height: 2,
     },
+    headingText: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginHorizontal: 80,
+      marginTop: 80,
+      fontSize: 20,
+      fontWeight: "bold",
+    },
   });
 
   const authCtx = useContext(AuthContext);
@@ -56,13 +64,16 @@ export default StudentHome = () => {
   const [portalVisibility, setPortalVisibility] = useState(false);
 
   const enrollCourseHandler = async () => {
-    console.log(authCtx.token);
+    let courseCod;
+    if (courseCode) {
+      courseCod = courseCode.toLowerCase();
+    }
     try {
       await axios({
         url: `${REACT_APP_URL}/enrollCourse`,
         method: "post",
         data: {
-          courseCode: courseCode.toLowerCase(),
+          courseCode: courseCod,
         },
         headers: { "x-access-token": authCtx.token },
       })
@@ -81,6 +92,7 @@ export default StudentHome = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headingText}>Hi {authCtx.name}</Text>
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
@@ -89,8 +101,12 @@ export default StudentHome = () => {
         >
           Join Course
         </Button>
-        <Button style={styles.button} mode="elevated">
-          class
+        <Button
+          style={styles.button}
+          mode="elevated"
+          onPress={() => authCtx.logout()}
+        >
+          Logout
         </Button>
       </View>
       <Portal>

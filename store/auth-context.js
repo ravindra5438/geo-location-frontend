@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const AuthContext = React.createContext({
   token: "",
   isLoggedIn: false,
+  name: "",
+  role: "",
   login: (props) => {},
   signUp: (props) => {},
   logout: () => {},
@@ -14,12 +16,19 @@ const AuthContext = React.createContext({
 
 export const AuthContextProvider = (props) => {
   const [token, setToken] = useState(null);
+  const [name, setName] = useState(null);
+  const [role, setRole] = useState(null);
 
   const userIsLoggedIn = !!token;
   AsyncStorage.getItem("token").then((data) => {
     setToken(data);
   });
-
+  AsyncStorage.getItem("name").then((data) => {
+    setName(data);
+  });
+  AsyncStorage.getItem("role").then((data) => {
+    setRole(data);
+  });
   const loginHandler = async ({ email, password }) => {
     try {
       await axios({
@@ -52,7 +61,7 @@ export const AuthContextProvider = (props) => {
     registrationNo,
   }) => {
     try {
-      const data = await axios({
+      await axios({
         url: `${REACT_APP_URL}/signUp`,
         method: "post",
         data: {
@@ -77,10 +86,13 @@ export const AuthContextProvider = (props) => {
 
   const logoutHandler = () => {
     setToken(null);
+    AsyncStorage.clear();
   };
 
   const contextValue = {
     token: token,
+    name: name,
+    role: role,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,

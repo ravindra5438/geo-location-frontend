@@ -1,73 +1,40 @@
 import { Button, Text } from "react-native-paper";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { REACT_APP_URL } from "@env";
 import * as Location from "expo-location";
 import { useTheme } from "react-native-paper";
 import { View, Dimensions, StyleSheet, FlatList } from "react-native";
+import axios from "axios";
+import AuthContext from "../../store/auth-context";
+import Alert from "../../components/alert";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-const data = [
-  {
-    name: "math",
-    id: 1,
-  },
-  {
-    name: "physics",
-    id: 2,
-  },
-  {
-    name: "hindi",
-    id: 3,
-  },
-  {
-    name: "english",
-    id: 4,
-  },
-  {
-    name: "history",
-    id: 5,
-  },
-  {
-    name: "math",
-    id: 6,
-  },
-  {
-    name: "physics",
-    id: 7,
-  },
-  {
-    name: "hindi",
-    id: 8,
-  },
-  {
-    name: "english",
-    id: 9,
-  },
-  {
-    name: "history",
-    id: 10,
-  },
-  {
-    name: "math",
-    id: 11,
-  },
-  {
-    name: "physics",
-    id: 12,
-  },
-  {
-    name: "hindi",
-    id: 13,
-  },
-  {
-    name: "english",
-    id: 14,
-  },
-];
-
 export default TeacherCourses = () => {
+  const authCtx = useContext(AuthContext);
+  const [courses, setCourses] = useState(null);
+  const [classStarted, setClassStarted] = useState(false);
+  useEffect(() => {
+    const options = {
+      method: "GET",
+      url: `${REACT_APP_URL}/getCourses`,
+      headers: {
+        "x-access-token": authCtx.token,
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (res) {
+        console.log(res.data);
+        setCourses(res.data.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error.response.data.message);
+      });
+  }, []);
   const theme = useTheme();
   const styles = StyleSheet.create({
     courseContainerShrink: {
@@ -97,15 +64,60 @@ export default TeacherCourses = () => {
   function singleItem({ item }) {
     return (
       <View style={styles.courseContainerShrink}>
-        <Text variant="titleLarge">{item.name.toUpperCase()}</Text>
-        <Button mode="contained" style={styles.button} onPress={getLocation}>
-          Mark Attendance
-        </Button>
+        <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
+        <Text variant="titleSmall">{item.courseCode}</Text>
+
+        {classStarted ? (
+          <Button
+            mode="outlined"
+            style={styles.button}
+            onPress={() => {
+              endClassHandler(item);
+            }}
+          >
+            End Class
+          </Button>
+        ) : (
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              getLocation(item);
+            }}
+          >
+            Start Class
+          </Button>
+        )}
       </View>
     );
   }
 
-  const getLocation = async () => {
+  const endClassHandler = async (item) => {
+    const options = {
+      method: "POST",
+      url: `${REACT_APP_URL}/dismissClass`,
+      headers: {
+        "x-access-token": authCtx.token,
+      },
+      data: {
+        courseId: item._id,
+      },
+    };
+
+    await axios
+      .request(options)
+      .then(function (res) {
+        console.log(res.data);
+        Alert("success", "SUCCESS", res.data.message);
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error.response.data.message);
+      });
+    setClassStarted(false);
+  };
+
+  const getLocation = async (item) => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Permission to access location was denied");
@@ -114,6 +126,39 @@ export default TeacherCourses = () => {
 
     let location = await Location.getCurrentPositionAsync({});
     console.log(location);
+    const options = {
+      method: "POST",
+      url: `${REACT_APP_URL}/startClass`,
+      headers: {
+        "x-access-token": authCtx.token,
+      },
+      data: {
+        courseId: item._id,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (res) {
+        console.log("start class", res.data);
+        Alert("success", "SUCCESS", res.data.message);
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error.response.data.message);
+      });
+    setClassStarted(true);
+  };
+  const myListEmpty = () => {
+    return (
+      <View style={{ alignItems: "center" }}>
+        <Text style={{ color: theme.colors.error }}>No Courses found</Text>
+      </View>
+    );
   };
 
   return (
@@ -125,9 +170,10 @@ export default TeacherCourses = () => {
       }}
     >
       <FlatList
-        data={data}
+        data={courses}
         renderItem={singleItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
+        ListEmptyComponent={myListEmpty}
       />
     </View>
   );
