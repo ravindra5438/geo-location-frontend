@@ -7,6 +7,7 @@ import { View, Dimensions, StyleSheet, FlatList } from "react-native";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
+import { useIsFocused } from "@react-navigation/native";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -14,6 +15,9 @@ const deviceHeight = Dimensions.get("window").height;
 export default StudentCourses = () => {
   const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
+
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     const options = {
       method: "GET",
@@ -33,7 +37,7 @@ export default StudentCourses = () => {
         console.log(error);
         Alert("error", "Sorry", error.response.data.message);
       });
-  }, []);
+  }, [isFocused]);
   const theme = useTheme();
   const styles = StyleSheet.create({
     courseContainerShrink: {
