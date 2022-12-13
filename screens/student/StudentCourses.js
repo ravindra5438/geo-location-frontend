@@ -8,6 +8,7 @@ import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
+import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -40,25 +41,6 @@ export default StudentCourses = () => {
   }, [isFocused]);
   const theme = useTheme();
   const styles = StyleSheet.create({
-    courseContainerShrink: {
-      alignItems: "center",
-      paddingVertical: 8,
-      paddingHorizontal: 8,
-      marginHorizontal: 16,
-      borderRadius: 8,
-      marginVertical: 8,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      backgroundColor: theme.colors.secondaryContainer,
-    },
-    courseContainerExpanded: {
-      alignItems: "center",
-      backgroundColor: "#874364",
-      paddingVertical: 100,
-      marginHorizontal: 8,
-      borderRadius: 8,
-      marginVertical: 8,
-    },
     button: {
       borderRadius: 4,
     },
@@ -66,7 +48,7 @@ export default StudentCourses = () => {
 
   function singleItem({ item }) {
     return (
-      <View style={styles.courseContainerShrink}>
+      <FlatlistSingleItemContainer>
         <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
         <Button
           mode="contained"
@@ -75,7 +57,7 @@ export default StudentCourses = () => {
         >
           Mark Attendance
         </Button>
-      </View>
+      </FlatlistSingleItemContainer>
     );
   }
 
@@ -106,15 +88,13 @@ export default StudentCourses = () => {
     axios
       .request(options)
       .then(function (res) {
-        console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
+        console.log(res?.data);
+        Alert("success", "SUCCESS", res?.data?.message);
       })
       .catch(function (error) {
         console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
+        Alert("error", "Sorry", error?.response?.data?.message);
       });
-
-    console.log(lat1, long1, location, d);
   };
 
   const myListEmpty = () => {
@@ -130,7 +110,7 @@ export default StudentCourses = () => {
       style={{
         width: deviceWidth,
         height: deviceHeight,
-        backgroundColor: theme.colors.onError,
+        backgroundColor: theme.colors.onPrimary,
       }}
     >
       <FlatList

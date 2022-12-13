@@ -13,7 +13,7 @@ export default Register = ({ navigation }) => {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const [registrationNo, setRegistrationNo] = useState(null);
+  const [registrationNo, setRegistrationNo] = useState("");
 
   return (
     <View style={{ width: deviceWidth, height: deviceHeight }}>

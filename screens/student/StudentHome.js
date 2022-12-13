@@ -9,6 +9,7 @@ import {
   Text,
   TextInput,
   useTheme,
+  Avatar,
 } from "react-native-paper";
 import { REACT_APP_URL } from "@env";
 import Alert from "../../components/alert";
@@ -27,6 +28,13 @@ export default StudentHome = () => {
     },
     container: {
       height: deviceHeight,
+      flex: 1,
+      backgroundColor: theme.colors.onPrimary,
+    },
+    profileContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
     },
     button: {
       width: 200,
@@ -52,10 +60,10 @@ export default StudentHome = () => {
     headingText: {
       alignItems: "center",
       justifyContent: "center",
-      marginHorizontal: 80,
-      marginTop: 80,
-      fontSize: 20,
+      marginTop: 30,
+      fontSize: 30,
       fontWeight: "bold",
+      color: theme.colors.primary,
     },
   });
 
@@ -93,7 +101,15 @@ export default StudentHome = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headingText}>Hi {authCtx.name}</Text>
+      <View style={styles.profileContainer}>
+        <Avatar.Text
+          size={deviceWidth / 2}
+          label={authCtx?.name?.charAt(0)?.toUpperCase()}
+        />
+        <Text style={styles.headingText}>
+          Hello {authCtx?.name?.toUpperCase()}
+        </Text>
+      </View>
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
@@ -101,13 +117,6 @@ export default StudentHome = () => {
           onPress={() => setPortalVisibility(true)}
         >
           Join Course
-        </Button>
-        <Button
-          style={styles.button}
-          mode="elevated"
-          onPress={() => authCtx.logout()}
-        >
-          Logout
         </Button>
       </View>
       <Portal>

@@ -1,23 +1,26 @@
-import { Button, Text } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { useEffect, useState, useContext } from "react";
 import { REACT_APP_URL } from "@env";
-import * as Location from "expo-location";
 import { useTheme } from "react-native-paper";
-import { View, Dimensions, StyleSheet, FlatList } from "react-native";
+import { View, Dimensions, FlatList } from "react-native";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
+import SingleClass from "./SingleClass";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-export default TeacherCourses = () => {
+export default TeacherCourses = ({ navigation }) => {
+  const [loading, setLoading] = useState(true);
   const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
-  const [classStarted, setClassStarted] = useState(false);
   const isFocused = useIsFocused();
+  const theme = useTheme();
+
   useEffect(() => {
+    setLoading(true);
     const options = {
       method: "GET",
       url: `${REACT_APP_URL}/getCourses`,
@@ -31,130 +34,15 @@ export default TeacherCourses = () => {
       .then(function (res) {
         console.log(res.data);
         setCourses(res.data.data);
+        setLoading(false);
       })
       .catch(function (error) {
         console.log(error);
         Alert("error", "Sorry", error.response.data.message);
+        setLoading(false);
       });
   }, [isFocused]);
-  const theme = useTheme();
-  const styles = StyleSheet.create({
-    courseContainerShrink: {
-      alignItems: "center",
-      paddingVertical: 8,
-      paddingHorizontal: 8,
-      marginHorizontal: 16,
-      borderRadius: 8,
-      marginVertical: 8,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      backgroundColor: theme.colors.secondaryContainer,
-    },
-    courseContainerExpanded: {
-      alignItems: "center",
-      backgroundColor: "#874364",
-      paddingVertical: 100,
-      marginHorizontal: 8,
-      borderRadius: 8,
-      marginVertical: 8,
-    },
-    button: {
-      borderRadius: 4,
-    },
-  });
 
-  function singleItem({ item }) {
-    return (
-      <View style={styles.courseContainerShrink}>
-        <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
-        <Text variant="titleSmall">{item.courseCode}</Text>
-
-        {classStarted ? (
-          <Button
-            mode="outlined"
-            style={styles.button}
-            onPress={() => {
-              endClassHandler(item);
-            }}
-          >
-            End Class
-          </Button>
-        ) : (
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={() => {
-              getLocation(item);
-            }}
-          >
-            Start Class
-          </Button>
-        )}
-      </View>
-    );
-  }
-
-  const endClassHandler = async (item) => {
-    const options = {
-      method: "POST",
-      url: `${REACT_APP_URL}/dismissClass`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-      data: {
-        courseId: item._id,
-      },
-    };
-
-    await axios
-      .request(options)
-      .then(function (res) {
-        console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setClassStarted(false);
-  };
-
-  const getLocation = async (item) => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location);
-    const options = {
-      method: "POST",
-      url: `${REACT_APP_URL}/startClass`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-      data: {
-        courseId: item._id,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (res) {
-        console.log("start class", res.data);
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setClassStarted(true);
-  };
   const myListEmpty = () => {
     return (
       <View style={{ alignItems: "center" }}>
@@ -168,15 +56,21 @@ export default TeacherCourses = () => {
       style={{
         width: deviceWidth,
         height: deviceHeight,
-        backgroundColor: theme.colors.onError,
+        backgroundColor: theme.colors.onPrimary,
       }}
     >
-      <FlatList
-        data={courses}
-        renderItem={singleItem}
-        keyExtractor={(item) => item._id}
-        ListEmptyComponent={myListEmpty}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="red" style={{ flex: 1 }} />
+      ) : (
+        <FlatList
+          data={courses}
+          renderItem={(props) => (
+            <SingleClass {...props} navigation={navigation} />
+          )}
+          keyExtractor={(item) => item._id}
+          ListEmptyComponent={myListEmpty}
+        />
+      )}
     </View>
   );
 };

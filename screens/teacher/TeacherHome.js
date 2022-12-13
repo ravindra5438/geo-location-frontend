@@ -13,11 +13,12 @@ import Alert from "../../components/alert";
 import { REACT_APP_URL } from "@env";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
+import { Avatar } from "react-native-paper";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-export default TeacherHome = () => {
+export default TeacherHome = ({ navigation }) => {
   const theme = useTheme();
 
   const styles = StyleSheet.create({
@@ -26,13 +27,19 @@ export default TeacherHome = () => {
       justifyContent: "center",
       alignItems: "center",
     },
+    profileContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     container: {
       height: deviceHeight,
+      backgroundColor: theme.colors.onPrimary,
     },
     button: {
       width: 200,
-      marginVertical: 8,
       borderRadius: 8,
+      marginVertical: 8,
     },
     portalContainer: {
       backgroundColor: "white",
@@ -51,11 +58,11 @@ export default TeacherHome = () => {
       backgroundColor: theme.colors.primary,
     },
     headingText: {
+      color: theme.colors.primary,
       alignItems: "center",
       justifyContent: "center",
-      marginHorizontal: 80,
-      marginTop: 80,
-      fontSize: 20,
+      marginTop: 30,
+      fontSize: 30,
       fontWeight: "bold",
     },
   });
@@ -89,7 +96,15 @@ export default TeacherHome = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headingText}>Hi {authCtx.name}</Text>
+      <View style={styles.profileContainer}>
+        <Avatar.Text
+          size={deviceWidth / 2}
+          label={authCtx?.name?.charAt(0)?.toUpperCase()}
+        />
+        <Text style={styles.headingText}>
+          Hello {authCtx?.name?.toUpperCase()}
+        </Text>
+      </View>
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
@@ -97,13 +112,6 @@ export default TeacherHome = () => {
           onPress={() => setPortalVisibility(true)}
         >
           Create Course
-        </Button>
-        <Button
-          style={styles.button}
-          mode="elevated"
-          onPress={() => authCtx.logout()}
-        >
-          Logout
         </Button>
         <Portal>
           <Modal

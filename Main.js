@@ -1,39 +1,129 @@
-import { Provider as PaperProvider } from "react-native-paper";
+import {
+  Button,
+  MD3LightTheme as DefaultTheme,
+  Provider as PaperProvider,
+  useTheme,
+} from "react-native-paper";
 import Login from "./screens/login/Login";
 import Register from "./screens/register/Register";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, ThemeProvider } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext, useEffect, useState } from "react";
 import TeacherHome from "./screens/teacher/TeacherHome";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import TeacherCourses from "./screens/teacher/TeacherCourses";
-import StudentCourses from "./screens/student/StudentCourses";
+import { createDrawerNavigator, DrawerContent } from "@react-navigation/drawer";
+import TeacherStack from "./screens/teacher/TeacherStack";
 import StudentHome from "./screens/student/StudentHome";
 import AuthContext from "./store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomDrawer from "./components/CustomDrawer";
+import StudentStack from "./screens/student/StudentStack";
+import { Dimensions } from "react-native";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function TeacherDrawer() {
+const deviceWidth = Dimensions.get("window").width;
+const deviceHeight = Dimensions.get("window").height;
+
+const myTheme = {
+  ...DefaultTheme,
+};
+
+function TeacherDrawer(props) {
+  const theme = useTheme();
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
-      screenOptions={{ drawerType: "back", swipeEdgeWidth: 200 }}
+      drawerContent={(props) => <CustomDrawer {...props} />}
+      initialRouteName="HOME"
+      screenOptions={{
+        drawerType: "front",
+        swipeEdgeWidth: 200,
+        drawerActiveBackgroundColor: theme.colors.onPrimary,
+        drawerInactiveBackgroundColor: theme.colors.primary,
+        drawerInactiveTintColor: theme.colors.onPrimary,
+        drawerActiveTintColor: theme.colors.primary,
+        drawerLabelStyle: { fontWeight: "700" },
+        drawerStyle: {
+          backgroundColor: theme.colors.onSecondaryContainer,
+          height: 130,
+          width: 200,
+          marginTop: "23%",
+          borderTopRightRadius: 15,
+          borderBottomRightRadius: 15,
+        },
+      }}
     >
-      <Drawer.Screen name="Home" component={TeacherHome} />
-      <Drawer.Screen name="Courses" component={TeacherCourses} />
+      <Drawer.Screen
+        options={{
+          headerShown: true,
+          headerMode: "screen",
+          headerTintColor: "white",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTitleStyle: {
+            fontWeight: "700",
+          },
+          headerTitleAlign: "center",
+          headerBackVisible: false,
+        }}
+        name="HOME"
+        component={TeacherHome}
+      />
+      <Drawer.Screen
+        options={{ headerShown: false }}
+        name="COURSES"
+        component={TeacherStack}
+      />
     </Drawer.Navigator>
   );
 }
 function StudentDrawer() {
+  const theme = useTheme();
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
-      screenOptions={{ drawerType: "back", swipeEdgeWidth: 200 }}
+      drawerContent={(props) => <CustomDrawer {...props} />}
+      initialRouteName="HOME"
+      screenOptions={{
+        drawerType: "front",
+        swipeEdgeWidth: 200,
+        drawerActiveBackgroundColor: theme.colors.onPrimary,
+        drawerInactiveBackgroundColor: theme.colors.primary,
+        drawerInactiveTintColor: theme.colors.onPrimary,
+        drawerActiveTintColor: theme.colors.primary,
+        drawerLabelStyle: { fontWeight: "700" },
+        drawerStyle: {
+          backgroundColor: theme.colors.onSecondaryContainer,
+          height: 130,
+          width: 200,
+          marginTop: "23%",
+          borderTopRightRadius: 15,
+          borderBottomRightRadius: 15,
+        },
+      }}
     >
-      <Drawer.Screen name="Home" component={StudentHome} />
-      <Drawer.Screen name="Course" component={StudentCourses} />
+      <Drawer.Screen
+        options={{
+          headerShown: true,
+          headerMode: "screen",
+          headerTintColor: "white",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTitleStyle: {
+            fontWeight: "700",
+          },
+          headerTitleAlign: "center",
+          headerBackVisible: false,
+        }}
+        name="Home"
+        component={StudentHome}
+      />
+      <Drawer.Screen
+        options={{ headerShown: false }}
+        name="COURSES"
+        component={StudentStack}
+      />
     </Drawer.Navigator>
   );
 }
@@ -55,7 +145,7 @@ export default function Main() {
 
   return (
     <NavigationContainer>
-      <PaperProvider>
+      <PaperProvider theme={myTheme}>
         {!user ? (
           <Stack.Navigator
             initialRouteName="Login"
@@ -71,24 +161,10 @@ export default function Main() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Sign Up" component={Register} />
           </Stack.Navigator>
+        ) : Student ? (
+          <StudentDrawer />
         ) : (
-          <Stack.Navigator
-            initialRouteName="Teacher Home"
-            screenOptions={{
-              headerMode: "screen",
-              headerShown: false,
-              headerTintColor: "white",
-              headerStyle: { backgroundColor: "#8758FF" },
-              headerTitleAlign: "center",
-              headerBackVisible: false,
-            }}
-          >
-            {Student ? (
-              <Stack.Screen name="Student Home" component={StudentDrawer} />
-            ) : (
-              <Stack.Screen name="Teacher Home" component={TeacherDrawer} />
-            )}
-          </Stack.Navigator>
+          <TeacherDrawer />
         )}
       </PaperProvider>
     </NavigationContainer>

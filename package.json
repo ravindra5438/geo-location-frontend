@@ -18,7 +18,9 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "dotenv": "^16.0.3",
     "expo": "~47.0.8",
+    "expo-location": "~15.0.1",
     "expo-status-bar": "~1.4.2",
+    "moment": "^2.29.4",
     "react": "18.1.0",
     "react-native": "0.70.5",
     "react-native-dotenv": "^3.4.2",
@@ -30,8 +32,7 @@
     "react-native-toast-message": "^2.1.5",
     "react-redux": "^8.0.5",
     "redux": "^4.2.0",
-    "redux-thunk": "^2.4.2",
-    "expo-location": "~15.0.1"
+    "redux-thunk": "^2.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
