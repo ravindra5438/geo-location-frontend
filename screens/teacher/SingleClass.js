@@ -47,12 +47,9 @@ export default function SingleClass({ item, navigation, index, deleteId }) {
   const sendAttendanceToMail = async (item) => {
     const options = {
       method: "Get",
-      url: `${REACT_APP_URL}/sendAttendanceViaMail`,
+      url: `${REACT_APP_URL}/sendAttendanceViaMail?courseId=${item._id}`,
       headers: {
         "x-access-token": authCtx.token,
-      },
-      data: {
-        courseId: item._id,
       },
     };
     await axios

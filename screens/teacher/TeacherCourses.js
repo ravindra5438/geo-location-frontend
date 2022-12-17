@@ -68,7 +68,7 @@ export default TeacherCourses = ({ navigation }) => {
       })
       .catch(function (error) {
         console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
+        Alert("error", "Sorry", error);
       });
   }, [deleteCourseId]);
 
