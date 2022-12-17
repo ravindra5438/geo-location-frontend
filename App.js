@@ -9,7 +9,7 @@ export default function App() {
     <AuthContextProvider>
       <Main />
       <Toast />
-      <StatusBar style="light" translucent={true} backgroundColor: '#000', />
+      <StatusBar style="light" backgroundColor="#000" translucent={true} />
     </AuthContextProvider>
   );
 }
