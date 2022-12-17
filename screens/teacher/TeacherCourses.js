@@ -9,7 +9,6 @@ import Alert from "../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import SingleClass from "./SingleClass";
 import MyListEmpty from "../../components/MyListEmpty";
-import ExpandableItem from "../../components/ExpandableItem";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;

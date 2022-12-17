@@ -8,7 +8,6 @@ import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
 import { MotiView } from "moti";
 import Modal1 from "../../components/Modal";
-import * as FileSystem from "expo-file-system";
 
 const deviceWidth = Dimensions.get("window").width * 0.96;
 const deviceHeight = Dimensions.get("window").height;
