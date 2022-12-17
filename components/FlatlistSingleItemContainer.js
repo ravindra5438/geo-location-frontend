@@ -4,7 +4,7 @@ import { useTheme } from "react-native-paper";
 export default FlatlistSingleItemContainer = ({ children }) => {
   const theme = useTheme();
   const styles = StyleSheet.create({
-    courseContainerShrink: {
+    courseContainer: {
       alignItems: "center",
       paddingVertical: 8,
       paddingHorizontal: 8,
@@ -16,5 +16,5 @@ export default FlatlistSingleItemContainer = ({ children }) => {
       backgroundColor: theme.colors.secondaryContainer,
     },
   });
-  return <View style={styles.courseContainerShrink}>{children}</View>;
+  return <View style={styles.courseContainer}>{children}</View>;
 };

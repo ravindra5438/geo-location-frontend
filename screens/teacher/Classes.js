@@ -15,6 +15,7 @@ import axios from "axios";
 import moment from "moment";
 import { useIsFocused } from "@react-navigation/native";
 import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
+import MyListEmpty from "../../components/MyListEmpty";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -78,6 +79,7 @@ export default Classes = ({ route, navigation }) => {
       ) : (
         <FlatList
           data={classes}
+          ListEmptyComponent={MyListEmpty}
           renderItem={({ item }) => (
             <Pressable
               onPress={() =>

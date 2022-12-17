@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text } from "react-native-paper";
+import { ActivityIndicator, TextInput } from "react-native-paper";
 import { useEffect, useState, useContext } from "react";
 import { REACT_APP_URL } from "@env";
 import { useTheme } from "react-native-paper";
@@ -8,6 +8,8 @@ import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import SingleClass from "./SingleClass";
+import MyListEmpty from "../../components/MyListEmpty";
+import ExpandableItem from "../../components/ExpandableItem";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -16,8 +18,16 @@ export default TeacherCourses = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
+  const [deleteCourseId, setDeleteCourseId] = useState(null);
   const isFocused = useIsFocused();
   const theme = useTheme();
+
+  const removeId = () => {
+    let arr = courses.filter(function (item) {
+      return item._id !== deleteCourseId;
+    });
+    setCourses(arr);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +42,7 @@ export default TeacherCourses = ({ navigation }) => {
     axios
       .request(options)
       .then(function (res) {
-        console.log(res.data);
+        console.log("courses", res.data.data);
         setCourses(res.data.data);
         setLoading(false);
       })
@@ -43,32 +53,50 @@ export default TeacherCourses = ({ navigation }) => {
       });
   }, [isFocused]);
 
-  const myListEmpty = () => {
-    return (
-      <View style={{ alignItems: "center" }}>
-        <Text style={{ color: theme.colors.error }}>No Courses found</Text>
-      </View>
-    );
-  };
+  useEffect(() => {
+    const options = {
+      method: "DELETE",
+      url: `${REACT_APP_URL}/deleteCourseById?courseId=${deleteCourseId}`,
+      headers: {
+        "x-access-token": authCtx.token,
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (res) {
+        removeId();
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error.response.data.message);
+      });
+  }, [deleteCourseId]);
 
   return (
     <View
       style={{
         width: deviceWidth,
-        height: deviceHeight,
+        height: deviceHeight * 0.93,
         backgroundColor: theme.colors.onPrimary,
+        paddingTop: 8,
       }}
     >
       {loading ? (
         <ActivityIndicator size="large" color="red" style={{ flex: 1 }} />
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={courses}
           renderItem={(props) => (
-            <SingleClass {...props} navigation={navigation} />
+            <SingleClass
+              {...props}
+              deleteId={setDeleteCourseId}
+              navigation={navigation}
+            />
           )}
           keyExtractor={(item) => item._id}
-          ListEmptyComponent={myListEmpty}
+          ListEmptyComponent={MyListEmpty}
         />
       )}
     </View>

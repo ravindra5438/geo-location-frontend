@@ -1,13 +1,12 @@
 import { View, StyleSheet, Dimensions, FlatList } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
-import { useTheme } from "react-native-paper";
+import { useTheme, DataTable } from "react-native-paper";
 import { useEffect, useContext, useState } from "react";
 import Alert from "../../components/alert";
 import { REACT_APP_URL } from "@env";
 import AuthContext from "../../store/auth-context";
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
-import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -23,6 +22,10 @@ export default StudentPerClass = ({ route, navigation }) => {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "green",
+    },
+    dataTableCenter: {
+      alignItems: "center",
+      justifyContent: "flex-start",
     },
   });
 
@@ -74,23 +77,62 @@ export default StudentPerClass = ({ route, navigation }) => {
           color="red"
         />
       ) : (
-        <FlatList
-          data={students}
-          renderItem={({ item }) => (
-            <FlatlistSingleItemContainer>
-              <Text style={{ color: "green" }} variant="titleMedium">
-                {item.name}
-              </Text>
-              <Text
-                style={{ color: theme.colors.primary }}
-                variant="titleMedium"
-              >
-                {item.registrationNo}
-              </Text>
-            </FlatlistSingleItemContainer>
-          )}
-          keyExtractor={(item) => item.registrationNo}
-        />
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title
+              numeric={true}
+              textStyle={{ color: "green" }}
+              style={[
+                styles.dataTableCenter,
+                {
+                  flex: 0.2,
+                  marginRight: 4,
+                },
+              ]}
+            >
+              S.No
+            </DataTable.Title>
+            <DataTable.Title
+              textStyle={{ color: "green" }}
+              style={[styles.dataTableCenter, { flex: 1 }]}
+            >
+              Name
+            </DataTable.Title>
+            <DataTable.Title
+              textStyle={{ color: "green" }}
+              style={[styles.dataTableCenter, { flex: 0.4 }]}
+            >
+              Reg.No
+            </DataTable.Title>
+          </DataTable.Header>
+          <FlatList
+            data={students}
+            ListEmptyComponent={MyListEmpty}
+            renderItem={({ item, index }) => (
+              <DataTable.Row>
+                <DataTable.Cell
+                  textStyle={{ color: "green" }}
+                  style={[
+                    styles.dataTableCenter,
+                    {
+                      flex: 0.2,
+                      marginRight: 4,
+                    },
+                  ]}
+                >
+                  {index + 1}
+                </DataTable.Cell>
+                <DataTable.Cell style={styles.dataTableCenter}>
+                  {item.name}
+                </DataTable.Cell>
+                <DataTable.Cell style={[styles.dataTableCenter, { flex: 0.4 }]}>
+                  {item.registrationNo}
+                </DataTable.Cell>
+              </DataTable.Row>
+            )}
+            keyExtractor={(item) => item._id}
+          />
+        </DataTable>
       )}
     </View>
   );

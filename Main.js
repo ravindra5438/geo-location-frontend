@@ -44,7 +44,7 @@ function TeacherDrawer(props) {
         drawerActiveTintColor: theme.colors.primary,
         drawerLabelStyle: { fontWeight: "700" },
         drawerStyle: {
-          backgroundColor: theme.colors.onSecondaryContainer,
+          backgroundColor: "transparent",
           height: 130,
           width: 200,
           marginTop: "23%",
@@ -93,7 +93,7 @@ function StudentDrawer() {
         drawerActiveTintColor: theme.colors.primary,
         drawerLabelStyle: { fontWeight: "700" },
         drawerStyle: {
-          backgroundColor: theme.colors.onSecondaryContainer,
+          backgroundColor: "transparent",
           height: 130,
           width: 200,
           marginTop: "23%",
