@@ -8,29 +8,44 @@ import {
   TextInput,
   Divider,
   useTheme,
+  Card,
 } from "react-native-paper";
 import Alert from "../../components/alert";
-import { REACT_APP_URL } from "@env";
-import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import { Avatar } from "react-native-paper";
+import useAxios from "../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default TeacherHome = ({ navigation }) => {
+  const axiosInstance = useAxios();
   const theme = useTheme();
 
   const styles = StyleSheet.create({
     buttonContainer: {
-      flex: 1,
       justifyContent: "center",
+      marginVertical: "7%",
       alignItems: "center",
     },
     profileContainer: {
-      flex: 1,
+      marginTop: "10%",
       alignItems: "center",
+      width: "80%",
+      height: 150,
       justifyContent: "center",
+      alignSelf: "center",
+      backgroundColor: theme.colors.primary,
+      borderTopRightRadius: 60,
+      borderBottomLeftRadius: 60,
+    },
+    courseNameContainer: {
+      justifyContent: "space-between",
+      padding: 20,
+      flexGrow: 1,
+      flexDirection: "row",
+      borderRadius: 40,
+      backgroundColor: theme.colors.primary,
     },
     container: {
       height: deviceHeight,
@@ -39,7 +54,6 @@ export default TeacherHome = ({ navigation }) => {
     button: {
       width: 200,
       borderRadius: 8,
-      marginVertical: 8,
     },
     portalContainer: {
       backgroundColor: "white",
@@ -48,8 +62,6 @@ export default TeacherHome = ({ navigation }) => {
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderRadius: 8,
-      borderWidth: 4,
-      borderColor: theme.colors.primary,
     },
     divider: {
       marginVertical: 8,
@@ -58,37 +70,40 @@ export default TeacherHome = ({ navigation }) => {
       backgroundColor: theme.colors.primary,
     },
     headingText: {
-      color: theme.colors.primary,
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: 30,
-      fontSize: 30,
+      fontSize: 20,
       fontWeight: "bold",
+      position: "absolute",
+      left: "59%",
+      bottom: "25%",
+      color: "#fff",
+      borderBottomWidth: 3,
+      borderBottomColor: "#fff",
+    },
+    hello: {
+      position: "absolute",
+      fontSize: 20,
+      fontWeight: "bold",
+      top: "25%",
+      left: "25%",
+      color: "#fff",
+      borderTopWidth: 3,
+      borderTopColor: "#fff",
     },
   });
 
   const authCtx = React.useContext(AuthContext);
   const [portalVisibility, setPortalVisibility] = React.useState(false);
   const [courseName, setCourseName] = React.useState(null);
-  const createCourseHandler = () => {
-    const options = {
-      method: "POST",
-      url: `${REACT_APP_URL}/createCourse`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-      data: { courseName: courseName },
-    };
-
-    axios
-      .request(options)
+  const createCourseHandler = async () => {
+    await axiosInstance
+      .post("/createCourse", { courseName: courseName })
       .then(function (res) {
-        console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
+        console.log(res?.data);
+        Alert("success", "SUCCESS", res?.data?.message);
       })
       .catch(function (error) {
-        console.error(error);
-        Alert("error", "Sorry", error.response.data.message);
+        console.log(error);
+        Alert("error", "Sorry", error?.response?.data?.message);
       });
     setCourseName(null);
     setPortalVisibility(false);
@@ -98,12 +113,14 @@ export default TeacherHome = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.profileContainer}>
         <Avatar.Text
+          style={{ backgroundColor: "transparent" }}
           size={deviceWidth / 2}
           label={authCtx?.name?.charAt(0)?.toUpperCase()}
         />
         <Text style={styles.headingText}>
-          Hello {authCtx?.name?.toUpperCase()}
+          {authCtx?.name?.toUpperCase().slice(1)}
         </Text>
+        <Text style={styles.hello}>HELLO</Text>
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -111,42 +128,47 @@ export default TeacherHome = ({ navigation }) => {
           mode="contained"
           onPress={() => setPortalVisibility(true)}
         >
-          Create Course
+          CREATE COURSE
         </Button>
-        <Portal>
-          <Modal
-            visible={portalVisibility}
-            onDismiss={() => setPortalVisibility(false)}
-            contentContainerStyle={styles.portalContainer}
-          >
-            <View style={{ alignItems: "center" }}>
-              <Text
-                variant="titleLarge"
-                style={{ color: theme.colors.primary, fontWeight: "700" }}
-              >
-                Create Course
-              </Text>
-            </View>
-            <Divider bold={true} style={styles.divider} />
-            <TextInput
-              style={{ width: "100%" }}
-              mode="outlined"
-              value={courseName}
-              label="Course Name"
-              onChangeText={(text) => {
-                setCourseName(text);
-              }}
-            />
-            <Button
-              style={styles.button}
-              mode="contained"
-              onPress={createCourseHandler}
-            >
-              Create
-            </Button>
-          </Modal>
-        </Portal>
       </View>
+      <View style={styles.courseNameContainer}>
+        <Card style={{ width: "40%", height: 100 }} />
+
+        <Card style={{ width: "40%", height: 100 }} />
+      </View>
+      <Portal>
+        <Modal
+          visible={portalVisibility}
+          onDismiss={() => setPortalVisibility(false)}
+          contentContainerStyle={styles.portalContainer}
+        >
+          <View style={{ alignItems: "center" }}>
+            <Text
+              variant="titleLarge"
+              style={{ color: theme.colors.primary, fontWeight: "700" }}
+            >
+              Create Course
+            </Text>
+          </View>
+          <Divider bold={true} style={styles.divider} />
+          <TextInput
+            style={{ width: "100%" }}
+            mode="outlined"
+            value={courseName}
+            label="Course Name"
+            onChangeText={(text) => {
+              setCourseName(text);
+            }}
+          />
+          <Button
+            style={{ width: "60%", borderRadius: 8, marginTop: 16 }}
+            mode="contained"
+            onPress={createCourseHandler}
+          >
+            Create
+          </Button>
+        </Modal>
+      </Portal>
     </View>
   );
 };

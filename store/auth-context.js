@@ -3,6 +3,7 @@ import { REACT_APP_URL } from "@env";
 import React, { useState } from "react";
 import Alert from "../components/alert";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const AuthContext = React.createContext({
   token: "",
@@ -18,6 +19,7 @@ export const AuthContextProvider = (props) => {
   const [token, setToken] = useState(null);
   const [name, setName] = useState(null);
   const [role, setRole] = useState(null);
+  const navigation = useNavigation();
 
   const userIsLoggedIn = !!token;
   AsyncStorage.getItem("token").then((data) => {
@@ -40,13 +42,13 @@ export const AuthContextProvider = (props) => {
         },
       })
         .then((res) => {
-          setToken(res.data.token);
-          AsyncStorage.setItem("token", res.data.token);
-          AsyncStorage.setItem("name", res.data.user.name);
-          AsyncStorage.setItem("role", res.data.user.role);
+          setToken(res?.data?.token);
+          AsyncStorage.setItem("token", res?.data?.token);
+          AsyncStorage.setItem("name", res?.data?.user?.name);
+          AsyncStorage.setItem("role", res?.data?.user?.role);
         })
         .catch((err) => {
-          Alert("error", "Sorry", err.response.data.message);
+          Alert("error", "Sorry", err?.response?.data?.message);
         });
     } catch (err) {
       console.log(err);
@@ -73,12 +75,12 @@ export const AuthContextProvider = (props) => {
         },
       })
         .then((res) => {
-          setToken(res.data.token);
-          AsyncStorage.setItem("token", res.data.token);
-          AsyncStorage.setItem("name", res.data.user.name);
-          AsyncStorage.setItem("role", res.data.user.role);
+          setToken(res?.data?.token);
+          AsyncStorage.setItem("token", res?.data?.token);
+          AsyncStorage.setItem("name", res?.data?.user?.name);
+          AsyncStorage.setItem("role", res?.data?.user?.role);
         })
-        .catch((err) => Alert("error", "Sorry", err.response.data.message));
+        .catch((err) => Alert("error", "Sorry", err?.response?.data?.message));
     } catch (err) {
       console.log(err);
     }
@@ -87,6 +89,10 @@ export const AuthContextProvider = (props) => {
   const logoutHandler = () => {
     setToken(null);
     AsyncStorage.clear();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "HOME" }],
+    });
   };
 
   const contextValue = {

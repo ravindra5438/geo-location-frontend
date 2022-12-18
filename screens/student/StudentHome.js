@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
+import useAxios from "../../services";
 import {
   Button,
   Modal,
@@ -19,27 +20,39 @@ const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default StudentHome = () => {
+  const axiosInstance = useAxios();
   const theme = useTheme();
   const styles = StyleSheet.create({
     buttonContainer: {
-      flex: 1,
       justifyContent: "center",
       alignItems: "center",
+      flexGrow: 1,
+      backgroundColor: theme.colors.primary,
+      borderTopRightRadius: 80,
+      borderTopLeftRadius: 80,
     },
     container: {
       height: deviceHeight,
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: theme.colors.onPrimary,
     },
     profileContainer: {
-      flex: 1,
+      marginTop: "10%",
       alignItems: "center",
+      width: "80%",
+      height: 150,
       justifyContent: "center",
+      alignSelf: "center",
+      backgroundColor: theme.colors.primary,
+      borderTopRightRadius: 60,
+      borderBottomLeftRadius: 60,
     },
     button: {
-      width: 200,
-      marginVertical: 8,
-      borderRadius: 8,
+      width: 100,
+      height: 100,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 50,
     },
     portalContainer: {
       backgroundColor: "white",
@@ -48,8 +61,6 @@ export default StudentHome = () => {
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderRadius: 8,
-      borderWidth: 4,
-      borderColor: theme.colors.primary,
     },
     divider: {
       marginVertical: 8,
@@ -58,12 +69,24 @@ export default StudentHome = () => {
       backgroundColor: theme.colors.primary,
     },
     headingText: {
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: 30,
-      fontSize: 30,
+      fontSize: 20,
       fontWeight: "bold",
-      color: theme.colors.primary,
+      position: "absolute",
+      left: "59%",
+      bottom: "25%",
+      color: "#fff",
+      borderBottomWidth: 3,
+      borderBottomColor: "#fff",
+    },
+    hello: {
+      position: "absolute",
+      fontSize: 20,
+      fontWeight: "bold",
+      top: "25%",
+      left: "25%",
+      color: "#fff",
+      borderTopWidth: 3,
+      borderTopColor: "#fff",
     },
   });
 
@@ -78,14 +101,8 @@ export default StudentHome = () => {
       courseCod = courseCode.toLowerCase();
     }
     try {
-      await axios({
-        url: `${REACT_APP_URL}/enrollCourse`,
-        method: "post",
-        data: {
-          courseCode: courseCod,
-        },
-        headers: { "x-access-token": authCtx.token },
-      })
+      await axiosInstance
+        .post(`/enrollCourse`, { courseCode: courseCod })
         .then((res) => {
           Alert("success", "success", res.data.message);
         })
@@ -103,20 +120,32 @@ export default StudentHome = () => {
     <View style={styles.container}>
       <View style={styles.profileContainer}>
         <Avatar.Text
+          style={{ backgroundColor: "transparent" }}
           size={deviceWidth / 2}
           label={authCtx?.name?.charAt(0)?.toUpperCase()}
         />
         <Text style={styles.headingText}>
-          Hello {authCtx?.name?.toUpperCase()}
+          {authCtx?.name?.toUpperCase().slice(1)}
         </Text>
+        <Text style={styles.hello}>HELLO</Text>
       </View>
+      <View style={{ flexGrow: 2 }} />
       <View style={styles.buttonContainer}>
         <Button
+          contentStyle={{ width: 100, height: 100 }}
           style={styles.button}
-          mode="contained"
+          mode="contained-tonal"
           onPress={() => setPortalVisibility(true)}
         >
-          Join Course
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              color: theme.colors.primary,
+            }}
+          >
+            JOIN
+          </Text>
         </Button>
       </View>
       <Portal>
@@ -146,7 +175,7 @@ export default StudentHome = () => {
             onChangeText={(text) => setCourseCode(text)}
           />
           <Button
-            style={styles.button}
+            style={{ borderRadius: 8, width: "60%", marginTop: 16 }}
             mode="contained"
             onPress={enrollCourseHandler}
           >

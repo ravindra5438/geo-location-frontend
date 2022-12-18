@@ -6,7 +6,6 @@ import {
 } from "react-native-paper";
 import Login from "./screens/login/Login";
 import Register from "./screens/register/Register";
-import { NavigationContainer, ThemeProvider } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext, useEffect, useState } from "react";
 import TeacherHome from "./screens/teacher/TeacherHome";
@@ -18,6 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomDrawer from "./components/CustomDrawer";
 import StudentStack from "./screens/student/StudentStack";
 import { Dimensions } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -116,7 +118,7 @@ function StudentDrawer() {
           headerTitleAlign: "center",
           headerBackVisible: false,
         }}
-        name="Home"
+        name="HOME"
         component={StudentHome}
       />
       <Drawer.Screen
@@ -130,43 +132,57 @@ function StudentDrawer() {
 
 export default function Main() {
   const authCtx = useContext(AuthContext);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [Student, setStudent] = useState(false);
+
+  const prepare = async () => {
+    try {
+      await AsyncStorage.getItem("token").then((data) => {
+        setUser(data);
+      });
+
+      await AsyncStorage.getItem("role").then((data) => {
+        setStudent(data == "student" ? true : false);
+      });
+    } catch {
+      (e) => console.warn(e);
+    } finally {
+      console.log("authCtx", authCtx);
+      setIsLoading(false);
+      SplashScreen.hideAsync();
+    }
+  };
   useEffect(() => {
-    AsyncStorage.getItem("token").then((data) => {
-      setUser(data);
-    });
-    AsyncStorage.getItem("role").then((data) => {
-      setStudent(data == "student" ? true : false);
-    });
-    console.log("authCtx", authCtx);
+    prepare();
   }, [authCtx]);
 
+  if (isLoading) {
+    return null;
+  }
+
   return (
-    <NavigationContainer>
-      <PaperProvider theme={myTheme}>
-        {!user ? (
-          <Stack.Navigator
-            initialRouteName="Login"
-            screenOptions={{
-              headerShown: false,
-              headerMode: "screen",
-              headerTintColor: "white",
-              headerStyle: { backgroundColor: "#8758FF" },
-              headerTitleAlign: "center",
-              headerBackVisible: false,
-            }}
-          >
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Sign Up" component={Register} />
-          </Stack.Navigator>
-        ) : Student ? (
-          <StudentDrawer />
-        ) : (
-          <TeacherDrawer />
-        )}
-      </PaperProvider>
-    </NavigationContainer>
+    <PaperProvider theme={myTheme}>
+      {!user ? (
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{
+            headerShown: false,
+            headerMode: "screen",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#8758FF" },
+            headerTitleAlign: "center",
+            headerBackVisible: false,
+          }}
+        >
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Sign Up" component={Register} />
+        </Stack.Navigator>
+      ) : Student ? (
+        <StudentDrawer />
+      ) : (
+        <TeacherDrawer />
+      )}
+    </PaperProvider>
   );
 }

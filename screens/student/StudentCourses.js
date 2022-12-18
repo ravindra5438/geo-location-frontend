@@ -1,6 +1,5 @@
 import { Button, Text } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
-import { REACT_APP_URL } from "@env";
 import * as Location from "expo-location";
 import { useTheme } from "react-native-paper";
 import { View, Dimensions, StyleSheet, FlatList } from "react-native";
@@ -9,27 +8,21 @@ import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
+import useAxios from "../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default StudentCourses = () => {
+  const axiosInstance = useAxios();
   const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
 
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const options = {
-      method: "GET",
-      url: `${REACT_APP_URL}/getCourses`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-    };
-
-    axios
-      .request(options)
+    axiosInstance
+      .get(`/getCourses`)
       .then(function (res) {
         console.log(res.data);
         setCourses(res.data.data);
@@ -70,23 +63,14 @@ export default StudentCourses = () => {
 
     let location = await Location.getCurrentPositionAsync({});
 
-    const options = {
-      method: "POST",
-      url: `${REACT_APP_URL}/markAttendance`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-      data: {
+    axiosInstance
+      .post(`/markAttendance`, {
         courseId: item._id,
         location: {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         },
-      },
-    };
-
-    axios
-      .request(options)
+      })
       .then(function (res) {
         console.log(res?.data);
         Alert("success", "SUCCESS", res?.data?.message);

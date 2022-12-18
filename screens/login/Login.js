@@ -1,10 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  ImageBackground,
+} from "react-native";
 import { Button, TextInput, Card } from "react-native-paper";
 import AuthContext from "../../store/auth-context.js";
-import axios from "axios";
-import { REACT_APP_URL } from "@env";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -14,32 +19,18 @@ export default Login = ({ navigation }) => {
 
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const loginHandler = async () => {
-    try {
-      await axios({
-        url: `${REACT_APP_URL}/login`,
-        method: "post",
-        data: {
-          email: email,
-          password: password,
-        },
-      })
-        .then((res) => {
-          AsyncStorage.setItem("token", res.data.token);
-          AsyncStorage.setItem("name", res.data.user.name);
-          AsyncStorage.setItem("role", res.data.user.role);
-        })
-        .catch((err) => {
-          Alert("error", "Sorry", err.response.data.message);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
-    <View style={{ width: deviceWidth, height: deviceHeight }}>
-      <View style={styles.container}>
+    <View
+      style={{
+        // width: deviceWidth,
+        // height: deviceHeight,
+        flexGrow: 1,
+        justifyContent: "center",
+        backgroundColor: "#EEEEEE",
+      }}
+    >
+      <Card style={styles.container}>
         <View style={{ alignItems: "center" }}>
           <Image
             style={{ width: 115, height: 100 }}
@@ -79,7 +70,7 @@ export default Login = ({ navigation }) => {
         >
           create an account
         </Button>
-      </View>
+      </Card>
     </View>
   );
 };
@@ -88,11 +79,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     flexDirection: "column",
-    flex: 1,
+    marginHorizontal: "10%",
     justifyContent: "center",
   },
   textInput: {
-    height: 40,
     marginVertical: 8,
   },
   button: {

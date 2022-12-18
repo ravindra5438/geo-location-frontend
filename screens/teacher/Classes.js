@@ -1,28 +1,24 @@
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  Pressable,
-} from "react-native";
-import { ActivityIndicator, Text } from "react-native-paper";
+import { View, StyleSheet, Dimensions, FlatList } from "react-native";
+import { ActivityIndicator, Button, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { useEffect, useContext, useState } from "react";
 import Alert from "../../components/alert";
 import { REACT_APP_URL } from "@env";
 import AuthContext from "../../store/auth-context";
 import axios from "axios";
-import moment from "moment";
 import { useIsFocused } from "@react-navigation/native";
-import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
 import MyListEmpty from "../../components/MyListEmpty";
+import SingleClass from "./SingleClass";
+import useAxios from "../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default Classes = ({ route, navigation }) => {
+  const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
+  const [deleteClassId, setDeleteClassId] = useState(null);
   const authCtx = useContext(AuthContext);
   const isFocused = useIsFocused();
   const { courseId } = route.params;
@@ -33,35 +29,44 @@ export default Classes = ({ route, navigation }) => {
     },
   });
 
+  const removeId = () => {
+    let arr = classes.filter(function (item) {
+      return item._id !== deleteClassId;
+    });
+    setClasses(arr);
+  };
+
+  useEffect(() => {
+    if (!deleteClassId) return;
+
+    axiosInstance
+      .delete(`/deleteClassById?classId=${deleteClassId}`)
+      .then(function (res) {
+        removeId();
+        setDeleteClassId(null);
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error?.response?.data?.message);
+      });
+  }, [deleteClassId]);
+
   useEffect(() => {
     setLoading(true);
     getClassByCourseId(courseId);
   }, [isFocused]);
 
   const getClassByCourseId = async (courseId) => {
-    const options = {
-      method: "GET",
-      url: `${REACT_APP_URL}/getClassesByCourseId?courseId=${courseId}`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-
-      data: {
-        courseId: courseId,
-      },
-    };
-
-    await axios
-      .request(options)
+    await axiosInstance
+      .get(`/getClassesByCourseId?courseId=${courseId}`, { courseId: courseId })
       .then(function (res) {
         setClasses(res?.data?.data);
-        console.log(res.data.data);
-        Alert("success", "SUCCESS", res.data.message);
+        console.log(res?.data?.data);
         setLoading(false);
       })
       .catch(function (error) {
         console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
+        Alert("error", "Sorry", error?.response?.data?.message);
         setLoading(false);
       });
   };
@@ -80,24 +85,12 @@ export default Classes = ({ route, navigation }) => {
         <FlatList
           data={classes}
           ListEmptyComponent={MyListEmpty}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() =>
-                navigation.navigate("STUDENTS", { classId: item._id })
-              }
-            >
-              <FlatlistSingleItemContainer>
-                <Text
-                  style={{ color: theme.colors.error }}
-                  variant="titleMedium"
-                >
-                  {new Date(item.createdDate).toDateString()}
-                </Text>
-                <Text style={{ color: "green" }} variant="titleMedium">
-                  {new Date(item.createdDate).toLocaleTimeString()}
-                </Text>
-              </FlatlistSingleItemContainer>
-            </Pressable>
+          renderItem={(props) => (
+            <SingleClass
+              {...props}
+              navigation={navigation}
+              setDeleteClassId={setDeleteClassId}
+            />
           )}
           keyExtractor={(item) => item._id}
         />

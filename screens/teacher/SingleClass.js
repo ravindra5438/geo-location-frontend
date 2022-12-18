@@ -1,129 +1,19 @@
-import { Button, Text, useTheme, TextInput, Tooltip } from "react-native-paper";
-import { useState, useContext, useEffect } from "react";
-import { REACT_APP_URL } from "@env";
-import * as Location from "expo-location";
-import { View, StyleSheet, Pressable, Dimensions } from "react-native";
-import axios from "axios";
-import AuthContext from "../../store/auth-context";
-import Alert from "../../components/alert";
+import { useState } from "react";
 import { MotiView } from "moti";
-import Modal1 from "../../components/Modal";
+import { Pressable, View, Vibration, Dimensions } from "react-native";
+import { Button, Text, useTheme } from "react-native-paper";
+import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
 
-const deviceWidth = Dimensions.get("window").width * 0.96;
-const deviceHeight = Dimensions.get("window").height;
+const deviceWidth = Dimensions.get("window").width;
 
-export default function SingleClass({ item, navigation, index, deleteId }) {
+export default SingleClass = ({
+  item,
+  index,
+  navigation,
+  setDeleteClassId,
+}) => {
   const theme = useTheme();
-  const [classStarted, setClassStarted] = useState(item.activeClass);
-  const [showDelete, setShowDelete] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(null);
-  const [radius, setRadius] = useState(item.radius);
-  const [showModel, setShowModel] = useState(false);
-  const authCtx = useContext(AuthContext);
-
-  const styles = StyleSheet.create({
-    rowContainer: {
-      alignItems: "center",
-      paddingTop: 8,
-      height: 50,
-      paddingHorizontal: 8,
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    container: {
-      backgroundColor: theme.colors.primaryContainer,
-      marginHorizontal: 8,
-      marginVertical: 8,
-      borderRadius: 8,
-    },
-    rowHandler: {
-      flexDirection: "row",
-    },
-  });
-  const deleteHandler = () => {
-    deleteId(item._id);
-  };
-
-  const sendAttendanceToMail = async (item) => {
-    const options = {
-      method: "Get",
-      url: `${REACT_APP_URL}/sendAttendanceViaMail?courseId=${item._id}`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-    };
-    await axios
-      .request(options)
-      .then(function (res) {
-        console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-  };
-
-  const endClassHandler = async (item) => {
-    const options = {
-      method: "POST",
-      url: `${REACT_APP_URL}/dismissClass`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-      data: {
-        courseId: item._id,
-      },
-    };
-
-    await axios
-      .request(options)
-      .then(function (res) {
-        console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setClassStarted(false);
-  };
-
-  const getLocation = async (item) => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    const options = {
-      method: "POST",
-      url: `${REACT_APP_URL}/startClass`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-      data: {
-        courseId: item._id,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-        radius: radius,
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (res) {
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setClassStarted(true);
-  };
+  const [deleteClass, setDeleteClass] = useState(false);
 
   return (
     <View
@@ -134,146 +24,42 @@ export default function SingleClass({ item, navigation, index, deleteId }) {
       }}
     >
       <MotiView
-        animate={{
-          height: index === currentIndex ? 170 : 60,
-          width: showDelete ? deviceWidth * 0.8 : deviceWidth,
-          backgroundColor:
-            index === currentIndex ? "#EFF5F5" : theme.colors.primaryContainer,
-        }}
-        transition={{
-          type: "spring",
-          duration: 600,
-        }}
-        style={styles.container}
+        animate={{ width: deleteClass ? deviceWidth - 100 : deviceWidth }}
       >
         <Pressable
           onLongPress={() => {
-            setShowDelete(!showDelete);
-            console.log("index :", index);
+            setDeleteClass(!deleteClass);
+            Vibration.vibrate(50);
           }}
-          onPress={() => {
-            showDelete
-              ? setShowDelete(false)
-              : setCurrentIndex(index === currentIndex ? null : index);
-          }}
+          style={{ flex: 1 }}
+          onPress={() => navigation.navigate("STUDENTS", { classId: item._id })}
         >
-          <View style={styles.rowContainer}>
-            <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
-            <Text variant="titleSmall">{item.courseCode}</Text>
-          </View>
-          {index === currentIndex && (
-            <MotiView
-              from={{ opacity: 0, translateX: -100 }}
-              animate={{ opacity: 1, translateX: 0 }}
-              transition={{ type: "spring", delay: 500 }}
-            >
-              <View style={styles.rowContainer}>
-                <Button
-                  disabled={classStarted}
-                  mode="contained"
-                  onPress={() => setShowModel(true)}
-                  style={{
-                    borderRadius: 4,
-                    width: "45%",
-                    backgroundColor: "#FF597B",
-                  }}
-                >
-                  RADIUS : {radius}
-                </Button>
-                {classStarted ? (
-                  <Button
-                    mode="outlined"
-                    style={{
-                      borderRadius: 4,
-                      width: "43%",
-                    }}
-                    onPress={() => {
-                      endClassHandler(item);
-                    }}
-                  >
-                    End Class
-                  </Button>
-                ) : (
-                  <Button
-                    mode="contained"
-                    style={{
-                      borderRadius: 4,
-                      width: "45%",
-                      backgroundColor: "#2B3467",
-                    }}
-                    onPress={() => {
-                      getLocation(item);
-                    }}
-                  >
-                    Start Class
-                  </Button>
-                )}
-              </View>
-
-              <View style={styles.rowContainer}>
-                <Button
-                  disabled={classStarted}
-                  icon="download"
-                  mode="contained"
-                  style={{
-                    borderRadius: 4,
-                    marginTop: 4,
-                    width: "45%",
-                    backgroundColor: "#2B3467",
-                  }}
-                  onPress={() => {
-                    sendAttendanceToMail(item);
-                  }}
-                >
-                  Attendance
-                </Button>
-                <Button
-                  disabled={classStarted}
-                  mode="contained"
-                  style={{
-                    borderRadius: 4,
-                    marginTop: 4,
-                    width: "45%",
-                    backgroundColor: "#FF597B",
-                  }}
-                  onPress={() =>
-                    navigation.navigate("CLASSES", { courseId: item._id })
-                  }
-                >
-                  CLASS DATA
-                </Button>
-              </View>
-            </MotiView>
-          )}
+          <FlatlistSingleItemContainer>
+            <Text style={{ color: theme.colors.error }} variant="titleMedium">
+              {new Date(item.createdDate).toDateString()}
+            </Text>
+            <Text style={{ color: "green" }} variant="titleMedium">
+              {new Date(item.createdDate).toLocaleTimeString()}
+            </Text>
+          </FlatlistSingleItemContainer>
         </Pressable>
-
-        <Modal1 showModel={showModel} setShowModel={setShowModel}>
-          <TextInput
-            label="Radius"
-            maxLength={3}
-            mode="outlined"
-            keyboardType="numeric"
-            value={radius}
-            onChangeText={(item) => {
-              setRadius(item);
+      </MotiView>
+      {deleteClass && (
+        <MotiView
+          from={{
+            width: 0,
+          }}
+          animate={{ width: 100 }}
+          transition={{ type: "spring" }}
+        >
+          <Button
+            icon="delete"
+            onPress={() => {
+              setDeleteClassId(item._id);
             }}
           />
-          <Button
-            mode="contained"
-            style={{
-              borderRadius: 4,
-              marginTop: 8,
-              backgroundColor: "#2B3467",
-            }}
-            onPress={() => {
-              getLocation(item);
-            }}
-          >
-            Start Class
-          </Button>
-        </Modal1>
-      </MotiView>
-      {showDelete && <Button onPress={deleteHandler} icon="delete" />}
+        </MotiView>
+      )}
     </View>
   );
-}
+};

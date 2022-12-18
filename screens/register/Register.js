@@ -3,9 +3,6 @@ import { StyleSheet, View, Image, Dimensions } from "react-native";
 import { Button, TextInput, Card, Text } from "react-native-paper";
 import AuthContext from "../../store/auth-context";
 
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
-
 export default Register = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
 
@@ -16,8 +13,14 @@ export default Register = ({ navigation }) => {
   const [registrationNo, setRegistrationNo] = useState("");
 
   return (
-    <View style={{ width: deviceWidth, height: deviceHeight }}>
-      <View style={styles.container}>
+    <View
+      style={{
+        flexGrow: 1,
+        justifyContent: "center",
+        backgroundColor: "#EEEEEE",
+      }}
+    >
+      <Card style={styles.container}>
         <View style={{ alignItems: "center" }}>
           <Image
             style={{ width: 120, height: 120 }}
@@ -108,7 +111,7 @@ export default Register = ({ navigation }) => {
         >
           <Text variant="titleSmall">Back to</Text> Login
         </Button>
-      </View>
+      </Card>
     </View>
   );
 };
@@ -116,11 +119,11 @@ export default Register = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 24,
-    flex: 1,
+    flexDirection: "column",
+    marginHorizontal: "10%",
     justifyContent: "center",
   },
   textInput: {
-    height: 40,
     marginVertical: 8,
   },
   button: {

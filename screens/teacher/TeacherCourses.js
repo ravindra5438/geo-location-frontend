@@ -7,8 +7,9 @@ import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import Alert from "../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
-import SingleClass from "./SingleClass";
+import SingleCourse from "./SingleCourse";
 import MyListEmpty from "../../components/MyListEmpty";
+import useAxios from "../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -17,9 +18,11 @@ export default TeacherCourses = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(null);
   const [deleteCourseId, setDeleteCourseId] = useState(null);
   const isFocused = useIsFocused();
   const theme = useTheme();
+  const axiosInstance = useAxios();
 
   const removeId = () => {
     let arr = courses.filter(function (item) {
@@ -30,45 +33,32 @@ export default TeacherCourses = ({ navigation }) => {
 
   useEffect(() => {
     setLoading(true);
-    const options = {
-      method: "GET",
-      url: `${REACT_APP_URL}/getCourses`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-    };
 
-    axios
-      .request(options)
+    axiosInstance
+      .get("/getCourses")
       .then(function (res) {
-        console.log("courses", res.data.data);
-        setCourses(res.data.data);
+        console.log(res.data);
+        setCourses(res?.data?.data);
         setLoading(false);
       })
       .catch(function (error) {
         console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
+        Alert("error", "Sorry", error?.response?.data?.message);
         setLoading(false);
       });
   }, [isFocused]);
 
   useEffect(() => {
-    const options = {
-      method: "DELETE",
-      url: `${REACT_APP_URL}/deleteCourseById?courseId=${deleteCourseId}`,
-      headers: {
-        "x-access-token": authCtx.token,
-      },
-    };
+    if (!deleteCourseId) return;
 
-    axios
-      .request(options)
+    axiosInstance
+      .delete(`/deleteCourseById?courseId=${deleteCourseId}`)
       .then(function (res) {
         removeId();
       })
       .catch(function (error) {
         console.log(error);
-        Alert("error", "Sorry", error);
+        Alert("error", "Sorry", error?.response?.data?.message);
       });
   }, [deleteCourseId]);
 
@@ -88,8 +78,10 @@ export default TeacherCourses = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           data={courses}
           renderItem={(props) => (
-            <SingleClass
+            <SingleCourse
               {...props}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
               deleteId={setDeleteCourseId}
               navigation={navigation}
             />

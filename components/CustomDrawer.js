@@ -1,7 +1,14 @@
 import React from "react";
 import { DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { View, StyleSheet } from "react-native";
-import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
+import {
+  useTheme,
+  Button,
+  Portal,
+  Modal,
+  Text,
+  Divider,
+} from "react-native-paper";
 import AuthContext from "../store/auth-context";
 
 export default CustomDrawer = (props) => {
@@ -11,14 +18,14 @@ export default CustomDrawer = (props) => {
 
   const styles = StyleSheet.create({
     portalContainer: {
-      backgroundColor: "white",
+      backgroundColor: theme.colors.onPrimary,
       alignItems: "center",
       marginHorizontal: 16,
       paddingHorizontal: 16,
       paddingVertical: 8,
-      borderRadius: 8,
-      borderWidth: 4,
-      borderColor: theme.colors.primary,
+      borderRadius: 20,
+      width: "50%",
+      alignSelf: "center",
     },
   });
 
@@ -45,14 +52,15 @@ export default CustomDrawer = (props) => {
             style={{
               marginBottom: 8,
               color: theme.colors.error,
-              fontWeight: "700",
+              fontWeight: "600",
+              textAlign: "center",
             }}
           >
-            Are you Sure? you want to logout
+            Are you Sure, you want to logout?
           </Text>
           <Button
-            style={{ borderRadius: 8 }}
-            mode="contained"
+            textColor="#227C70"
+            style={{ borderRadius: 8, width: "100%" }}
             onPress={() => {
               authCtx.logout();
               setPortalVisibility(false);
