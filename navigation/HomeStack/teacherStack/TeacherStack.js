@@ -1,7 +1,9 @@
-import StudentCourses from "./StudentCourses";
+import TeacherCourses from "../../../screens/teacher/TeacherCourses";
+import Classes from "../../../screens/teacher/Classes";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { useTheme } from "react-native-paper";
+import StudentPerClass from "../../../screens/teacher/StudentPerClass";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,6 +13,7 @@ export default TeacherStack = () => {
   return (
     <Stack.Navigator
       initialRouteName="COURSE"
+      detachInactiveScreens={true}
       screenOptions={{
         headerShown: true,
         headerMode: "screen",
@@ -28,7 +31,9 @@ export default TeacherStack = () => {
         ),
       }}
     >
-      <Stack.Screen name="COURSE" component={StudentCourses} />
+      <Stack.Screen name="COURSE" component={TeacherCourses} />
+      <Stack.Screen name="CLASSES" component={Classes} />
+      <Stack.Screen name="STUDENTS" component={StudentPerClass} />
     </Stack.Navigator>
   );
 };

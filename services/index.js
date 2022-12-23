@@ -2,8 +2,6 @@ import axios from "axios";
 import { useContext } from "react";
 import AuthContext from "../store/auth-context";
 import { REACT_APP_URL } from "@env";
-import { RotationGestureHandler } from "react-native-gesture-handler";
-import Alert from "../components/alert";
 
 const useAxios = () => {
   const authCtx = useContext(AuthContext);

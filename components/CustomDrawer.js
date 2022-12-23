@@ -1,14 +1,7 @@
 import React from "react";
 import { DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { View, StyleSheet } from "react-native";
-import {
-  useTheme,
-  Button,
-  Portal,
-  Modal,
-  Text,
-  Divider,
-} from "react-native-paper";
+import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
 import AuthContext from "../store/auth-context";
 
 export default CustomDrawer = (props) => {
