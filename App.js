@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
-import { AuthContextProvider } from "./store/auth-context";
-import MainStack from "./navigation/MainStack";
+import { AuthContextProvider } from "./src/store/auth-context";
+import MainStack from "./src/navigation/MainStack";
 import Toast from "react-native-toast-message";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";

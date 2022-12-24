@@ -24,7 +24,7 @@ export default Register = ({ navigation }) => {
         <View style={{ alignItems: "center" }}>
           <Image
             style={{ width: 120, height: 120 }}
-            source={require("../../assets/gkvlogo.png")}
+            source={require("../../../assets/gkvlogo.png")}
           />
         </View>
         <View

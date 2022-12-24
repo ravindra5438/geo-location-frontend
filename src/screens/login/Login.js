@@ -34,7 +34,7 @@ export default Login = ({ navigation }) => {
         <View style={{ alignItems: "center" }}>
           <Image
             style={{ width: 115, height: 100 }}
-            source={require("../../assets/gkvlogo.png")}
+            source={require("../../../assets/gkvlogo.png")}
           />
         </View>
         <TextInput
