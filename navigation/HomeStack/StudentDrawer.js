@@ -1,4 +1,4 @@
-import StudentHome from "../../screens/student/StudentHome";
+import StudentHome from "../../screens/student/home/StudentHome";
 import CustomDrawer from "../../components/CustomDrawer";
 import StudentStack from "./studentStack/StudentStack";
 import { useTheme } from "react-native-paper";

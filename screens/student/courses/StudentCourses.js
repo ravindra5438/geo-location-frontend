@@ -4,11 +4,11 @@ import * as Location from "expo-location";
 import { useTheme } from "react-native-paper";
 import { View, Dimensions, StyleSheet, FlatList } from "react-native";
 import axios from "axios";
-import AuthContext from "../../store/auth-context";
-import Alert from "../../components/alert";
+import AuthContext from "../../../store/auth-context";
+import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
-import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
-import useAxios from "../../services";
+import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
+import useAxios from "../../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;

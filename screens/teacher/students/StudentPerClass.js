@@ -2,10 +2,10 @@ import { View, StyleSheet, Dimensions, FlatList } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { useTheme, DataTable } from "react-native-paper";
 import { useEffect, useContext, useState } from "react";
-import Alert from "../../components/alert";
-import AuthContext from "../../store/auth-context";
+import Alert from "../../../components/alert";
+import AuthContext from "../../../store/auth-context";
 import { useIsFocused } from "@react-navigation/native";
-import useAxios from "../../services";
+import useAxios from "../../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;

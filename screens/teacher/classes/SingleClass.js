@@ -2,16 +2,11 @@ import { useState } from "react";
 import { MotiView } from "moti";
 import { Pressable, View, Vibration, Dimensions } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
-import FlatlistSingleItemContainer from "../../components/FlatlistSingleItemContainer";
+import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 
 const deviceWidth = Dimensions.get("window").width;
 
-export default SingleClass = ({
-  item,
-  index,
-  navigation,
-  setDeleteClassId,
-}) => {
+export default SingleClass = ({ item, navigation, setDeleteClassId }) => {
   const theme = useTheme();
   const [deleteClass, setDeleteClass] = useState(false);
 

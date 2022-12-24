@@ -10,11 +10,11 @@ import {
   Vibration,
 } from "react-native";
 import axios from "axios";
-import AuthContext from "../../store/auth-context";
-import Alert from "../../components/alert";
+import AuthContext from "../../../store/auth-context";
+import Alert from "../../../components/alert";
 import { MotiView } from "moti";
-import Moddal from "../../components/Moddal";
-import useAxios from "../../services";
+import Moddal from "../../../components/Moddal";
+import useAxios from "../../../services";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width * 0.96;

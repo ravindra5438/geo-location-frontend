@@ -1,5 +1,5 @@
 import { useTheme } from "react-native-paper";
-import TeacherHome from "../../screens/teacher/TeacherHome";
+import TeacherHome from "../../screens/teacher/home/TeacherHome";
 import TeacherStack from "./teacherStack/TeacherStack";
 import CustomDrawer from "../../components/CustomDrawer";
 import { createDrawerNavigator } from "@react-navigation/drawer";

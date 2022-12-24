@@ -1,9 +1,9 @@
-import TeacherCourses from "../../../screens/teacher/TeacherCourses";
-import Classes from "../../../screens/teacher/Classes";
+import TeacherCourses from "../../../screens/teacher/courses/TeacherCourses";
+import Classes from "../../../screens/teacher/classes/Classes";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { useTheme } from "react-native-paper";
-import StudentPerClass from "../../../screens/teacher/StudentPerClass";
+import StudentPerClass from "../../../screens/teacher/students/StudentPerClass";
 
 const Stack = createNativeStackNavigator();
 

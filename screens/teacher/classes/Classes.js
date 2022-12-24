@@ -2,14 +2,14 @@ import { View, StyleSheet, Dimensions, FlatList } from "react-native";
 import { ActivityIndicator, Button, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { useEffect, useContext, useState } from "react";
-import Alert from "../../components/alert";
+import Alert from "../../../components/alert";
 import { REACT_APP_URL } from "@env";
-import AuthContext from "../../store/auth-context";
+import AuthContext from "../../../store/auth-context";
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
-import MyListEmpty from "../../components/MyListEmpty";
+import MyListEmpty from "../../../components/MyListEmpty";
 import SingleClass from "./SingleClass";
-import useAxios from "../../services";
+import useAxios from "../../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;

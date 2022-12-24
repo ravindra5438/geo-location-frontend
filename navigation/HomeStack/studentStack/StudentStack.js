@@ -1,4 +1,4 @@
-import StudentCourses from "../../../screens/student/StudentCourses";
+import StudentCourses from "../../../screens/student/courses/StudentCourses";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { useTheme } from "react-native-paper";

@@ -1,40 +1,32 @@
-import axios from "axios";
-import { useContext, useState } from "react";
+import React from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
-import useAxios from "../../services";
 import {
   Button,
-  Modal,
-  Portal,
-  Divider,
   Text,
+  Portal,
+  Modal,
   TextInput,
+  Divider,
   useTheme,
-  Avatar,
+  Card,
 } from "react-native-paper";
-import { REACT_APP_URL } from "@env";
-import Alert from "../../components/alert";
-import AuthContext from "../../store/auth-context";
+import Alert from "../../../components/alert";
+import AuthContext from "../../../store/auth-context";
+import { Avatar } from "react-native-paper";
+import useAxios from "../../../services";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-export default StudentHome = () => {
+export default TeacherHome = ({ navigation }) => {
   const axiosInstance = useAxios();
   const theme = useTheme();
+
   const styles = StyleSheet.create({
     buttonContainer: {
       justifyContent: "center",
+      marginVertical: "7%",
       alignItems: "center",
-      flexGrow: 1,
-      backgroundColor: theme.colors.primary,
-      borderTopRightRadius: 80,
-      borderTopLeftRadius: 80,
-    },
-    container: {
-      height: deviceHeight,
-      flexGrow: 1,
-      backgroundColor: theme.colors.onPrimary,
     },
     profileContainer: {
       marginTop: "10%",
@@ -47,12 +39,21 @@ export default StudentHome = () => {
       borderTopRightRadius: 60,
       borderBottomLeftRadius: 60,
     },
+    courseNameContainer: {
+      justifyContent: "space-between",
+      padding: 20,
+      flexGrow: 1,
+      flexDirection: "row",
+      borderRadius: 40,
+      backgroundColor: theme.colors.primary,
+    },
+    container: {
+      height: deviceHeight,
+      backgroundColor: theme.colors.onPrimary,
+    },
     button: {
-      width: 100,
-      height: 100,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 50,
+      width: 200,
+      borderRadius: 8,
     },
     portalContainer: {
       backgroundColor: "white",
@@ -90,30 +91,22 @@ export default StudentHome = () => {
     },
   });
 
-  const authCtx = useContext(AuthContext);
-  const [courseCode, setCourseCode] = useState(null);
-
-  const [portalVisibility, setPortalVisibility] = useState(false);
-
-  const enrollCourseHandler = async () => {
-    let courseCod;
-    if (courseCode) {
-      courseCod = courseCode.toLowerCase();
-    }
-    try {
-      await axiosInstance
-        .post(`/enrollCourse`, { courseCode: courseCod })
-        .then((res) => {
-          Alert("success", "success", res.data.message);
-        })
-        .catch((err) => {
-          Alert("error", "Sorry!!", err.response.data.message);
-        });
-      setPortalVisibility(false);
-      setCourseCode(null);
-    } catch (err) {
-      console.log(err);
-    }
+  const authCtx = React.useContext(AuthContext);
+  const [portalVisibility, setPortalVisibility] = React.useState(false);
+  const [courseName, setCourseName] = React.useState(null);
+  const createCourseHandler = async () => {
+    await axiosInstance
+      .post("/createCourse", { courseName: courseName })
+      .then(function (res) {
+        console.log(res?.data);
+        Alert("success", "SUCCESS", res?.data?.message);
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error?.response?.data?.message);
+      });
+    setCourseName(null);
+    setPortalVisibility(false);
   };
 
   return (
@@ -129,24 +122,19 @@ export default StudentHome = () => {
         </Text>
         <Text style={styles.hello}>HELLO</Text>
       </View>
-      <View style={{ flexGrow: 2 }} />
       <View style={styles.buttonContainer}>
         <Button
-          contentStyle={{ width: 100, height: 100 }}
           style={styles.button}
-          mode="contained-tonal"
+          mode="contained"
           onPress={() => setPortalVisibility(true)}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "700",
-              color: theme.colors.primary,
-            }}
-          >
-            JOIN
-          </Text>
+          CREATE COURSE
         </Button>
+      </View>
+      <View style={styles.courseNameContainer}>
+        <Card style={{ width: "40%", height: 100 }} />
+
+        <Card style={{ width: "40%", height: 100 }} />
       </View>
       <Portal>
         <Modal
@@ -159,27 +147,25 @@ export default StudentHome = () => {
               variant="titleLarge"
               style={{ color: theme.colors.primary, fontWeight: "700" }}
             >
-              Join Course
+              Create Course
             </Text>
           </View>
           <Divider bold={true} style={styles.divider} />
           <TextInput
-            style={{
-              width: "100%",
-              textAlign: "center",
-              justifyContent: "center",
-            }}
-            value={courseCode}
+            style={{ width: "100%" }}
             mode="outlined"
-            label="Course Code"
-            onChangeText={(text) => setCourseCode(text)}
+            value={courseName}
+            label="Course Name"
+            onChangeText={(text) => {
+              setCourseName(text);
+            }}
           />
           <Button
-            style={{ borderRadius: 8, width: "60%", marginTop: 16 }}
+            style={{ width: "60%", borderRadius: 8, marginTop: 16 }}
             mode="contained"
-            onPress={enrollCourseHandler}
+            onPress={createCourseHandler}
           >
-            Join
+            Create
           </Button>
         </Modal>
       </Portal>
