@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator } from "react-native-paper";
 import { View, StyleSheet, Dimensions } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import {
   Button,
   Text,
@@ -11,16 +13,16 @@ import {
   Card,
 } from "react-native-paper";
 import Alert from "../../../components/alert";
-import AuthContext from "../../../store/auth-context";
-import { Avatar } from "react-native-paper";
 import useAxios from "../../../services";
+import Icon from "react-native-vector-icons/FontAwesome";
+import CoursesHome from "./CoursesHome";
 
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
+const deviceHeight = Dimensions.get("window").height * 0.93;
 
 export default TeacherHome = ({ navigation }) => {
   const axiosInstance = useAxios();
   const theme = useTheme();
+  const isFocused = useIsFocused();
 
   const styles = StyleSheet.create({
     buttonContainer: {
@@ -40,20 +42,21 @@ export default TeacherHome = ({ navigation }) => {
       borderBottomLeftRadius: 60,
     },
     courseNameContainer: {
-      justifyContent: "space-between",
-      padding: 20,
+      backgroundColor: theme.colors.onPrimary,
+      maxHeight: deviceHeight * 0.9,
+      marginVertical: 10,
       flexGrow: 1,
-      flexDirection: "row",
-      borderRadius: 40,
-      backgroundColor: theme.colors.primary,
     },
     container: {
+      paddingHorizontal: 4,
       height: deviceHeight,
       backgroundColor: theme.colors.onPrimary,
     },
     button: {
-      width: 200,
+      padding: 0,
       borderRadius: 8,
+      alignItems: "center",
+      justifyContent: "center",
     },
     portalContainer: {
       backgroundColor: "white",
@@ -91,9 +94,11 @@ export default TeacherHome = ({ navigation }) => {
     },
   });
 
-  const authCtx = React.useContext(AuthContext);
-  const [portalVisibility, setPortalVisibility] = React.useState(false);
-  const [courseName, setCourseName] = React.useState(null);
+  const [portalVisibility, setPortalVisibility] = useState(false);
+  const [courseName, setCourseName] = useState(null);
+  const [courses, setCourses] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const createCourseHandler = async () => {
     await axiosInstance
       .post("/createCourse", { courseName: courseName })
@@ -109,32 +114,47 @@ export default TeacherHome = ({ navigation }) => {
     setPortalVisibility(false);
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    axiosInstance
+      .get("/getCourses")
+      .then(function (res) {
+        console.log("courses from Home", res.data);
+        setCourses(res?.data?.data);
+        setIsLoading(false);
+      })
+      .catch(function (error) {
+        console.log("error", error);
+        //Alert("error", "Sorry", error?.response?.data?.message);
+        setIsLoading(false);
+      });
+  }, [isFocused]);
   return (
     <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <Avatar.Text
-          style={{ backgroundColor: "transparent" }}
-          size={deviceWidth / 2}
-          label={authCtx?.name?.charAt(0)?.toUpperCase()}
-        />
-        <Text style={styles.headingText}>
-          {authCtx?.name?.toUpperCase().slice(1)}
-        </Text>
-        <Text style={styles.hello}>HELLO</Text>
-      </View>
-      <View style={styles.buttonContainer}>
+      <Card style={styles.courseNameContainer}>
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="red"
+            style={{
+              flex: 1,
+              marginTop: deviceHeight * 0.4,
+            }}
+          />
+        ) : (
+          <CoursesHome courses={courses} />
+        )}
+      </Card>
+
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <Button
           style={styles.button}
           mode="contained"
           onPress={() => setPortalVisibility(true)}
+          labelStyle={{ lineHeight: 30, letterSpacing: 0 }}
         >
-          CREATE COURSE
+          <Icon name="plus" size={20} />
         </Button>
-      </View>
-      <View style={styles.courseNameContainer}>
-        <Card style={{ width: "40%", height: 100 }} />
-
-        <Card style={{ width: "40%", height: 100 }} />
       </View>
       <Portal>
         <Modal

@@ -8,6 +8,7 @@ export default MyListEmpty = () => {
   return (
     <View
       style={{
+        flex: 1,
         alignItems: "center",
         justifyContent: "center",
         height: deviceHeight * 0.8,

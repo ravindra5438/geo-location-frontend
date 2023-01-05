@@ -11,7 +11,7 @@ export default function App() {
       <AuthContextProvider>
         <MainStack />
         <Toast />
-        <StatusBar style="inverted" backgroundColor="rgba(255, 70, 0 , .6)" />
+        <StatusBar style="inverted" backgroundColor="#404258" />
       </AuthContextProvider>
     </NavigationContainer>
   );

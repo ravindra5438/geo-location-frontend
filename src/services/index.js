@@ -5,10 +5,7 @@ import { REACT_APP_URL } from "@env";
 
 const useAxios = () => {
   const authCtx = useContext(AuthContext);
-
   const baseURL = REACT_APP_URL;
-  console.log("token", authCtx.token);
-
   const axiosInstance = axios.create({
     baseURL,
 

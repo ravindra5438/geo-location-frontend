@@ -1,24 +1,14 @@
-import { StatusBar } from "expo-status-bar";
-import { useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-  ImageBackground,
-} from "react-native";
-import { Button, TextInput, Card } from "react-native-paper";
+import { useContext, useState } from "react";
+import { StyleSheet, View, Image } from "react-native";
+import { Button, TextInput, Card, IconButton } from "react-native-paper";
 import AuthContext from "../../store/auth-context.js";
-
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
 
 export default Login = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
 
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
 
   return (
     <View
@@ -48,13 +38,19 @@ export default Login = ({ navigation }) => {
         />
         <TextInput
           label="Password"
-          secureTextEntry={true}
+          secureTextEntry={isPasswordSecure}
           value={password}
           onChangeText={(text) => {
             setPassword(text);
           }}
           mode="outlined"
           style={styles.textInput}
+          right={
+            <TextInput.Icon
+              onPress={() => setIsPasswordSecure(!isPasswordSecure)}
+              icon={isPasswordSecure ? "eye-off" : "eye"}
+            />
+          }
         />
         <Button
           mode="contained"

@@ -1,9 +1,8 @@
 import { View, StyleSheet, Dimensions, FlatList } from "react-native";
-import { Text, ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import { useTheme, DataTable } from "react-native-paper";
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
-import AuthContext from "../../../store/auth-context";
 import { useIsFocused } from "@react-navigation/native";
 import useAxios from "../../../services";
 
@@ -14,7 +13,6 @@ export default StudentPerClass = ({ route, navigation }) => {
   const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
-  const authCtx = useContext(AuthContext);
   const isFocused = useIsFocused();
   const { classId } = route.params;
   const [students, setStudents] = useState(null);

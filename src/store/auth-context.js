@@ -22,30 +22,34 @@ export const AuthContextProvider = (props) => {
   const navigation = useNavigation();
 
   const userIsLoggedIn = !!token;
-  AsyncStorage.getItem("token").then((data) => {
-    setToken(data);
-  });
-  AsyncStorage.getItem("name").then((data) => {
-    setName(data);
-  });
-  AsyncStorage.getItem("role").then((data) => {
-    setRole(data);
-  });
+  const getData = async () => {
+    await AsyncStorage.getItem("token").then((data) => {
+      setToken(data);
+    });
+    await AsyncStorage.getItem("name").then((data) => {
+      setName(data);
+    });
+    await AsyncStorage.getItem("role").then((data) => {
+      setRole(data);
+    });
+  };
+  getData();
+
   const loginHandler = async ({ email, password }) => {
     try {
       await axios({
-        url: `${REACT_APP_URL}/login`,
+        url: `${REACT_APP_URL}/auth/login`,
         method: "post",
         data: {
           email: email,
           password: password,
         },
       })
-        .then((res) => {
+        .then(async (res) => {
           setToken(res?.data?.token);
-          AsyncStorage.setItem("token", res?.data?.token);
-          AsyncStorage.setItem("name", res?.data?.user?.name);
-          AsyncStorage.setItem("role", res?.data?.user?.role);
+          await AsyncStorage.setItem("token", res?.data?.token);
+          await AsyncStorage.setItem("name", res?.data?.user?.name);
+          await AsyncStorage.setItem("role", res?.data?.user?.role);
         })
         .catch((err) => {
           Alert("error", "Sorry", err?.response?.data?.message);
@@ -64,7 +68,7 @@ export const AuthContextProvider = (props) => {
   }) => {
     try {
       await axios({
-        url: `${REACT_APP_URL}/signUp`,
+        url: `${REACT_APP_URL}/auth/signUp`,
         method: "post",
         data: {
           name: name,
@@ -74,11 +78,11 @@ export const AuthContextProvider = (props) => {
           password: password,
         },
       })
-        .then((res) => {
+        .then(async (res) => {
           setToken(res?.data?.token);
-          AsyncStorage.setItem("token", res?.data?.token);
-          AsyncStorage.setItem("name", res?.data?.user?.name);
-          AsyncStorage.setItem("role", res?.data?.user?.role);
+          await AsyncStorage.setItem("token", res?.data?.token);
+          await AsyncStorage.setItem("name", res?.data?.user?.name);
+          await AsyncStorage.setItem("role", res?.data?.user?.role);
         })
         .catch((err) => Alert("error", "Sorry", err?.response?.data?.message));
     } catch (err) {

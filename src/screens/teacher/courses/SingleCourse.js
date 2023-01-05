@@ -1,6 +1,5 @@
-import { Button, Text, useTheme, TextInput, Tooltip } from "react-native-paper";
+import { Button, Text, useTheme, TextInput } from "react-native-paper";
 import { useState, useContext, useEffect } from "react";
-import { REACT_APP_URL } from "@env";
 import * as Location from "expo-location";
 import {
   View,
@@ -9,12 +8,11 @@ import {
   Dimensions,
   Vibration,
 } from "react-native";
-import axios from "axios";
-import AuthContext from "../../../store/auth-context";
 import Alert from "../../../components/alert";
 import { MotiView } from "moti";
 import Moddal from "../../../components/Moddal";
 import useAxios from "../../../services";
+import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width * 0.96;
@@ -32,7 +30,6 @@ export default function SingleCourse({
   const [showDelete, setShowDelete] = useState(false);
   const [radius, setRadius] = useState(item.radius);
   const [showModel, setShowModel] = useState(false);
-  const authCtx = useContext(AuthContext);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -46,6 +43,7 @@ export default function SingleCourse({
     },
     container: {
       backgroundColor: theme.colors.primaryContainer,
+      elevation: 4,
       marginHorizontal: 8,
       marginVertical: 8,
       borderRadius: 8,
@@ -123,12 +121,10 @@ export default function SingleCourse({
         animate={{
           height: index === currentIndex ? 170 : 60,
           width: showDelete ? deviceWidth * 0.8 : deviceWidth,
-          backgroundColor:
-            index === currentIndex ? "#EFF5F5" : theme.colors.primaryContainer,
+          backgroundColor: theme.colors.primaryContainer, //index === currentIndex ? "#2DCDDF" : "#ADE792",
         }}
         transition={{
           type: "spring",
-          duration: 600,
         }}
         style={styles.container}
       >
@@ -148,9 +144,9 @@ export default function SingleCourse({
           </View>
           {index === currentIndex && (
             <MotiView
-              from={{ opacity: 0, translateX: -100 }}
-              animate={{ opacity: 1, translateX: 0 }}
-              transition={{ type: "spring", delay: 500 }}
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ type: "timing", duration: 300 }}
             >
               <View style={styles.rowContainer}>
                 <Button
@@ -160,7 +156,7 @@ export default function SingleCourse({
                   style={{
                     borderRadius: 4,
                     width: "45%",
-                    backgroundColor: "#FF597B",
+                    // backgroundColor: "#FF597B",
                   }}
                 >
                   RADIUS : {radius}
@@ -184,7 +180,7 @@ export default function SingleCourse({
                     style={{
                       borderRadius: 4,
                       width: "45%",
-                      backgroundColor: "#2B3467",
+                      // backgroundColor: "#2B3467",
                     }}
                     onPress={() => {
                       getLocation(item);
@@ -204,7 +200,7 @@ export default function SingleCourse({
                     borderRadius: 4,
                     marginTop: 4,
                     width: "45%",
-                    backgroundColor: "#2B3467",
+                    // backgroundColor: "#2B3467",
                   }}
                   onPress={() => {
                     sendAttendanceToMail(item);
@@ -219,7 +215,7 @@ export default function SingleCourse({
                     borderRadius: 4,
                     marginTop: 4,
                     width: "45%",
-                    backgroundColor: "#FF597B",
+                    // backgroundColor: "#FF597B",
                   }}
                   onPress={() =>
                     navigation.navigate("CLASSES", { courseId: item._id })
@@ -235,8 +231,10 @@ export default function SingleCourse({
       <Moddal showModel={showModel} setShowModel={setShowModel}>
         <TextInput
           label="Radius"
+          backgroundColor={"#D4F6CC"}
+          borderRadius={4}
           maxLength={3}
-          mode="outlined"
+          mode="flat"
           keyboardType="numeric"
           value={radius}
           onChangeText={(item) => {
@@ -248,7 +246,7 @@ export default function SingleCourse({
           style={{
             borderRadius: 4,
             marginTop: 8,
-            backgroundColor: "#2B3467",
+            // backgroundColor: "#2B3467",
           }}
           onPress={() => {
             getLocation(item);

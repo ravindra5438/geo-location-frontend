@@ -25,8 +25,7 @@ export default TeacherStack = () => {
           fontWeight: "700",
         },
         headerTitleAlign: "center",
-        headerBackVisible: false,
-        headerLeft: () => (
+        headerRight: () => (
           <DrawerToggleButton tintColor={theme.colors.onPrimary} />
         ),
       }}

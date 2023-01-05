@@ -10,10 +10,11 @@ export default FlatlistSingleItemContainer = ({ children, style }) => {
       paddingHorizontal: 8,
       marginHorizontal: 16,
       borderRadius: 8,
+      elevation: 3,
       marginVertical: 8,
       flexDirection: "row",
       justifyContent: "space-between",
-      backgroundColor: theme.colors.secondaryContainer,
+      backgroundColor: theme.colors.primaryContainer,
     },
   });
   return <View style={[styles.courseContainer, style]}>{children}</View>;

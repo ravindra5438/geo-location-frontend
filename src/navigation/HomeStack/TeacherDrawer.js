@@ -12,6 +12,7 @@ export default TeacherDrawer = (props) => {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawer {...props} />}
       initialRouteName="HOME"
+      detachInactiveScreens={true}
       screenOptions={{
         drawerType: "front",
         swipeEdgeWidth: 200,

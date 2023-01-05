@@ -1,10 +1,7 @@
-import { ActivityIndicator, TextInput } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import { useEffect, useState, useContext } from "react";
-import { REACT_APP_URL } from "@env";
 import { useTheme } from "react-native-paper";
 import { View, Dimensions, FlatList } from "react-native";
-import axios from "axios";
-import AuthContext from "../../../store/auth-context";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import SingleCourse from "./SingleCourse";
@@ -16,7 +13,6 @@ const deviceHeight = Dimensions.get("window").height;
 
 export default TeacherCourses = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
-  const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [deleteCourseId, setDeleteCourseId] = useState(null);
