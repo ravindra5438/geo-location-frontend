@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { StyleSheet, View, Image, Pressable } from "react-native";
 import {
   Button,
@@ -10,9 +10,14 @@ import {
   Portal,
   Divider,
 } from "react-native-paper";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
 import AuthContext from "../../store/auth-context.js";
 import useAxios from "../../services/index.js";
 import Alert from "../../components/alert.js";
+import axios from "axios";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default Login = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
@@ -49,6 +54,38 @@ export default Login = ({ navigation }) => {
       marginTop: 8,
     },
   });
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      "761450022754-jblgjbq21hhjdc6rnusd2e8c7807e9b4.apps.googleusercontent.com",
+    androidClientId:
+      "761450022754-5c6gs13aniu6mr8mq1rkrfd9jk5j6tgd.apps.googleusercontent.com",
+    redirectUri: "https://auth.expo.io/@rajeevsahu/geolocation-attendance",
+  });
+  const handleGoogle = async () => {
+    console.log("google res", response?.authentication.accessToken);
+    if (response?.type === "success") {
+      var config = {
+        method: "get",
+        url: "https://www.googleapis.com/oauth2/v2/userinfo?alt=json",
+        headers: {
+          Authorization: `Bearer ${response?.authentication?.accessToken}`,
+        },
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else if (response?.type === "dismiss") {
+      console.log("google dismiss");
+    }
+  };
+  useEffect(() => {
+    handleGoogle();
+  }, [response]);
 
   const forgetPasswordHandler = async () => {
     console.log(resetEmail);
@@ -154,6 +191,22 @@ export default Login = ({ navigation }) => {
                 }}
               >
                 SIGN UP
+              </Text>
+            </Pressable>
+            <Pressable
+              disabled={!request}
+              onPress={() => {
+                promptAsync();
+              }}
+            >
+              <Text
+                style={{
+                  color: "red",
+                  textDecorationStyle: "solid",
+                  textDecorationLine: "underline",
+                }}
+              >
+                Continue With Google
               </Text>
             </Pressable>
           </View>
