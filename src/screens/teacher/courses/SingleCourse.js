@@ -64,13 +64,44 @@ export default function SingleCourse({
     const DocumentResult = await DocumentPicker.getDocumentAsync({
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
+    try {
+      if (DocumentResult.type === "success") {
+        const data = new FormData();
+
+        data.append("emails", {
+          name: DocumentResult.name,
+          type: DocumentResult.mimeType,
+          uri: DocumentResult.uri,
+        });
+        data.append("courseId", item._id);
+
+        console.log(data);
+
+        await axiosInstance
+          .post("/inviteStudentsToEnrollCourse", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            Alert("success", "Success", res?.data?.message);
+          })
+          .catch((err) => {
+            Alert("error", "sorry", err?.response?.data?.message);
+          });
+      }
+      return;
+    } catch {
+      (error) => {
+        console.log(error);
+      };
+    }
   };
 
   const sendAttendanceToMail = async (item) => {
     await axiosInstance
       .get(`/sendAttendanceViaMail?courseId=${item._id}`)
       .then(function (res) {
-        console.log(res.data);
         Alert("success", "SUCCESS", res?.data?.message);
       })
       .catch(function (error) {
@@ -83,7 +114,6 @@ export default function SingleCourse({
     await axiosInstance
       .post("/toggleCourseEnrollment", { courseId: item._id, toggle: toggle })
       .then((res) => {
-        console.log(res.data);
         Alert("success", "SUCCESS", res?.data?.message);
         setCourseLock(!courseLock);
       })
@@ -250,7 +280,7 @@ export default function SingleCourse({
             // getLocation(item);
           }}
         >
-          Set Radius
+          start class
         </Button>
       </Moddal>
 
