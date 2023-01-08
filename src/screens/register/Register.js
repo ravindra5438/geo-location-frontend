@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { StyleSheet, View, Image, Dimensions } from "react-native";
-import { Button, TextInput, Card, Text } from "react-native-paper";
+import { StyleSheet, View, Image } from "react-native";
+import { Button, TextInput, Card, Text, useTheme } from "react-native-paper";
 import AuthContext from "../../store/auth-context";
 
 export default Register = ({ navigation }) => {
@@ -11,6 +11,25 @@ export default Register = ({ navigation }) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [registrationNo, setRegistrationNo] = useState("");
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const theme = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      padding: 24,
+      flexDirection: "column",
+      marginHorizontal: "10%",
+      justifyContent: "center",
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    textInput: {
+      marginVertical: 8,
+    },
+    button: {
+      borderRadius: 8,
+      marginTop: 8,
+    },
+  });
 
   return (
     <View
@@ -23,7 +42,7 @@ export default Register = ({ navigation }) => {
       <Card style={styles.container}>
         <View style={{ alignItems: "center" }}>
           <Image
-            style={{ width: 120, height: 120 }}
+            style={{ width: 115, height: 100 }}
             source={require("../../../assets/gkvlogo.png")}
           />
         </View>
@@ -71,11 +90,18 @@ export default Register = ({ navigation }) => {
         />
         <TextInput
           label="Password"
+          secureTextEntry={isPasswordSecure}
           value={password}
           onChangeText={(text) => {
             setPassword(text);
           }}
           mode="outlined"
+          right={
+            <TextInput.Icon
+              onPress={() => setIsPasswordSecure(!isPasswordSecure)}
+              icon={isPasswordSecure ? "eye-off" : "eye"}
+            />
+          }
           style={styles.textInput}
         />
         {!Teacher ? (
@@ -108,26 +134,11 @@ export default Register = ({ navigation }) => {
         <Button
           style={styles.button}
           onPress={() => navigation.navigate("Login")}
+          labelStyle={{ color: "green" }}
         >
-          <Text variant="titleSmall">Back to</Text> Login
+          <Text variant="titleSmall">already a user?</Text> LOGIN
         </Button>
       </Card>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-    flexDirection: "column",
-    marginHorizontal: "10%",
-    justifyContent: "center",
-  },
-  textInput: {
-    marginVertical: 8,
-  },
-  button: {
-    borderRadius: 8,
-    marginTop: 8,
-  },
-});

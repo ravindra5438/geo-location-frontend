@@ -15,7 +15,7 @@ const SingleCourseHome = ({ item }) => {
       borderRadius: 4,
     },
     flatListComponent: {
-      backgroundColor: "#F9F9F9",
+      backgroundColor: "#CEEDC7",
     },
   });
 
@@ -71,9 +71,10 @@ const SingleCourseHome = ({ item }) => {
       <View>
         {classStarted ? (
           <Button
-            style={styles.button}
+            style={[styles.button, { borderColor: "red" }]}
             mode="outlined"
             onPress={() => endClassHandler(item)}
+            labelStyle={{ color: "red" }}
           >
             End Class
           </Button>

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { useTheme } from "react-native-paper";
 import StudentPerClass from "../../../screens/teacher/students/StudentPerClass";
+import StudentsEnrolled from "../../../screens/teacher/students/StudentsEnrolled";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,7 @@ export default TeacherStack = () => {
       <Stack.Screen name="COURSE" component={TeacherCourses} />
       <Stack.Screen name="CLASSES" component={Classes} />
       <Stack.Screen name="STUDENTS" component={StudentPerClass} />
+      <Stack.Screen name="Enrolled Students" component={StudentsEnrolled} />
     </Stack.Navigator>
   );
 };

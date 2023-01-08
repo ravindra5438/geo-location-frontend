@@ -98,6 +98,7 @@ export default TeacherHome = ({ navigation }) => {
   const [courseName, setCourseName] = useState(null);
   const [courses, setCourses] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [courseCreated, setCourseCreated] = useState(false);
 
   const createCourseHandler = async () => {
     await axiosInstance
@@ -105,6 +106,7 @@ export default TeacherHome = ({ navigation }) => {
       .then(function (res) {
         console.log(res?.data);
         Alert("success", "SUCCESS", res?.data?.message);
+        setCourseCreated(!courseCreated);
       })
       .catch(function (error) {
         console.log(error);
@@ -125,10 +127,9 @@ export default TeacherHome = ({ navigation }) => {
       })
       .catch(function (error) {
         console.log("error", error);
-        //Alert("error", "Sorry", error?.response?.data?.message);
         setIsLoading(false);
       });
-  }, [isFocused]);
+  }, [isFocused, courseCreated]);
   return (
     <View style={styles.container}>
       <Card style={styles.courseNameContainer}>

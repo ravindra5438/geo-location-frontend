@@ -1,6 +1,11 @@
-import { Button, Text, useTheme, TextInput } from "react-native-paper";
-import { useState, useContext, useEffect } from "react";
-import * as Location from "expo-location";
+import {
+  Button,
+  Text,
+  useTheme,
+  TextInput,
+  IconButton,
+} from "react-native-paper";
+import { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -12,9 +17,8 @@ import Alert from "../../../components/alert";
 import { MotiView } from "moti";
 import Moddal from "../../../components/Moddal";
 import useAxios from "../../../services";
-import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
+import * as DocumentPicker from "expo-document-picker";
 
-const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width * 0.96;
 
 export default function SingleCourse({
@@ -26,10 +30,10 @@ export default function SingleCourse({
   setCurrentIndex,
 }) {
   const theme = useTheme();
-  const [classStarted, setClassStarted] = useState(item.activeClass);
   const [showDelete, setShowDelete] = useState(false);
   const [radius, setRadius] = useState(item.radius);
   const [showModel, setShowModel] = useState(false);
+  const [courseLock, setCourseLock] = useState(item.isActive);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -42,7 +46,6 @@ export default function SingleCourse({
       justifyContent: "space-between",
     },
     container: {
-      backgroundColor: theme.colors.primaryContainer,
       elevation: 4,
       marginHorizontal: 8,
       marginVertical: 8,
@@ -51,7 +54,17 @@ export default function SingleCourse({
     rowHandler: {
       flexDirection: "row",
     },
+    button: {
+      borderRadius: 4,
+      width: "45%",
+    },
   });
+
+  const filePickerHandler = async () => {
+    const DocumentResult = await DocumentPicker.getDocumentAsync({
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+  };
 
   const sendAttendanceToMail = async (item) => {
     await axiosInstance
@@ -66,47 +79,18 @@ export default function SingleCourse({
       });
   };
 
-  const endClassHandler = async (item) => {
+  const courseLockHandler = async (toggle) => {
     await axiosInstance
-      .post(`/dismissClass`, { courseId: item._id })
-      .then(function (res) {
+      .post("/toggleCourseEnrollment", { courseId: item._id, toggle: toggle })
+      .then((res) => {
         console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
+        Alert("success", "SUCCESS", res?.data?.message);
+        setCourseLock(!courseLock);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
+        Alert("error", "Sorry", error?.response?.data?.message);
       });
-    setClassStarted(false);
-  };
-
-  const getLocation = async (item) => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-
-    axiosInstance
-      .post(`/startClass`, {
-        courseId: item._id,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-        radius: radius,
-      })
-      .then(function (res) {
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setShowModel(false);
-    setClassStarted(true);
   };
 
   return (
@@ -119,9 +103,11 @@ export default function SingleCourse({
     >
       <MotiView
         animate={{
-          height: index === currentIndex ? 170 : 60,
+          height: index === currentIndex ? 210 : 60,
           width: showDelete ? deviceWidth * 0.8 : deviceWidth,
-          backgroundColor: theme.colors.primaryContainer, //index === currentIndex ? "#2DCDDF" : "#ADE792",
+          backgroundColor: item.activeClass
+            ? "#CEEDC7"
+            : theme.colors.primaryContainer,
         }}
         transition={{
           type: "spring",
@@ -139,7 +125,34 @@ export default function SingleCourse({
           }}
         >
           <View style={styles.rowContainer}>
-            <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
+              {courseLock ? (
+                <IconButton
+                  iconColor="red"
+                  size={20}
+                  icon="lock"
+                  onPress={() => {
+                    courseLockHandler(courseLock);
+                  }}
+                />
+              ) : (
+                <IconButton
+                  iconColor="green"
+                  size={20}
+                  icon="lock-open"
+                  onPress={() => {
+                    courseLockHandler(courseLock);
+                  }}
+                />
+              )}
+            </View>
             <Text variant="titleSmall">{item.courseCode}</Text>
           </View>
           {index === currentIndex && (
@@ -150,58 +163,33 @@ export default function SingleCourse({
             >
               <View style={styles.rowContainer}>
                 <Button
-                  disabled={classStarted}
+                  disabled={item.activeClass}
                   mode="contained"
                   onPress={() => setShowModel(true)}
-                  style={{
-                    borderRadius: 4,
-                    width: "45%",
-                    // backgroundColor: "#FF597B",
-                  }}
+                  style={styles.button}
+                  icon="radius"
                 >
                   RADIUS : {radius}
                 </Button>
-                {classStarted ? (
-                  <Button
-                    mode="outlined"
-                    style={{
-                      borderRadius: 4,
-                      width: "43%",
-                    }}
-                    onPress={() => {
-                      endClassHandler(item);
-                    }}
-                  >
-                    End Class
-                  </Button>
-                ) : (
-                  <Button
-                    mode="contained"
-                    style={{
-                      borderRadius: 4,
-                      width: "45%",
-                      // backgroundColor: "#2B3467",
-                    }}
-                    onPress={() => {
-                      getLocation(item);
-                    }}
-                  >
-                    Start Class
-                  </Button>
-                )}
+                <Button
+                  disabled={item.activeClass}
+                  mode="contained"
+                  icon="plus"
+                  style={styles.button}
+                  onPress={() => {
+                    filePickerHandler();
+                  }}
+                >
+                  Add Students
+                </Button>
               </View>
 
               <View style={styles.rowContainer}>
                 <Button
-                  disabled={classStarted}
+                  disabled={item.activeClass}
                   icon="download"
                   mode="contained"
-                  style={{
-                    borderRadius: 4,
-                    marginTop: 4,
-                    width: "45%",
-                    // backgroundColor: "#2B3467",
-                  }}
+                  style={styles.button}
                   onPress={() => {
                     sendAttendanceToMail(item);
                   }}
@@ -209,21 +197,33 @@ export default function SingleCourse({
                   Attendance
                 </Button>
                 <Button
-                  disabled={classStarted}
                   mode="contained"
-                  style={{
-                    borderRadius: 4,
-                    marginTop: 4,
-                    width: "45%",
-                    // backgroundColor: "#FF597B",
-                  }}
+                  style={styles.button}
                   onPress={() =>
                     navigation.navigate("CLASSES", { courseId: item._id })
                   }
+                  icon="table"
                 >
                   CLASS DATA
                 </Button>
               </View>
+              <Button
+                style={{
+                  borderRadius: 4,
+                  width: "96%",
+                  alignSelf: "center",
+                  marginTop: 8,
+                }}
+                onPress={() =>
+                  navigation.navigate("Enrolled Students", {
+                    courseId: item._id,
+                  })
+                }
+                mode="contained"
+                icon="group"
+              >
+                Enrolled Students
+              </Button>
             </MotiView>
           )}
         </Pressable>
@@ -236,9 +236,8 @@ export default function SingleCourse({
           maxLength={3}
           mode="flat"
           keyboardType="numeric"
-          value={radius}
-          onChangeText={(item) => {
-            setRadius(item);
+          onChangeText={(text) => {
+            setRadius(text);
           }}
         />
         <Button
@@ -246,13 +245,12 @@ export default function SingleCourse({
           style={{
             borderRadius: 4,
             marginTop: 8,
-            // backgroundColor: "#2B3467",
           }}
           onPress={() => {
-            getLocation(item);
+            // getLocation(item);
           }}
         >
-          Start Class
+          Set Radius
         </Button>
       </Moddal>
 

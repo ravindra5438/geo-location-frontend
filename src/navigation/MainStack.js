@@ -76,7 +76,7 @@ export default function MainStack() {
       await AsyncStorage.getItem("role").then((data) => {
         setStudent(data == "student" ? true : false);
       });
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch {
       (e) => console.warn(e);
     } finally {

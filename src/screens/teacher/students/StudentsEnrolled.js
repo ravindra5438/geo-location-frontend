@@ -1,5 +1,5 @@
 import { View, StyleSheet, Dimensions, FlatList } from "react-native";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import { useTheme, DataTable } from "react-native-paper";
 import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
@@ -9,14 +9,13 @@ import useAxios from "../../../services";
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-export default StudentPerClass = ({ route, navigation }) => {
+const StudentsEnrolled = ({ route }) => {
   const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const isFocused = useIsFocused();
-  const { classId } = route.params;
+  const { courseId } = route.params;
   const [students, setStudents] = useState(null);
-  const [refresh, setRefresh] = useState(false);
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "green",
@@ -28,15 +27,15 @@ export default StudentPerClass = ({ route, navigation }) => {
   });
 
   useEffect(() => {
-    console.log("refreshed");
     setLoading(true);
-    getClassById(classId);
-  }, [isFocused, refresh]);
+    getCourseById(courseId);
+    console.log(students);
+  }, [isFocused]);
 
-  const getClassById = async (classId) => {
+  const getCourseById = async (courseId) => {
     await axiosInstance
-      .get(`/getClassById?classId=${classId}`, {
-        classId: classId,
+      .get(`/getCourseById?courseId=${courseId}`, {
+        courseId: courseId,
       })
       .then(function (res) {
         setStudents(res?.data?.data?.students);
@@ -48,7 +47,6 @@ export default StudentPerClass = ({ route, navigation }) => {
         setLoading(false);
       });
   };
-
   return (
     <View
       style={{
@@ -86,11 +84,6 @@ export default StudentPerClass = ({ route, navigation }) => {
             >
               Name
             </DataTable.Title>
-            <IconButton
-              iconColor="#C780FA"
-              onPress={() => setRefresh(!refresh)}
-              icon="refresh"
-            />
             <DataTable.Title
               textStyle={{ color: "green" }}
               style={[styles.dataTableCenter, { flex: 0.4 }]}
@@ -130,3 +123,5 @@ export default StudentPerClass = ({ route, navigation }) => {
     </View>
   );
 };
+
+export default StudentsEnrolled;
