@@ -4,6 +4,9 @@ import MainStack from "./src/navigation/MainStack";
 import Toast from "react-native-toast-message";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
+import * as WebBrowser from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
   return (

@@ -10,14 +10,9 @@ import {
   Portal,
   Divider,
 } from "react-native-paper";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
 import AuthContext from "../../store/auth-context.js";
 import useAxios from "../../services/index.js";
 import Alert from "../../components/alert.js";
-import axios from "axios";
-
-WebBrowser.maybeCompleteAuthSession();
 
 export default Login = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
@@ -28,7 +23,7 @@ export default Login = ({ navigation }) => {
   const axiosInstance = useAxios();
   const [showModal, setShowModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-  const [isLoaderActive, setIsLoaderActive] = useState(false);
+  // const [isLoaderActive, setIsLoaderActive] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -54,41 +49,8 @@ export default Login = ({ navigation }) => {
       marginTop: 8,
     },
   });
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId:
-      "761450022754-jblgjbq21hhjdc6rnusd2e8c7807e9b4.apps.googleusercontent.com",
-    androidClientId:
-      "761450022754-5c6gs13aniu6mr8mq1rkrfd9jk5j6tgd.apps.googleusercontent.com",
-    redirectUri: "https://auth.expo.io/@rajeevsahu/geolocation-attendance",
-  });
-  const handleGoogle = async () => {
-    console.log("google res", response?.authentication.accessToken);
-    if (response?.type === "success") {
-      var config = {
-        method: "get",
-        url: "https://www.googleapis.com/oauth2/v2/userinfo?alt=json",
-        headers: {
-          Authorization: `Bearer ${response?.authentication?.accessToken}`,
-        },
-      };
-
-      axios(config)
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    } else if (response?.type === "dismiss") {
-      console.log("google dismiss");
-    }
-  };
-  useEffect(() => {
-    handleGoogle();
-  }, [response]);
 
   const forgetPasswordHandler = async () => {
-    console.log(resetEmail);
     await axiosInstance
       .post("/auth/recover", { email: resetEmail })
       .then((res) => {
@@ -185,7 +147,7 @@ export default Login = ({ navigation }) => {
             <Pressable onPress={() => navigation.navigate("Sign Up")}>
               <Text
                 style={{
-                  color: "orange",
+                  color: "green",
                   textDecorationStyle: "solid",
                   textDecorationLine: "underline",
                 }}
@@ -193,22 +155,23 @@ export default Login = ({ navigation }) => {
                 SIGN UP
               </Text>
             </Pressable>
-            <Pressable
-              disabled={!request}
+          </View>
+          <View style={{ marginTop: 4 }}>
+            <Button
+              mode="elevated"
+              icon={() => (
+                <Image
+                  source={require("../../../assets/google.png")}
+                  style={{ width: 30, height: 30 }}
+                />
+              )}
+              style={[styles.button]}
               onPress={() => {
-                promptAsync();
+                authCtx.googleAuth();
               }}
             >
-              <Text
-                style={{
-                  color: "red",
-                  textDecorationStyle: "solid",
-                  textDecorationLine: "underline",
-                }}
-              >
-                Continue With Google
-              </Text>
-            </Pressable>
+              Continue With Google
+            </Button>
           </View>
         </View>
         <Portal>

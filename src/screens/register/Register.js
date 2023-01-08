@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { Button, TextInput, Card, Text, useTheme } from "react-native-paper";
 import AuthContext from "../../store/auth-context";
@@ -137,6 +137,21 @@ export default Register = ({ navigation }) => {
           labelStyle={{ color: "green" }}
         >
           <Text variant="titleSmall">already a user?</Text> LOGIN
+        </Button>
+        <Button
+          mode="elevated"
+          icon={() => (
+            <Image
+              source={require("../../../assets/google.png")}
+              style={{ width: 30, height: 30 }}
+            />
+          )}
+          style={[styles.button]}
+          onPress={() => {
+            authCtx.googleAuth();
+          }}
+        >
+          Continue With Google
         </Button>
       </Card>
     </View>
