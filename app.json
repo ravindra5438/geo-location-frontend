@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "geolocation-attendance",
-    "slug": "geolocation",
+    "slug": "geolocation-attendance",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,28 +14,26 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "resizeMode":"cover",
+        "resizeMode": "cover",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.monsterbhai.geoLocation"
+      "package": "com.rajeevsahu.geolocationattendance"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "e6d096e6-50ea-4f92-9097-30cda29f9883"
+        "projectId": "6b91681d-a5af-4e50-b92f-2aee8e17a452"
       }
     },
-    "owner": "monsterbhai"
+    "owner": "rajeevsahu"
   }
 }
