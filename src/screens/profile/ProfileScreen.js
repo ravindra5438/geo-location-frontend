@@ -69,11 +69,8 @@ const ProfileScreen = () => {
       <View style={{ flex: 1, justifyContent: "center" }}>
         <ProfileFlatlistComponent icon="user" text={authCtx.name} />
         <ProfileFlatlistComponent icon="registered" text={authCtx.role} />
-        <ProfileFlatlistComponent
-          icon="envelope"
-          text="ravindrayadav5438@gmail.com"
-        />
-        <ProfileFlatlistComponent icon="phone" text="Contact Number" />
+        <ProfileFlatlistComponent icon="envelope" text={authCtx.email} />
+        {/* <ProfileFlatlistComponent icon="phone" text="Contact Number" /> */}
       </View>
       <View style={{ flex: 0.4 }}>
         <Pressable onPress={() => setPortalVisibility(true)}>

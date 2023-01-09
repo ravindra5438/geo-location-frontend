@@ -143,7 +143,7 @@ export default Login = ({ navigation }) => {
               marginTop: 8,
             }}
           >
-            <Text>need an account?</Text>
+            <Text>Need an Account?</Text>
             <Pressable onPress={() => navigation.navigate("Sign Up")}>
               <Text
                 style={{

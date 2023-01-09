@@ -136,7 +136,7 @@ export default Register = ({ navigation }) => {
           onPress={() => navigation.navigate("Login")}
           labelStyle={{ color: "green" }}
         >
-          <Text variant="titleSmall">already a user?</Text> LOGIN
+          <Text variant="titleSmall">Already a User?</Text> LOGIN
         </Button>
         <Button
           mode="elevated"
