@@ -3,6 +3,7 @@ import TeacherHome from "../../screens/teacher/home/TeacherHome";
 import TeacherStack from "./teacherStack/TeacherStack";
 import CustomDrawer from "../../components/CustomDrawer";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import ProfileScreen from "../../screens/profile/ProfileScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -52,6 +53,13 @@ export default TeacherDrawer = (props) => {
         options={{ headerShown: false }}
         name="COURSES"
         component={TeacherStack}
+      />
+      <Drawer.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="PROFILE"
+        component={ProfileScreen}
       />
     </Drawer.Navigator>
   );

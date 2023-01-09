@@ -1,5 +1,4 @@
-import axios from "axios";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import useAxios from "../../../services";
 import {
@@ -10,49 +9,36 @@ import {
   Text,
   TextInput,
   useTheme,
-  Avatar,
+  Card,
+  IconButton,
 } from "react-native-paper";
-import { REACT_APP_URL } from "@env";
 import Alert from "../../../components/alert";
-import AuthContext from "../../../store/auth-context";
+import StudentCourses from "./StudentCourses";
 
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
+const deviceHeight = Dimensions.get("window").height * 0.96;
 
 export default StudentHome = () => {
   const axiosInstance = useAxios();
   const theme = useTheme();
   const styles = StyleSheet.create({
-    buttonContainer: {
-      justifyContent: "center",
-      alignItems: "center",
-      flexGrow: 1,
-      backgroundColor: theme.colors.primary,
-      borderTopRightRadius: 80,
-      borderTopLeftRadius: 80,
-    },
     container: {
       height: deviceHeight,
       flexGrow: 1,
       backgroundColor: theme.colors.onPrimary,
     },
-    profileContainer: {
-      marginTop: "10%",
-      alignItems: "center",
-      width: "80%",
-      height: 150,
-      justifyContent: "center",
-      alignSelf: "center",
-      backgroundColor: theme.colors.primary,
-      borderTopRightRadius: 60,
-      borderBottomLeftRadius: 60,
+    courseContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.onPrimary,
     },
-    button: {
-      width: 100,
-      height: 100,
+    createButton: {
+      width: 80,
+      height: 60,
+      borderRadius: 4,
+    },
+    createButtonContainer: {
+      flex: 0.11,
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: 50,
     },
     portalContainer: {
       backgroundColor: "white",
@@ -68,29 +54,8 @@ export default StudentHome = () => {
       height: 2,
       backgroundColor: theme.colors.primary,
     },
-    headingText: {
-      fontSize: 20,
-      fontWeight: "bold",
-      position: "absolute",
-      left: "59%",
-      bottom: "25%",
-      color: "#fff",
-      borderBottomWidth: 3,
-      borderBottomColor: "#fff",
-    },
-    hello: {
-      position: "absolute",
-      fontSize: 20,
-      fontWeight: "bold",
-      top: "25%",
-      left: "25%",
-      color: "#fff",
-      borderTopWidth: 3,
-      borderTopColor: "#fff",
-    },
   });
 
-  const authCtx = useContext(AuthContext);
   const [courseCode, setCourseCode] = useState(null);
 
   const [portalVisibility, setPortalVisibility] = useState(false);
@@ -118,35 +83,18 @@ export default StudentHome = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <Avatar.Text
-          style={{ backgroundColor: "transparent" }}
-          size={deviceWidth / 2}
-          label={authCtx?.name?.charAt(0)?.toUpperCase()}
-        />
-        <Text style={styles.headingText}>
-          {authCtx?.name?.toUpperCase().slice(1)}
-        </Text>
-        <Text style={styles.hello}>HELLO</Text>
-      </View>
-      <View style={{ flexGrow: 2 }} />
-      <View style={styles.buttonContainer}>
-        <Button
-          contentStyle={{ width: 100, height: 100 }}
-          style={styles.button}
-          mode="contained-tonal"
+      <Card style={styles.courseContainer}>
+        <StudentCourses />
+      </Card>
+      <View style={styles.createButtonContainer}>
+        <IconButton
+          size={40}
+          iconColor={theme.colors.primaryContainer}
+          backgroundColor={theme.colors.primary}
+          icon="plus"
+          style={styles.createButton}
           onPress={() => setPortalVisibility(true)}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "700",
-              color: theme.colors.primary,
-            }}
-          >
-            JOIN
-          </Text>
-        </Button>
+        />
       </View>
       <Portal>
         <Modal

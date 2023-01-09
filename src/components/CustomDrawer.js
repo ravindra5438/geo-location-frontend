@@ -1,33 +1,33 @@
 import React from "react";
 import { DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { View, StyleSheet } from "react-native";
-import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
-import AuthContext from "../store/auth-context";
+// import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
+// import AuthContext from "../store/auth-context";
 
 export default CustomDrawer = (props) => {
-  const authCtx = React.useContext(AuthContext);
-  const theme = useTheme();
-  const [portalVisibility, setPortalVisibility] = React.useState(false);
+  // const authCtx = React.useContext(AuthContext);
+  // const [portalVisibility, setPortalVisibility] = React.useState(false);
+  // const theme = useTheme();
 
-  const styles = StyleSheet.create({
-    portalContainer: {
-      backgroundColor: theme.colors.onPrimary,
-      alignItems: "center",
-      marginHorizontal: 16,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 20,
-      width: "50%",
-      alignSelf: "center",
-    },
-  });
+  // const styles = StyleSheet.create({
+  //   portalContainer: {
+  //     backgroundColor: theme.colors.onPrimary,
+  //     alignItems: "center",
+  //     marginHorizontal: 16,
+  //     paddingHorizontal: 16,
+  //     paddingVertical: 8,
+  //     borderRadius: 20,
+  //     width: "50%",
+  //     alignSelf: "center",
+  //   },
+  // });
 
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
       <View>
         <DrawerItemList {...props} />
       </View>
-      <DrawerItem
+      {/* <DrawerItem
         labelStyle={{ fontWeight: "700" }}
         inactiveBackgroundColor={theme.colors.primary}
         inactiveTintColor={theme.colors.onPrimary}
@@ -62,7 +62,7 @@ export default CustomDrawer = (props) => {
             LOGOUT
           </Button>
         </Modal>
-      </Portal>
+      </Portal> */}
     </View>
   );
 };

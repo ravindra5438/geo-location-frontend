@@ -1,8 +1,8 @@
 import StudentHome from "../../screens/student/home/StudentHome";
 import CustomDrawer from "../../components/CustomDrawer";
-import StudentStack from "./studentStack/StudentStack";
 import { useTheme } from "react-native-paper";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import ProfileScreen from "../../screens/profile/ProfileScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -48,9 +48,11 @@ export default StudentDrawer = () => {
         component={StudentHome}
       />
       <Drawer.Screen
-        options={{ headerShown: false }}
-        name="COURSES"
-        component={StudentStack}
+        options={{
+          headerShown: false,
+        }}
+        name="PROFILE"
+        component={ProfileScreen}
       />
     </Drawer.Navigator>
   );

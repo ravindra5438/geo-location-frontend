@@ -9,13 +9,10 @@ import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 import useAxios from "../../../services";
-
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
+import myListEmpty from "../../../components/MyListEmpty";
 
 export default StudentCourses = () => {
   const axiosInstance = useAxios();
-  const authCtx = useContext(AuthContext);
   const [courses, setCourses] = useState(null);
 
   const isFocused = useIsFocused();
@@ -57,6 +54,7 @@ export default StudentCourses = () => {
   const getLocation = async (item) => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
+      Alert("error", "Dismissed", "Permission to access location was denied");
       console.log("Permission to access location was denied");
       return;
     }
@@ -81,22 +79,8 @@ export default StudentCourses = () => {
       });
   };
 
-  const myListEmpty = () => {
-    return (
-      <View style={{ alignItems: "center" }}>
-        <Text style={{ color: theme.colors.error }}>No Courses found</Text>
-      </View>
-    );
-  };
-
   return (
-    <View
-      style={{
-        width: deviceWidth,
-        height: deviceHeight,
-        backgroundColor: theme.colors.onPrimary,
-      }}
-    >
+    <View>
       <FlatList
         data={courses}
         renderItem={singleItem}
