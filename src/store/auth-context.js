@@ -6,12 +6,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
+import { makeRedirectUri } from "expo-auth-session";
+WebBrowser.maybeCompleteAuthSession();
 
 const AuthContext = React.createContext({
   token: "",
   isLoggedIn: false,
   name: "",
   role: "",
+  email: "",
+  profile: "",
   login: (props) => {},
   signUp: (props) => {},
   logout: () => {},
@@ -22,6 +26,8 @@ export const AuthContextProvider = (props) => {
   const [token, setToken] = useState(null);
   const [name, setName] = useState(null);
   const [role, setRole] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [profile, setProfile] = useState(null);
   const navigation = useNavigation();
 
   const userIsLoggedIn = !!token;
@@ -34,6 +40,12 @@ export const AuthContextProvider = (props) => {
     });
     await AsyncStorage.getItem("role").then((data) => {
       setRole(data);
+    });
+    await AsyncStorage.getItem("email").then((data) => {
+      setEmail(data);
+    });
+    await AsyncStorage.getItem("profile").then((data) => {
+      setProfile(data);
     });
   };
   getData();
@@ -53,6 +65,8 @@ export const AuthContextProvider = (props) => {
           await AsyncStorage.setItem("token", res?.data?.token);
           await AsyncStorage.setItem("name", res?.data?.user?.name);
           await AsyncStorage.setItem("role", res?.data?.user?.role);
+          await AsyncStorage.setItem("email", res?.data?.user?.email);
+          await AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
         })
         .catch((err) => {
           Alert("error", "Sorry", err?.response?.data?.message);
@@ -67,7 +81,8 @@ export const AuthContextProvider = (props) => {
       "761450022754-jblgjbq21hhjdc6rnusd2e8c7807e9b4.apps.googleusercontent.com",
     androidClientId:
       "761450022754-5c6gs13aniu6mr8mq1rkrfd9jk5j6tgd.apps.googleusercontent.com",
-    redirectUri: "https://auth.expo.io/@monsterbhai/geolocation",
+    redirectUri: "https://auth.expo.io/@rajeevsahu/geolocation-attendance",
+    // redirectUri: makeRedirectUri(), //for production we have to uncomment this
   });
 
   const googleLoginHandler = () => {
@@ -97,6 +112,11 @@ export const AuthContextProvider = (props) => {
                   await AsyncStorage.setItem("token", res?.data?.token);
                   await AsyncStorage.setItem("name", res?.data?.user?.name);
                   await AsyncStorage.setItem("role", res?.data?.user?.role);
+                  await AsyncStorage.setItem("email", res?.data?.user?.email);
+                  await AsyncStorage.setItem(
+                    "profile",
+                    res?.data?.user?.profileImage
+                  );
                 })
                 .catch((err) => {
                   Alert("error", "Sorry", err?.response?.data?.message);
@@ -138,6 +158,8 @@ export const AuthContextProvider = (props) => {
           await AsyncStorage.setItem("token", res?.data?.token);
           await AsyncStorage.setItem("name", res?.data?.user?.name);
           await AsyncStorage.setItem("role", res?.data?.user?.role);
+          await AsyncStorage.setItem("email", res?.data?.user?.email);
+          await AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
         })
         .catch((err) => Alert("error", "Sorry", err?.response?.data?.message));
     } catch (err) {
@@ -158,6 +180,8 @@ export const AuthContextProvider = (props) => {
     token: token,
     name: name,
     role: role,
+    email: email,
+    profile: profile,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,
