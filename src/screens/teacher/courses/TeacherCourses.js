@@ -1,7 +1,7 @@
-import { ActivityIndicator } from "react-native-paper";
-import { useEffect, useState, useContext } from "react";
+import { ActivityIndicator, FAB } from "react-native-paper";
+import { useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
-import { View, Dimensions, FlatList } from "react-native";
+import { View, Dimensions, FlatList, StyleSheet } from "react-native";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import SingleCourse from "./SingleCourse";
@@ -61,10 +61,11 @@ export default TeacherCourses = ({ navigation }) => {
   return (
     <View
       style={{
-        width: deviceWidth,
-        height: deviceHeight * 0.93,
+        // width: deviceWidth,
+        // height: deviceHeight * 0.93,
         backgroundColor: theme.colors.onPrimary,
         paddingTop: 8,
+        flexGrow: 1,
       }}
     >
       {loading ? (

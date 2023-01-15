@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import useAxios from "../../../services";
+import FloatingActionButton from "../../../components/FloatingActionButton";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-const StudentsEnrolled = ({ route }) => {
+const StudentsEnrolled = ({ route, navigation }) => {
   const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
@@ -50,8 +51,7 @@ const StudentsEnrolled = ({ route }) => {
   return (
     <View
       style={{
-        width: deviceWidth,
-        height: deviceHeight,
+        flex: 1,
         backgroundColor: theme.colors.onPrimary,
       }}
     >
@@ -120,6 +120,10 @@ const StudentsEnrolled = ({ route }) => {
           />
         </DataTable>
       )}
+      <FloatingActionButton
+        icon="arrow-left"
+        onPress={() => navigation.goBack()}
+      />
     </View>
   );
 };

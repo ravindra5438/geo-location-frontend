@@ -1,7 +1,6 @@
 import TeacherCourses from "../../../screens/teacher/courses/TeacherCourses";
 import Classes from "../../../screens/teacher/classes/Classes";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { DrawerToggleButton } from "@react-navigation/drawer";
 import { useTheme } from "react-native-paper";
 import StudentPerClass from "../../../screens/teacher/students/StudentPerClass";
 import StudentsEnrolled from "../../../screens/teacher/students/StudentsEnrolled";
@@ -16,7 +15,7 @@ export default TeacherStack = () => {
       initialRouteName="COURSE"
       detachInactiveScreens={true}
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         headerMode: "screen",
         headerTintColor: "white",
         headerStyle: {
@@ -26,9 +25,6 @@ export default TeacherStack = () => {
           fontWeight: "700",
         },
         headerTitleAlign: "center",
-        headerRight: () => (
-          <DrawerToggleButton tintColor={theme.colors.onPrimary} />
-        ),
       }}
     >
       <Stack.Screen name="COURSE" component={TeacherCourses} />

@@ -1,33 +1,21 @@
-import { View, StyleSheet, Dimensions, FlatList } from "react-native";
-import { ActivityIndicator, Button, Text } from "react-native-paper";
-import { useTheme } from "react-native-paper";
-import { useEffect, useContext, useState } from "react";
+import { View, FlatList } from "react-native";
+import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
-import { REACT_APP_URL } from "@env";
-import AuthContext from "../../../store/auth-context";
-import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
 import MyListEmpty from "../../../components/MyListEmpty";
 import SingleClass from "./SingleClass";
 import useAxios from "../../../services";
-
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
+import FloatingActionButton from "../../../components/FloatingActionButton";
 
 export default Classes = ({ route, navigation }) => {
   const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const [deleteClassId, setDeleteClassId] = useState(null);
-  const authCtx = useContext(AuthContext);
   const isFocused = useIsFocused();
   const { courseId } = route.params;
   const [classes, setClasses] = useState(null);
-  const styles = StyleSheet.create({
-    container: {
-      backgroundColor: "green",
-    },
-  });
 
   const removeId = () => {
     let arr = classes.filter(function (item) {
@@ -74,26 +62,31 @@ export default Classes = ({ route, navigation }) => {
   return (
     <View
       style={{
-        width: deviceWidth,
-        height: deviceHeight,
+        flex: 1,
         backgroundColor: theme.colors.onPrimary,
       }}
     >
       {loading ? (
         <ActivityIndicator size="large" color="green" style={{ flex: 1 }} />
       ) : (
-        <FlatList
-          data={classes}
-          ListEmptyComponent={MyListEmpty}
-          renderItem={(props) => (
-            <SingleClass
-              {...props}
-              navigation={navigation}
-              setDeleteClassId={setDeleteClassId}
-            />
-          )}
-          keyExtractor={(item) => item._id}
-        />
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={classes}
+            ListEmptyComponent={MyListEmpty}
+            renderItem={(props) => (
+              <SingleClass
+                {...props}
+                navigation={navigation}
+                setDeleteClassId={setDeleteClassId}
+              />
+            )}
+            keyExtractor={(item) => item._id}
+          />
+          <FloatingActionButton
+            onPress={() => navigation.goBack()}
+            icon="arrow-left"
+          />
+        </View>
       )}
     </View>
   );

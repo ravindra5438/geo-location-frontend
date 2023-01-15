@@ -5,25 +5,25 @@ import { Text, Divider, useTheme } from "react-native-paper";
 export default ProfileFlatlistComponent = ({ text, icon }) => {
   const theme = useTheme();
   return (
-    <View>
-      <View style={{ flexDirection: "row", height: 70, alignItems: "center" }}>
-        <View
-          style={{
-            marginHorizontal: 16,
-            width: 40,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Icon name={icon} size={30} color={theme.colors.primary} />
-        </View>
-        <View style={{}}>
-          <Text variant="headlineSmall" style={{ color: "#0081C9" }}>
-            {text}
-          </Text>
-        </View>
+    <View style={{ flexDirection: "row", height: 70, alignItems: "center" }}>
+      <View
+        style={{
+          marginHorizontal: 16,
+          width: 40,
+          height: 40,
+          borderRadius: 4,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: theme.colors.primary,
+        }}
+      >
+        <Icon name={icon} size={20} color={theme.colors.primaryContainer} />
       </View>
-      <Divider bold={true} />
+      <View style={{}}>
+        <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
+          {text}
+        </Text>
+      </View>
     </View>
   );
 };

@@ -1,16 +1,14 @@
 import {
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider,
-  Text,
 } from "react-native-paper";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import AuthStack from "./authStack/AuthStack";
-import TeacherDrawer from "./HomeStack/TeacherDrawer";
-import StudentDrawer from "./HomeStack/StudentDrawer";
-import { View } from "react-native";
+import TeacherTab from "./HomeStack/TeacherTab";
+import StudentTab from "./HomeStack/StudentTab";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -95,7 +93,7 @@ export default function MainStack() {
 
   return (
     <PaperProvider theme={myTheme}>
-      {!user ? <AuthStack /> : Student ? <StudentDrawer /> : <TeacherDrawer />}
+      {!user ? <AuthStack /> : Student ? <StudentTab /> : <TeacherTab />}
     </PaperProvider>
   );
 }

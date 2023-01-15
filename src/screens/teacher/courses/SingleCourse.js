@@ -250,7 +250,7 @@ export default function SingleCourse({
                   })
                 }
                 mode="contained"
-                icon="group"
+                icon="account-supervisor"
               >
                 Enrolled Students
               </Button>

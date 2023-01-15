@@ -170,10 +170,6 @@ export const AuthContextProvider = (props) => {
   const logoutHandler = () => {
     setToken(null);
     AsyncStorage.clear();
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "HOME" }],
-    });
   };
 
   const contextValue = {

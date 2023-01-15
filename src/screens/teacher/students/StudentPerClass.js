@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import useAxios from "../../../services";
+import FloatingActionButton from "../../../components/FloatingActionButton";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -52,8 +53,7 @@ export default StudentPerClass = ({ route, navigation }) => {
   return (
     <View
       style={{
-        width: deviceWidth,
-        height: deviceHeight,
+        flex: 1,
         backgroundColor: theme.colors.onPrimary,
       }}
     >
@@ -65,67 +65,75 @@ export default StudentPerClass = ({ route, navigation }) => {
           color="red"
         />
       ) : (
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title
-              numeric={true}
-              textStyle={{ color: "green" }}
-              style={[
-                styles.dataTableCenter,
-                {
-                  flex: 0.2,
-                  marginRight: 4,
-                },
-              ]}
-            >
-              S.No
-            </DataTable.Title>
-            <DataTable.Title
-              textStyle={{ color: "green" }}
-              style={[styles.dataTableCenter, { flex: 1 }]}
-            >
-              Name
-            </DataTable.Title>
-            <IconButton
-              iconColor="#C780FA"
-              onPress={() => setRefresh(!refresh)}
-              icon="refresh"
+        <View style={{ flex: 1 }}>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title
+                numeric={true}
+                textStyle={{ color: "green" }}
+                style={[
+                  styles.dataTableCenter,
+                  {
+                    flex: 0.2,
+                    marginRight: 4,
+                  },
+                ]}
+              >
+                S.No
+              </DataTable.Title>
+              <DataTable.Title
+                textStyle={{ color: "green" }}
+                style={[styles.dataTableCenter, { flex: 1 }]}
+              >
+                Name
+              </DataTable.Title>
+              <IconButton
+                iconColor="#C780FA"
+                onPress={() => setRefresh(!refresh)}
+                icon="refresh"
+              />
+              <DataTable.Title
+                textStyle={{ color: "green" }}
+                style={[styles.dataTableCenter, { flex: 0.4 }]}
+              >
+                Reg.No
+              </DataTable.Title>
+            </DataTable.Header>
+            <FlatList
+              data={students}
+              ListEmptyComponent={MyListEmpty}
+              renderItem={({ item, index }) => (
+                <DataTable.Row>
+                  <DataTable.Cell
+                    textStyle={{ color: "green" }}
+                    style={[
+                      styles.dataTableCenter,
+                      {
+                        flex: 0.2,
+                        marginRight: 4,
+                      },
+                    ]}
+                  >
+                    {index + 1}
+                  </DataTable.Cell>
+                  <DataTable.Cell style={styles.dataTableCenter}>
+                    {item.name}
+                  </DataTable.Cell>
+                  <DataTable.Cell
+                    style={[styles.dataTableCenter, { flex: 0.4 }]}
+                  >
+                    {item.registrationNo}
+                  </DataTable.Cell>
+                </DataTable.Row>
+              )}
+              keyExtractor={(item) => item._id}
             />
-            <DataTable.Title
-              textStyle={{ color: "green" }}
-              style={[styles.dataTableCenter, { flex: 0.4 }]}
-            >
-              Reg.No
-            </DataTable.Title>
-          </DataTable.Header>
-          <FlatList
-            data={students}
-            ListEmptyComponent={MyListEmpty}
-            renderItem={({ item, index }) => (
-              <DataTable.Row>
-                <DataTable.Cell
-                  textStyle={{ color: "green" }}
-                  style={[
-                    styles.dataTableCenter,
-                    {
-                      flex: 0.2,
-                      marginRight: 4,
-                    },
-                  ]}
-                >
-                  {index + 1}
-                </DataTable.Cell>
-                <DataTable.Cell style={styles.dataTableCenter}>
-                  {item.name}
-                </DataTable.Cell>
-                <DataTable.Cell style={[styles.dataTableCenter, { flex: 0.4 }]}>
-                  {item.registrationNo}
-                </DataTable.Cell>
-              </DataTable.Row>
-            )}
-            keyExtractor={(item) => item._id}
+          </DataTable>
+          <FloatingActionButton
+            onPress={() => navigation.goBack()}
+            icon="arrow-left"
           />
-        </DataTable>
+        </View>
       )}
     </View>
   );

@@ -5,6 +5,7 @@ import IconAntDesign from "react-native-vector-icons/AntDesign";
 import ProfileFlatlistComponent from "./ProfileFlatlistComponent";
 import AuthContext from "../../store/auth-context";
 import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
+import FloatingActionButton from "../../components/FloatingActionButton";
 
 const deviceHeigth = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -28,23 +29,13 @@ const ProfileScreen = () => {
   });
 
   return (
-    <View style={{ flex: 1, marginTop: 40 }}>
+    <View style={{ flex: 1, justifyContent: "flex-start" }}>
       <View
         style={{
-          height: 600,
-          alignSelf: "center",
-          width: 600,
-          borderRadius: 400,
-          backgroundColor: theme.colors.primary,
-          position: "absolute",
-          bottom: deviceHeigth * 0.8,
-        }}
-      ></View>
-      <View
-        style={{
-          flex: 0.5,
+          flex: 0.3,
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: theme.colors.primaryContainer,
         }}
       >
         <View
@@ -66,32 +57,21 @@ const ProfileScreen = () => {
         </View>
       </View>
 
-      <View style={{ flex: 1, justifyContent: "center" }}>
+      <View
+        style={{
+          flex: 0.5,
+          justifyContent: "flex-start",
+        }}
+      >
         <ProfileFlatlistComponent icon="user" text={authCtx.name} />
         <ProfileFlatlistComponent icon="registered" text={authCtx.role} />
         <ProfileFlatlistComponent icon="envelope" text={authCtx.email} />
         {/* <ProfileFlatlistComponent icon="phone" text="Contact Number" /> */}
       </View>
-      <View style={{ flex: 0.4 }}>
-        <Pressable onPress={() => setPortalVisibility(true)}>
-          <View
-            style={{
-              height: 130,
-              width: 130,
-              alignItems: "center",
-              justifyContent: "center",
-              alignSelf: "center",
-            }}
-          >
-            <IconAntDesign
-              size={80}
-              name="logout"
-              color={theme.colors.primary}
-            />
-            <Text style={{ color: theme.colors.primary }}>Logout</Text>
-          </View>
-        </Pressable>
-      </View>
+      <FloatingActionButton
+        icon="logout"
+        onPress={() => setPortalVisibility(true)}
+      />
       <Portal>
         <Modal
           visible={portalVisibility}
