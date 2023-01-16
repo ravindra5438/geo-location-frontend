@@ -81,7 +81,7 @@ export const AuthContextProvider = (props) => {
       "761450022754-jblgjbq21hhjdc6rnusd2e8c7807e9b4.apps.googleusercontent.com",
     androidClientId:
       "761450022754-5c6gs13aniu6mr8mq1rkrfd9jk5j6tgd.apps.googleusercontent.com",
-    redirectUri: "https://auth.expo.io/@rajeevsahu/geolocation-attendance",
+    redirectUri: "https://auth.expo.io/@gkv-app/gkv-app",
     // redirectUri: makeRedirectUri(), //for production we have to uncomment this
   });
 

@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "GKV App",
-    "slug": "geolocation-attendance",
+    "slug": "gkv-app",
     "scheme": "atend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash1.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -24,16 +24,16 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.rajeevsahu.geolocationattendance"
+      "package": "com.gkv.gkvapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/gkvlogo.png"
     },
     "extra": {
       "eas": {
-        "projectId": "6b91681d-a5af-4e50-b92f-2aee8e17a452"
+        "projectId": "265fbf65-f2a5-4f0f-a44b-24a65292631b"
       }
     },
-    "owner": "rajeevsahu"
+    "owner": "gkv-app"
   }
 }
