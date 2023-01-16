@@ -18,6 +18,7 @@ import { MotiView } from "moti";
 import Moddal from "../../../components/Moddal";
 import useAxios from "../../../services";
 import * as DocumentPicker from "expo-document-picker";
+import * as Location from "expo-location";
 
 const deviceWidth = Dimensions.get("window").width * 0.96;
 
@@ -123,6 +124,34 @@ export default function SingleCourse({
       });
   };
 
+  const getLocation = async (item) => {
+    setShowModel(false);
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    axiosInstance
+      .post(`/startClass`, {
+        courseId: item._id,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+        radius: radius,
+      })
+      .then(function (res) {
+        Alert("success", "SUCCESS", res.data.message);
+        setClassStarted(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+        Alert("error", "Sorry", error.response.data.message);
+      });
+  };
+
   return (
     <View
       style={{
@@ -165,20 +194,20 @@ export default function SingleCourse({
               <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
               {courseLock ? (
                 <IconButton
-                  iconColor="red"
-                  size={20}
-                  icon="lock"
-                  onPress={() => {
-                    courseLockHandler(courseLock);
-                  }}
-                />
-              ) : (
-                <IconButton
                   iconColor="green"
                   size={20}
                   icon="lock-open"
                   onPress={() => {
-                    courseLockHandler(courseLock);
+                    courseLockHandler(!courseLock);
+                  }}
+                />
+              ) : (
+                <IconButton
+                  iconColor="red"
+                  size={20}
+                  icon="lock"
+                  onPress={() => {
+                    courseLockHandler(!courseLock);
                   }}
                 />
               )}
@@ -277,7 +306,7 @@ export default function SingleCourse({
             marginTop: 8,
           }}
           onPress={() => {
-            // getLocation(item);
+            getLocation(item);
           }}
         >
           start class
