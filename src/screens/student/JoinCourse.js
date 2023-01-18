@@ -13,11 +13,12 @@ import {
   IconButton,
 } from "react-native-paper";
 
-const JoinCourse = () => {
+const JoinCourse = ({ navigation, route }) => {
   const [portalVisibility, setPortalVisibility] = useState(false);
   const [courseCode, setCourseCode] = useState(null);
   const axiosInstance = useAxios();
   const theme = useTheme();
+  const [joinCourse, setJoinCourse] = useState(0);
 
   const styles = StyleSheet.create({
     portalContainer: {
@@ -46,6 +47,7 @@ const JoinCourse = () => {
         .post(`/enrollCourse`, { courseCode: courseCod })
         .then((res) => {
           Alert("success", "success", res.data.message);
+          setJoinCourse(Math.random());
         })
         .catch((err) => {
           Alert("error", "Sorry!!", err.response.data.message);
@@ -55,6 +57,7 @@ const JoinCourse = () => {
     } catch (err) {
       console.log(err);
     }
+    navigation.navigate("Home", { joinCourse: joinCourse });
   };
 
   return (

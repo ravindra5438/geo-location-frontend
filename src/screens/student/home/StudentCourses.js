@@ -1,17 +1,15 @@
 import { Button, Text } from "react-native-paper";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useTheme } from "react-native-paper";
-import { View, Dimensions, StyleSheet, FlatList } from "react-native";
-import axios from "axios";
-import AuthContext from "../../../store/auth-context";
+import { View, StyleSheet, FlatList } from "react-native";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 import useAxios from "../../../services";
 import myListEmpty from "../../../components/MyListEmpty";
 
-export default StudentCourses = () => {
+export default StudentCourses = ({ joinCourse }) => {
   const axiosInstance = useAxios();
   const [courses, setCourses] = useState(null);
 
@@ -28,7 +26,7 @@ export default StudentCourses = () => {
         console.log(error);
         Alert("error", "Sorry", error.response.data.message);
       });
-  }, [isFocused]);
+  }, [isFocused, joinCourse]);
   const theme = useTheme();
   const styles = StyleSheet.create({
     button: {
