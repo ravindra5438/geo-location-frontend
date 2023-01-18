@@ -1,6 +1,6 @@
 import Icon from "react-native-vector-icons/FontAwesome";
 import { View } from "react-native";
-import { Text, Divider, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 export default ProfileFlatlistComponent = ({ text, icon }) => {
   const theme = useTheme();

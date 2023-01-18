@@ -49,7 +49,7 @@ function TeacherTab() {
     //   }}
     >
       <Stack.Screen
-        options={{
+        options={({ navigation }) => ({
           headerShadowVisible: false,
           headerTitle: "GeoAtt",
           headerTintColor: theme.colors.primaryContainer,
@@ -57,8 +57,10 @@ function TeacherTab() {
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },
-          headerRight: (props) => <CreateCourse {...props} />,
-        }}
+          headerRight: (props) => (
+            <CreateCourse {...props} navigation={navigation} />
+          ),
+        })}
         name="GeoAtt"
         component={TabNav}
       />

@@ -12,7 +12,7 @@ import {
 } from "react-native-paper";
 import useAxios from "../../../services";
 
-const CreateCourse = () => {
+const CreateCourse = ({ navigation }) => {
   const [portalVisibility, setPortalVisibility] = React.useState(false);
   const [courseName, setCourseName] = React.useState(null);
   const theme = useTheme();
@@ -48,6 +48,8 @@ const CreateCourse = () => {
       });
     setCourseName(null);
     setPortalVisibility(false);
+    navigation.navigate("Home");
+    navigation.navigate("Courses");
   };
 
   return (

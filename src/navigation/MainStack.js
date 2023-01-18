@@ -1,7 +1,9 @@
 import {
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider,
+  Text,
 } from "react-native-paper";
+import { View, Image } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,6 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 import AuthStack from "./authStack/AuthStack";
 import TeacherTab from "./HomeStack/TeacherTab";
 import StudentTab from "./HomeStack/StudentTab";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,6 +62,7 @@ const myTheme = {
 };
 
 export default function MainStack() {
+  const netinfo = useNetInfo();
   const authCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -86,6 +90,17 @@ export default function MainStack() {
   useEffect(() => {
     prepare();
   }, [authCtx]);
+
+  if (!netinfo.isConnected) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Image
+          style={{ width: 200, height: 200 }}
+          source={require("../../assets/noInternet.jpg")}
+        />
+      </View>
+    );
+  }
 
   if (isLoading) {
     return null;
