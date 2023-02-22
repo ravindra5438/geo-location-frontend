@@ -1,4 +1,3 @@
-import { ActivityIndicator, FAB } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
 import { View, Dimensions, FlatList, StyleSheet } from "react-native";
@@ -28,19 +27,15 @@ export default TeacherCourses = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-
     axiosInstance
       .get("/getCourses")
       .then(function (res) {
         console.log(res.data);
         setCourses(res?.data?.data);
-        setLoading(false);
       })
       .catch(function (error) {
         console.log(error);
         Alert("error", "Sorry", error?.response?.data?.message);
-        setLoading(false);
       });
   }, [isFocused]);
 
@@ -61,32 +56,26 @@ export default TeacherCourses = ({ navigation }) => {
   return (
     <View
       style={{
-        // width: deviceWidth,
-        // height: deviceHeight * 0.93,
         backgroundColor: theme.colors.onPrimary,
         paddingTop: 8,
         flexGrow: 1,
       }}
     >
-      {loading ? (
-        <ActivityIndicator size="large" color="red" style={{ flex: 1 }} />
-      ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={courses}
-          renderItem={(props) => (
-            <SingleCourse
-              {...props}
-              currentIndex={currentIndex}
-              setCurrentIndex={setCurrentIndex}
-              deleteId={setDeleteCourseId}
-              navigation={navigation}
-            />
-          )}
-          keyExtractor={(item) => item._id}
-          ListEmptyComponent={MyListEmpty}
-        />
-      )}
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={courses}
+        renderItem={(props) => (
+          <SingleCourse
+            {...props}
+            currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
+            deleteId={setDeleteCourseId}
+            navigation={navigation}
+          />
+        )}
+        keyExtractor={(item) => item._id}
+        ListEmptyComponent={MyListEmpty}
+      />
     </View>
   );
 };

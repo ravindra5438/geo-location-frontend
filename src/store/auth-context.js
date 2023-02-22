@@ -20,6 +20,7 @@ const AuthContext = React.createContext({
   signUp: (props) => {},
   logout: () => {},
   googleAuth: () => {},
+  isLoading: false,
 });
 
 export const AuthContextProvider = (props) => {
@@ -28,6 +29,7 @@ export const AuthContextProvider = (props) => {
   const [role, setRole] = useState(null);
   const [email, setEmail] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const userIsLoggedIn = !!token;
@@ -51,6 +53,7 @@ export const AuthContextProvider = (props) => {
   getData();
 
   const loginHandler = async ({ email, password }) => {
+    setIsLoading(true);
     try {
       await axios({
         url: `${REACT_APP_URL}/auth/login`,
@@ -74,6 +77,7 @@ export const AuthContextProvider = (props) => {
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -141,6 +145,7 @@ export const AuthContextProvider = (props) => {
     role,
     registrationNo,
   }) => {
+    setIsLoading(true);
     try {
       await axios({
         url: `${REACT_APP_URL}/auth/signUp`,
@@ -165,6 +170,7 @@ export const AuthContextProvider = (props) => {
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
   const logoutHandler = () => {
@@ -183,6 +189,7 @@ export const AuthContextProvider = (props) => {
     logout: logoutHandler,
     signUp: signUpHandler,
     googleAuth: googleLoginHandler,
+    isLoading: isLoading,
   };
 
   return (

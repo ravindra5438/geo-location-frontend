@@ -2,6 +2,7 @@ import {
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider,
   Text,
+  ActivityIndicator,
 } from "react-native-paper";
 import { View, Image } from "react-native";
 import { useContext, useEffect, useState } from "react";
@@ -89,7 +90,7 @@ export default function MainStack() {
   };
   useEffect(() => {
     prepare();
-  }, [authCtx]);
+  }, [authCtx.token]);
 
   if (!netinfo.isConnected) {
     return (
@@ -103,7 +104,11 @@ export default function MainStack() {
   }
 
   if (isLoading) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="red" />
+      </View>
+    );
   }
 
   return (

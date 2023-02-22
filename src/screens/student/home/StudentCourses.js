@@ -1,7 +1,6 @@
 import { Button, Text } from "react-native-paper";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
-import { useTheme } from "react-native-paper";
 import { View, StyleSheet, FlatList } from "react-native";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
@@ -27,7 +26,6 @@ export default StudentCourses = ({ joinCourse }) => {
         Alert("error", "Sorry", error.response.data.message);
       });
   }, [isFocused, joinCourse]);
-  const theme = useTheme();
   const styles = StyleSheet.create({
     button: {
       borderRadius: 4,

@@ -8,7 +8,6 @@ export default FlatlistSingleItemContainer = ({ children, style }) => {
       alignItems: "center",
       paddingVertical: 8,
       paddingHorizontal: 8,
-      marginHorizontal: 16,
       borderRadius: 8,
       elevation: 3,
       marginVertical: 8,

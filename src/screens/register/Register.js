@@ -16,9 +16,10 @@ export default Register = ({ navigation }) => {
 
   const styles = StyleSheet.create({
     container: {
-      padding: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 32,
       flexDirection: "column",
-      marginHorizontal: "10%",
+      marginHorizontal: 8,
       justifyContent: "center",
       backgroundColor: theme.colors.primaryContainer,
     },
@@ -117,6 +118,8 @@ export default Register = ({ navigation }) => {
           />
         ) : null}
         <Button
+          disabled={authCtx.isLoading}
+          loading={authCtx.isLoading}
           mode="contained"
           style={styles.button}
           onPress={() =>
@@ -132,13 +135,6 @@ export default Register = ({ navigation }) => {
           Register
         </Button>
         <Button
-          style={styles.button}
-          onPress={() => navigation.navigate("Login")}
-          labelStyle={{ color: "green" }}
-        >
-          <Text variant="titleSmall">Already a User?</Text> LOGIN
-        </Button>
-        <Button
           mode="elevated"
           icon={() => (
             <Image
@@ -152,6 +148,13 @@ export default Register = ({ navigation }) => {
           }}
         >
           Continue With Google
+        </Button>
+        <Button
+          style={styles.button}
+          onPress={() => navigation.navigate("Login")}
+          labelStyle={{ color: "green" }}
+        >
+          <Text variant="titleSmall">Already a User?</Text> LOGIN
         </Button>
       </Card>
     </View>

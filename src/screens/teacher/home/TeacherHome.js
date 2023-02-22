@@ -12,46 +12,30 @@ export default TeacherHome = () => {
   const axiosInstance = useAxios();
   const theme = useTheme();
   const isFocused = useIsFocused();
+  const [courses, setCourses] = useState(null);
 
   const styles = StyleSheet.create({
     container: {
-      paddingHorizontal: 4,
+      paddingHorizontal: 8,
       flex: 1,
       backgroundColor: theme.colors.onPrimary,
     },
   });
 
-  const [courses, setCourses] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
-    setIsLoading(true);
     axiosInstance
       .get("/getCourses")
       .then(function (res) {
         console.log("courses from Home", res.data);
         setCourses(res?.data?.data);
-        setIsLoading(false);
       })
       .catch(function (error) {
         console.log("error", error);
-        setIsLoading(false);
       });
   }, [isFocused]);
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator
-          size="large"
-          color="red"
-          style={{
-            flex: 1,
-            marginTop: deviceHeight * 0.4,
-          }}
-        />
-      ) : (
-        <CoursesHome courses={courses} />
-      )}
+      <CoursesHome courses={courses} />
     </View>
   );
 };

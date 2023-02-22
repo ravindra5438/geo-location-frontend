@@ -8,6 +8,7 @@ import * as Location from "expo-location";
 
 const SingleCourseHome = ({ item }) => {
   const [classStarted, setClassStarted] = useState(item.activeClass);
+  const [isLoading, setIsLoading] = useState(false);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -20,6 +21,7 @@ const SingleCourseHome = ({ item }) => {
   });
 
   const endClassHandler = async (item) => {
+    setIsLoading(true);
     await axiosInstance
       .post(`/dismissClass`, { courseId: item._id })
       .then(function (res) {
@@ -31,9 +33,11 @@ const SingleCourseHome = ({ item }) => {
         Alert("error", "Sorry", error.response.data.message);
       });
     setClassStarted(false);
+    setIsLoading(false);
   };
 
   const getLocation = async (item) => {
+    setIsLoading(true);
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Permission to access location was denied");
@@ -54,9 +58,11 @@ const SingleCourseHome = ({ item }) => {
       .then(function (res) {
         Alert("success", "SUCCESS", res.data.message);
         setClassStarted(true);
+        setIsLoading(false);
       })
       .catch(function (error) {
         console.log(error);
+        setIsLoading(false);
         Alert("error", "Sorry", error.response.data.message);
       });
   };
@@ -65,12 +71,14 @@ const SingleCourseHome = ({ item }) => {
     <FlatlistSingleItemContainer
       style={classStarted ? styles.flatListComponent : null}
     >
-      <View>
-        <Text variant="titleLarge">{item.courseName}</Text>
+      <View style={{ maxWidth: "70%" }}>
+        <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
       </View>
       <View>
         {classStarted ? (
           <Button
+            disabled={isLoading}
+            loading={isLoading}
             style={[styles.button, { borderColor: "red" }]}
             mode="outlined"
             onPress={() => endClassHandler(item)}
@@ -80,6 +88,8 @@ const SingleCourseHome = ({ item }) => {
           </Button>
         ) : (
           <Button
+            disabled={isLoading}
+            loading={isLoading}
             style={styles.button}
             mode="contained"
             onPress={() => getLocation(item)}

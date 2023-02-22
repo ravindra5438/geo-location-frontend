@@ -27,9 +27,10 @@ export default Login = ({ navigation }) => {
 
   const styles = StyleSheet.create({
     container: {
-      padding: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 32,
       flexDirection: "column",
-      marginHorizontal: "10%",
+      marginHorizontal: 8,
       justifyContent: "center",
       backgroundColor: theme.colors.primaryContainer,
     },
@@ -112,6 +113,8 @@ export default Login = ({ navigation }) => {
           }
         />
         <Button
+          disabled={authCtx.isLoading}
+          loading={authCtx.isLoading}
           mode="contained"
           style={styles.button}
           onPress={() => authCtx.login({ email, password })}
@@ -135,27 +138,7 @@ export default Login = ({ navigation }) => {
               <Text style={{ color: "#7676A7" }}>Forget Password?</Text>
             </Pressable>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 8,
-            }}
-          >
-            <Text>Need an Account?</Text>
-            <Pressable onPress={() => navigation.navigate("Sign Up")}>
-              <Text
-                style={{
-                  color: "green",
-                  textDecorationStyle: "solid",
-                  textDecorationLine: "underline",
-                }}
-              >
-                SIGN UP
-              </Text>
-            </Pressable>
-          </View>
+
           <View style={{ marginTop: 4 }}>
             <Button
               mode="elevated"
@@ -172,6 +155,27 @@ export default Login = ({ navigation }) => {
             >
               Continue With Google
             </Button>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 16,
+            }}
+          >
+            <Text>Need an Account?</Text>
+            <Pressable onPress={() => navigation.navigate("Sign Up")}>
+              <Text
+                style={{
+                  color: "green",
+                  textDecorationStyle: "solid",
+                  textDecorationLine: "underline",
+                }}
+              >
+                SIGN UP
+              </Text>
+            </Pressable>
           </View>
         </View>
         <Portal>

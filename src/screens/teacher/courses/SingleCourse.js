@@ -186,12 +186,19 @@ export default function SingleCourse({
           <View style={styles.rowContainer}>
             <View
               style={{
+                width: "90%",
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
+              <Text
+                style={{ maxWidth: "80%", textAlign: "left" }}
+                variant="titleMedium"
+                numberOfLines={1}
+              >
+                {item.courseName.toUpperCase()}
+              </Text>
               {courseLock ? (
                 <IconButton
                   iconColor="green"
