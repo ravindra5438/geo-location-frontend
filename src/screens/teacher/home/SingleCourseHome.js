@@ -7,7 +7,7 @@ import useAxios from "../../../services";
 import * as Location from "expo-location";
 
 const SingleCourseHome = ({ item }) => {
-  const [classStarted, setClassStarted] = useState(item.activeClass);
+  const [classStarted, setClassStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const axiosInstance = useAxios();
 
@@ -19,6 +19,10 @@ const SingleCourseHome = ({ item }) => {
       backgroundColor: "#CEEDC7",
     },
   });
+
+  useEffect(() => {
+    setClassStarted(item.activeClass);
+  }, []);
 
   const endClassHandler = async (item) => {
     setIsLoading(true);
@@ -58,18 +62,18 @@ const SingleCourseHome = ({ item }) => {
       .then(function (res) {
         Alert("success", "SUCCESS", res.data.message);
         setClassStarted(true);
-        setIsLoading(false);
       })
       .catch(function (error) {
         console.log(error);
-        setIsLoading(false);
+
         Alert("error", "Sorry", error.response.data.message);
       });
+    setIsLoading(false);
   };
 
   return (
     <FlatlistSingleItemContainer
-      style={classStarted ? styles.flatListComponent : null}
+      style={classStarted && styles.flatListComponent}
     >
       <View style={{ maxWidth: "70%" }}>
         <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>

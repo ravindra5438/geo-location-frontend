@@ -144,7 +144,6 @@ export default function SingleCourse({
       })
       .then(function (res) {
         Alert("success", "SUCCESS", res.data.message);
-        setClassStarted(true);
       })
       .catch(function (error) {
         console.log(error);
