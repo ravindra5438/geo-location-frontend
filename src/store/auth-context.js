@@ -65,14 +65,16 @@ export const AuthContextProvider = (props) => {
       })
         .then(async (res) => {
           setToken(res?.data?.token);
+          console.log("res   ",res.data)
           await AsyncStorage.setItem("token", res?.data?.token);
           await AsyncStorage.setItem("name", res?.data?.user?.name);
           await AsyncStorage.setItem("role", res?.data?.user?.role);
           await AsyncStorage.setItem("email", res?.data?.user?.email);
-          await AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
+          await AsyncStorage.setItem("profile", res?.data?.user?.profileImage || "");
         })
         .catch((err) => {
-          Alert("error", "Sorry", err?.response?.data?.message);
+          console.log("err  ",err);
+          Alert("success", "Sorry", err?.response?.data?.message);
         });
     } catch (err) {
       console.log(err);

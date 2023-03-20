@@ -6,7 +6,6 @@ import { useTheme } from "react-native-paper";
 import useAxios from "../../../services";
 import CoursesHome from "./CoursesHome";
 
-const deviceHeight = Dimensions.get("window").height * 0.93;
 
 export default TeacherHome = () => {
   const axiosInstance = useAxios();

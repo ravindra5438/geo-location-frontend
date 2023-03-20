@@ -21,11 +21,13 @@ const SingleCourseHome = ({ item }) => {
   });
 
   useEffect(() => {
-    setClassStarted(item.activeClass);
-  }, []);
+    console.log(item.activeClass);
+    setClassStarted(item.activeClass)
+  },[item.activeClass])
 
   const endClassHandler = async (item) => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
     await axiosInstance
       .post(`/dismissClass`, { courseId: item._id })
       .then(function (res) {
@@ -38,37 +40,52 @@ const SingleCourseHome = ({ item }) => {
       });
     setClassStarted(false);
     setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+    
   };
 
   const getLocation = async (item) => {
+    try{
     setIsLoading(true);
     let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("\n\nstatus\n\n",status)
     if (status !== "granted") {
       console.log("Permission to access location was denied");
       return;
     }
 
-    let location = await Location.getCurrentPositionAsync({});
+    // let location = await Location.getCurrentPositionAsync({});
 
+    Location.getCurrentPositionAsync({})
+  .then(location => {
+    console.log("\n\nlocation\n\n",location)
     axiosInstance
-      .post(`/startClass`, {
-        courseId: item._id,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-        radius: 25,
-      })
-      .then(function (res) {
-        Alert("success", "SUCCESS", res.data.message);
-        setClassStarted(true);
-      })
-      .catch(function (error) {
-        console.log(error);
+    .post(`/startClass`, {
+      courseId: item._id,
+      location: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+      radius: 25,
+    })
+    .then(function (res) {
+      setClassStarted(true);
+      setIsLoading(false)
+      Alert("success", "SUCCESS", res.data.message);
+    })
+    .catch(function (error) {
+      setIsLoading(false)
+      console.log(error);
+      Alert("error", "Sorry", error.response.data.message);
+    });
+  }).catch(err => console.log(err))
 
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setIsLoading(false);
+    
+    }catch(error) {
+      console.log(error)
+    }
   };
 
   return (

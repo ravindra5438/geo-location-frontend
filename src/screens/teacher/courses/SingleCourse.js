@@ -5,7 +5,7 @@ import {
   TextInput,
   IconButton,
 } from "react-native-paper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -35,6 +35,7 @@ export default function SingleCourse({
   const [radius, setRadius] = useState(item.radius);
   const [showModel, setShowModel] = useState(false);
   const [courseLock, setCourseLock] = useState(item.isActive);
+  const [classStarted,setClassStarted] = useState(false);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -99,6 +100,10 @@ export default function SingleCourse({
     }
   };
 
+  useEffect(() => {
+    setClassStarted(item.activeClass);
+  },[item.activeClass])
+
   const sendAttendanceToMail = async (item) => {
     await axiosInstance
       .get(`/sendAttendanceViaMail?courseId=${item._id}`)
@@ -125,7 +130,6 @@ export default function SingleCourse({
   };
 
   const getLocation = async (item) => {
-    setShowModel(false);
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Permission to access location was denied");
@@ -143,9 +147,12 @@ export default function SingleCourse({
         radius: radius,
       })
       .then(function (res) {
+        setClassStarted(true);
+        setShowModel(false);
         Alert("success", "SUCCESS", res.data.message);
       })
       .catch(function (error) {
+        setShowModel(false);
         console.log(error);
         Alert("error", "Sorry", error.response.data.message);
       });
@@ -163,7 +170,7 @@ export default function SingleCourse({
         animate={{
           height: index === currentIndex ? 210 : 60,
           width: showDelete ? deviceWidth * 0.8 : deviceWidth,
-          backgroundColor: item.activeClass
+          backgroundColor: classStarted
             ? "#CEEDC7"
             : theme.colors.primaryContainer,
         }}
@@ -228,7 +235,7 @@ export default function SingleCourse({
             >
               <View style={styles.rowContainer}>
                 <Button
-                  disabled={item.activeClass}
+                  disabled={classStarted}
                   mode="contained"
                   onPress={() => setShowModel(true)}
                   style={styles.button}
@@ -237,7 +244,7 @@ export default function SingleCourse({
                   RADIUS : {radius}
                 </Button>
                 <Button
-                  disabled={item.activeClass}
+                  disabled={classStarted}
                   mode="contained"
                   icon="plus"
                   style={styles.button}
@@ -251,7 +258,7 @@ export default function SingleCourse({
 
               <View style={styles.rowContainer}>
                 <Button
-                  disabled={item.activeClass}
+                  disabled={classStarted}
                   icon="download"
                   mode="contained"
                   style={styles.button}
