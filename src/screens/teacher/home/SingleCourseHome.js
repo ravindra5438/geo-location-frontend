@@ -56,33 +56,29 @@ const SingleCourseHome = ({ item }) => {
       return;
     }
 
-    // let location = await Location.getCurrentPositionAsync({});
-
-    Location.getCurrentPositionAsync({})
-  .then(location => {
+    let location = await Location.getCurrentPositionAsync({});
     console.log("\n\nlocation\n\n",location)
-    axiosInstance
-    .post(`/startClass`, {
-      courseId: item._id,
-      location: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      },
-      radius: 25,
-    })
-    .then(function (res) {
-      setClassStarted(true);
-      setIsLoading(false)
-      Alert("success", "SUCCESS", res.data.message);
-    })
-    .catch(function (error) {
-      setIsLoading(false)
-      console.log(error);
-      Alert("error", "Sorry", error.response.data.message);
-    });
-  }).catch(err => console.log(err))
-
     
+
+    axiosInstance
+      .post(`/startClass`, {
+        courseId: item._id,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+        radius: 15,
+      })
+      .then(function (res) {
+        setClassStarted(true);
+        setIsLoading(false)
+        Alert("success", "SUCCESS", res.data.message);
+      })
+      .catch(function (error) {
+        setIsLoading(false)
+        console.log(error);
+        Alert("error", "Sorry", error.response.data.message);
+      });
     }catch(error) {
       console.log(error)
     }
