@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import Alert from "../../../components/alert";
 import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 import useAxios from "../../../services";
+import * as Device from 'expo-device';
 
 function StudentSingleCourse({ item }) {
   const [markAtt, setMarkAtt] = useState(false);
@@ -27,6 +28,8 @@ function StudentSingleCourse({ item }) {
       }
 
       let location = await Location.getCurrentPositionAsync({});
+      let deviceId = Device.osBuildId
+      console.log(deviceId)
 
       axiosInstance
         .post(`/markAttendance`, {
@@ -35,6 +38,7 @@ function StudentSingleCourse({ item }) {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
           },
+          deviceId:deviceId
         })
         .then(function (res) {
           console.log(res?.data);
