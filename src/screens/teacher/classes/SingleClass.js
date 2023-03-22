@@ -31,10 +31,10 @@ export default SingleClass = ({ item, navigation, setDeleteClassId }) => {
         >
           <FlatlistSingleItemContainer>
             <Text style={{ color: theme.colors.error }} variant="titleMedium">
-              {new Date(item.createdDate).toDateString()}
+              {new Date(item.createdAt).toDateString()}
             </Text>
             <Text style={{ color: "green" }} variant="titleMedium">
-              {new Date(item.createdDate).toLocaleTimeString()}
+              {new Date(item.createdAt).toLocaleTimeString()}
             </Text>
           </FlatlistSingleItemContainer>
         </Pressable>
