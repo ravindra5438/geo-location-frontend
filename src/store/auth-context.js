@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { makeRedirectUri } from "expo-auth-session";
+
 WebBrowser.maybeCompleteAuthSession();
 
 const AuthContext = React.createContext({
@@ -74,7 +75,7 @@ export const AuthContextProvider = (props) => {
         })
         .catch((err) => {
           console.log("err  ",err);
-          Alert("success", "Sorry", err?.response?.data?.message);
+          Alert("error", "Sorry", err?.response?.data?.message);
         });
     } catch (err) {
       console.log(err);
@@ -88,7 +89,6 @@ export const AuthContextProvider = (props) => {
     androidClientId:
       "761450022754-5c6gs13aniu6mr8mq1rkrfd9jk5j6tgd.apps.googleusercontent.com",
     redirectUri: "https://auth.expo.io/@gkv-app/gkv-app",
-    // redirectUri: makeRedirectUri(), //for production we have to uncomment this
   });
 
   const googleLoginHandler = () => {
@@ -144,8 +144,6 @@ export const AuthContextProvider = (props) => {
     name,
     email,
     password,
-    role,
-    registrationNo,
   }) => {
     setIsLoading(true);
     try {
@@ -154,19 +152,12 @@ export const AuthContextProvider = (props) => {
         method: "post",
         data: {
           name: name,
-          role: role,
-          registrationNo: registrationNo,
           email: email,
           password: password,
         },
       })
         .then(async (res) => {
-          setToken(res?.data?.token);
-          await AsyncStorage.setItem("token", res?.data?.token);
-          await AsyncStorage.setItem("name", res?.data?.user?.name);
-          await AsyncStorage.setItem("role", res?.data?.user?.role);
-          await AsyncStorage.setItem("email", res?.data?.user?.email);
-          await AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
+          Alert("success","success",res?.data?.message)
         })
         .catch((err) => Alert("error", "Sorry", err?.response?.data?.message));
     } catch (err) {

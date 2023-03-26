@@ -19,6 +19,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.3",
+    "eas-cli": "^3.8.1",
     "expo": "~47.0.8",
     "expo-app-loading": "^2.1.1",
     "expo-application": "~5.0.1",

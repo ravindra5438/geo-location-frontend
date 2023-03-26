@@ -7,6 +7,7 @@ const ClassesHome = ({ courses }) => {
   return (
     <FlatList
       data={courses}
+      showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
         return <SingleCourseHome item={item} />;
       }}

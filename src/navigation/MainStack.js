@@ -113,7 +113,9 @@ export default function MainStack() {
 
   return (
     <PaperProvider theme={myTheme}>
+      <View flex={1}>
       {!user ? <AuthStack /> : Student ? <StudentTab /> : <TeacherTab />}
+      </View>
     </PaperProvider>
   );
 }

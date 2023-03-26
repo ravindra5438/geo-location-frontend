@@ -77,12 +77,14 @@ const CreateCourse = ({ navigation }) => {
           <TextInput
             style={{ width: "100%" }}
             mode="outlined"
-            value={courseName}
+            autoFocus={true}
+            maxLength={40}
             label="Course Name"
             onChangeText={(text) => {
               setCourseName(text);
             }}
           />
+          <Text style={{color:'grey',alignSelf:"flex-start"}} variant="labelSmall">max-length 40</Text>
           <Button
             style={{ width: "60%", borderRadius: 8, marginTop: 16 }}
             mode="contained"

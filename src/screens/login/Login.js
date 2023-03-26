@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { StyleSheet, View, Image, Pressable } from "react-native";
+import { StyleSheet, View, Image, Pressable,ScrollView } from "react-native";
 import {
   Button,
   TextInput,
@@ -16,14 +16,13 @@ import Alert from "../../components/alert.js";
 
 export default Login = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [user,setUser] = useState({name:"",email:"",password:""});
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const theme = useTheme();
   const axiosInstance = useAxios();
+  const [signUp,setSignUp] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-  // const [isLoaderActive, setIsLoaderActive] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -73,25 +72,33 @@ export default Login = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        flexGrow: 1,
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow:1,
         justifyContent: "center",
         backgroundColor: "#EEEEEE",
+        paddingHorizontal:16,
       }}
     >
-      <Card style={styles.container}>
-        <View style={{ alignItems: "center" }}>
-          <Image
-            style={{ width: 115, height: 100 }}
-            source={require("../../../assets/gkvlogo.png")}
-          />
-        </View>
+        <Pressable onPress={() => setSignUp(!signUp)}>
+          <View margin={32} flexDirection="row" alignSelf="center" style={{elevation:10,backgroundColor:'white',borderRadius:40}}>
+            <Button  mode={signUp?"text":"contained"}>logIn </Button>
+            <Button mode={signUp?"contained":"text"} >signUp</Button>
+          </View>
+        </Pressable>
+        <View>
+        {signUp && <TextInput
+          label="Name"
+          onChangeText={(text) => {
+            setUser({...user,name:text})
+          }}
+          mode="outlined"
+          style={styles.textInput}
+        />}
         <TextInput
           label="Email"
-          value={email}
           onChangeText={(text) => {
-            setEmail(text);
+            setUser({...user,email:text})
           }}
           mode="outlined"
           style={styles.textInput}
@@ -99,9 +106,8 @@ export default Login = ({ navigation }) => {
         <TextInput
           label="Password"
           secureTextEntry={isPasswordSecure}
-          value={password}
           onChangeText={(text) => {
-            setPassword(text);
+            setUser({...user,password:text})
           }}
           mode="outlined"
           style={styles.textInput}
@@ -112,15 +118,19 @@ export default Login = ({ navigation }) => {
             />
           }
         />
-        <Button
+        {signUp?<Button
           disabled={authCtx.isLoading}
           loading={authCtx.isLoading}
           mode="contained"
           style={styles.button}
-          onPress={() => authCtx.login({ email, password })}
-        >
-          Login
-        </Button>
+          onPress={() => authCtx.signUp(user)}
+        > SignUp</Button>:<Button
+          disabled={authCtx.isLoading}
+          loading={authCtx.isLoading}
+          mode="contained"
+          style={styles.button}
+          onPress={() => authCtx.login(user)}
+        > Login</Button>}
         <View
           style={{
             flexDirection: "column",
@@ -128,7 +138,7 @@ export default Login = ({ navigation }) => {
             marginTop: 8,
           }}
         >
-          <View
+          {!signUp && <View
             style={{
               flexDirection: "row",
               justifyContent: "flex-end",
@@ -137,8 +147,7 @@ export default Login = ({ navigation }) => {
             <Pressable onPress={() => setShowModal(true)}>
               <Text style={{ color: "#7676A7" }}>Forget Password?</Text>
             </Pressable>
-          </View>
-
+          </View>}
           <View style={{ marginTop: 4 }}>
             <Button
               mode="elevated"
@@ -152,31 +161,9 @@ export default Login = ({ navigation }) => {
               onPress={() => {
                 authCtx.googleAuth();
               }}
-            >
-              Continue With Google
-            </Button>
+            > Continue With Google</Button>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 16,
-            }}
-          >
-            <Text>Need an Account?</Text>
-            <Pressable onPress={() => navigation.navigate("Sign Up")}>
-              <Text
-                style={{
-                  color: "green",
-                  textDecorationStyle: "solid",
-                  textDecorationLine: "underline",
-                }}
-              >
-                SIGN UP
-              </Text>
-            </Pressable>
-          </View>
+        </View>
         </View>
         <Portal>
           <Modal visible={showModal} onDismiss={() => setShowModal(false)}>
@@ -209,7 +196,6 @@ export default Login = ({ navigation }) => {
             </View>
           </Modal>
         </Portal>
-      </Card>
-    </View>
+    </ScrollView>
   );
 };

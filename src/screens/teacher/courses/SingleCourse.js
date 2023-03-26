@@ -40,18 +40,17 @@ export default function SingleCourse({
 
   const styles = StyleSheet.create({
     rowContainer: {
-      alignItems: "center",
-      paddingTop: 8,
-      height: 50,
-      paddingHorizontal: 8,
+      margin: 3,
       flexDirection: "row",
+      alignItems: "center",
       justifyContent: "space-between",
     },
     container: {
-      elevation: 4,
-      marginHorizontal: 8,
-      marginVertical: 8,
+      elevation:10,
+      margin: 8,
+      paddingHorizontal:8,
       borderRadius: 8,
+      justifyContent:'center',
     },
     rowHandler: {
       flexDirection: "row",
@@ -175,7 +174,8 @@ export default function SingleCourse({
             : theme.colors.primaryContainer,
         }}
         transition={{
-          type: "spring",
+          type: "timing",
+          duration:200,
         }}
         style={styles.container}
       >
@@ -190,21 +190,21 @@ export default function SingleCourse({
           }}
         >
           <View style={styles.rowContainer}>
-            <View
+            
+              <Text
+                style={{ maxWidth: "62%", textAlign: "left" }}
+                variant="titleMedium"
+                numberOfLines={2}
+              >
+                {item.courseName.toUpperCase()}
+              </Text>
+              <View
               style={{
-                width: "90%",
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
             >
-              <Text
-                style={{ maxWidth: "80%", textAlign: "left" }}
-                variant="titleMedium"
-                numberOfLines={1}
-              >
-                {item.courseName.toUpperCase()}
-              </Text>
               {courseLock ? (
                 <IconButton
                   iconColor="green"
@@ -224,14 +224,14 @@ export default function SingleCourse({
                   }}
                 />
               )}
-            </View>
             <Text variant="titleSmall">{item.courseCode}</Text>
+            </View>
           </View>
           {index === currentIndex && (
             <MotiView
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ type: "timing", duration: 300 }}
+              transition={{ type: "timing", duration: 300 ,delay:200}}
             >
               <View style={styles.rowContainer}>
                 <Button
@@ -241,7 +241,7 @@ export default function SingleCourse({
                   style={styles.button}
                   icon="radius"
                 >
-                  RADIUS : {radius}
+                  Radius : {radius}
                 </Button>
                 <Button
                   disabled={classStarted}
@@ -271,12 +271,12 @@ export default function SingleCourse({
                 <Button
                   mode="contained"
                   style={styles.button}
+                  icon="table"
                   onPress={() =>
                     navigation.navigate("CLASSES", { courseId: item._id })
                   }
-                  icon="table"
                 >
-                  CLASS DATA
+                  ClassInfo
                 </Button>
               </View>
               <Button
@@ -306,6 +306,7 @@ export default function SingleCourse({
           backgroundColor={"#D4F6CC"}
           borderRadius={4}
           maxLength={3}
+          autoFocus={true}
           mode="flat"
           keyboardType="numeric"
           onChangeText={(text) => {
@@ -322,7 +323,7 @@ export default function SingleCourse({
             getLocation(item);
           }}
         >
-          start class
+          Start Class
         </Button>
       </Moddal>
 
