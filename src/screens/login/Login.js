@@ -1,9 +1,8 @@
 import { useContext, useState, useEffect } from "react";
-import { StyleSheet, View, Image, Pressable,ScrollView } from "react-native";
+import { StyleSheet, View, Image, Pressable, ScrollView } from "react-native";
 import {
   Button,
   TextInput,
-  Card,
   useTheme,
   Text,
   Modal,
@@ -13,16 +12,23 @@ import {
 import AuthContext from "../../store/auth-context.js";
 import useAxios from "../../services/index.js";
 import Alert from "../../components/alert.js";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import { GOOGLE_WEB_CLIENT_ID, GOOGLE_ANDROID_CLIENT_ID } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default Login = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
-  const [user,setUser] = useState({name:"",email:"",password:""});
+  const [user, setUser] = useState({ name: "", email: "", password: "" });
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const theme = useTheme();
   const axiosInstance = useAxios();
-  const [signUp,setSignUp] = useState(false);
+  const [signUp, setSignUp] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [token, setToken] = useState(null);
 
   const styles = StyleSheet.create({
     container: {
@@ -71,34 +77,88 @@ export default Login = ({ navigation }) => {
       });
   };
 
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: GOOGLE_WEB_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+  });
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      setToken(response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response, token]);
+
+  const getUserInfo = async () => {
+    try {
+      if (token) {
+        const response = await fetch(
+          "https://www.googleapis.com/userinfo/v2/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const res = await response.json();
+        axiosInstance
+          .post("/auth/authWithGoogle", {
+            email: res.email,
+            gId: res.id,
+            name: res.name,
+            profileImage: res.picture,
+          })
+          .then(async (res) => {
+            authCtx.setToken(res?.data?.token);
+            AsyncStorage.setItem("token", res?.data?.token);
+            AsyncStorage.setItem("name", res?.data?.user?.name);
+            AsyncStorage.setItem("role", res?.data?.user?.role);
+            AsyncStorage.setItem("email", res?.data?.user?.email);
+            AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
+          })
+          .catch((err) => {
+            Alert("error", "Somthing Went Wrong", err?.response?.data?.message);
+          });
+      }
+    } catch (err) {
+      Alert("error", "Somthing Went Wrong");
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{
-        flexGrow:1,
+        flexGrow: 1,
         justifyContent: "center",
         backgroundColor: "#EEEEEE",
-        paddingHorizontal:16,
+        paddingHorizontal: 16,
       }}
     >
-        <Pressable onPress={() => setSignUp(!signUp)}>
-          <View margin={32} flexDirection="row" alignSelf="center" style={{elevation:10,backgroundColor:'white',borderRadius:40}}>
-            <Button  mode={signUp?"text":"contained"}>logIn </Button>
-            <Button mode={signUp?"contained":"text"} >signUp</Button>
-          </View>
-        </Pressable>
-        <View>
-        {signUp && <TextInput
-          label="Name"
-          onChangeText={(text) => {
-            setUser({...user,name:text})
-          }}
-          mode="outlined"
-          style={styles.textInput}
-        />}
+      <Pressable onPress={() => setSignUp(!signUp)}>
+        <View
+          margin={32}
+          flexDirection="row"
+          alignSelf="center"
+          style={{ elevation: 10, backgroundColor: "white", borderRadius: 40 }}
+        >
+          <Button mode={signUp ? "text" : "contained"}>logIn </Button>
+          <Button mode={signUp ? "contained" : "text"}>signUp</Button>
+        </View>
+      </Pressable>
+      <View>
+        {signUp && (
+          <TextInput
+            label="Name"
+            onChangeText={(text) => {
+              setUser({ ...user, name: text });
+            }}
+            mode="outlined"
+            style={styles.textInput}
+          />
+        )}
         <TextInput
           label="Email"
           onChangeText={(text) => {
-            setUser({...user,email:text})
+            setUser({ ...user, email: text });
           }}
           mode="outlined"
           style={styles.textInput}
@@ -107,7 +167,7 @@ export default Login = ({ navigation }) => {
           label="Password"
           secureTextEntry={isPasswordSecure}
           onChangeText={(text) => {
-            setUser({...user,password:text})
+            setUser({ ...user, password: text });
           }}
           mode="outlined"
           style={styles.textInput}
@@ -118,19 +178,29 @@ export default Login = ({ navigation }) => {
             />
           }
         />
-        {signUp?<Button
-          disabled={authCtx.isLoading}
-          loading={authCtx.isLoading}
-          mode="contained"
-          style={styles.button}
-          onPress={() => authCtx.signUp(user)}
-        > SignUp</Button>:<Button
-          disabled={authCtx.isLoading}
-          loading={authCtx.isLoading}
-          mode="contained"
-          style={styles.button}
-          onPress={() => authCtx.login(user)}
-        > Login</Button>}
+        {signUp ? (
+          <Button
+            disabled={authCtx.isLoading}
+            loading={authCtx.isLoading}
+            mode="contained"
+            style={styles.button}
+            onPress={() => authCtx.signUp(user)}
+          >
+            {" "}
+            SignUp
+          </Button>
+        ) : (
+          <Button
+            disabled={authCtx.isLoading}
+            loading={authCtx.isLoading}
+            mode="contained"
+            style={styles.button}
+            onPress={() => authCtx.login(user)}
+          >
+            {" "}
+            Login
+          </Button>
+        )}
         <View
           style={{
             flexDirection: "column",
@@ -138,19 +208,22 @@ export default Login = ({ navigation }) => {
             marginTop: 8,
           }}
         >
-          {!signUp && <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Pressable onPress={() => setShowModal(true)}>
-              <Text style={{ color: "#7676A7" }}>Forget Password?</Text>
-            </Pressable>
-          </View>}
+          {!signUp && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable onPress={() => setShowModal(true)}>
+                <Text style={{ color: "#7676A7" }}>Forget Password?</Text>
+              </Pressable>
+            </View>
+          )}
           <View style={{ marginTop: 4 }}>
             <Button
               mode="elevated"
+              disabled={!request}
               icon={() => (
                 <Image
                   source={require("../../../assets/google.png")}
@@ -158,44 +231,45 @@ export default Login = ({ navigation }) => {
                 />
               )}
               style={[styles.button]}
-              onPress={() => {
-                authCtx.googleAuth();
-              }}
-            > Continue With Google</Button>
+              onPress={() => promptAsync()}
+            >
+              {" "}
+              Continue With Google
+            </Button>
           </View>
         </View>
-        </View>
-        <Portal>
-          <Modal visible={showModal} onDismiss={() => setShowModal(false)}>
-            <View style={[styles.containerInModal]}>
-              <Text style={{ textAlign: "center", color: "green" }}>
-                A reset Password Link will be sent to Provided email.
-              </Text>
-              <Divider
-                bold
-                style={{ marginVertical: 8, backgroundColor: "white" }}
-              />
-              <TextInput
-                mode="outlined"
-                label="@email"
-                placeholder="Enter your email"
-                onChangeText={(text) => setResetEmail(text)}
-              />
-              <Button
-                style={{
-                  borderRadius: 4,
-                  width: "50%",
-                  alignSelf: "center",
-                  marginTop: 16,
-                }}
-                onPress={() => forgetPasswordHandler()}
-                mode="contained"
-              >
-                Send Email
-              </Button>
-            </View>
-          </Modal>
-        </Portal>
+      </View>
+      <Portal>
+        <Modal visible={showModal} onDismiss={() => setShowModal(false)}>
+          <View style={[styles.containerInModal]}>
+            <Text style={{ textAlign: "center", color: "green" }}>
+              A reset Password Link will be sent to Provided email.
+            </Text>
+            <Divider
+              bold
+              style={{ marginVertical: 8, backgroundColor: "white" }}
+            />
+            <TextInput
+              mode="outlined"
+              label="@email"
+              placeholder="Enter your email"
+              onChangeText={(text) => setResetEmail(text)}
+            />
+            <Button
+              style={{
+                borderRadius: 4,
+                width: "50%",
+                alignSelf: "center",
+                marginTop: 16,
+              }}
+              onPress={() => forgetPasswordHandler()}
+              mode="contained"
+            >
+              Send Email
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
     </ScrollView>
   );
 };
