@@ -1,7 +1,8 @@
+/*use strict*/ 
 import Icon from "react-native-vector-icons/FontAwesome";
 import { View } from "react-native";
 import { IconButton, Text, TextInput, useTheme } from "react-native-paper";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import useAxios from "../../services";
 import Alert from "../../components/alert"
 
@@ -10,6 +11,8 @@ export default ProfileFlatlistComponent = ({ text, icon ,editable,setEdited,edit
   const [editMode,setEditMode] = useState(false);
   const [name,setName] = useState(text);
   const axiosInstance = useAxios();
+
+  useEffect(() => { setName(text);console.log(text)}, [text] )
 
 
   const editNameHandler = async () => {
@@ -43,7 +46,7 @@ export default ProfileFlatlistComponent = ({ text, icon ,editable,setEdited,edit
       <View style={{}}>
         {editMode?
         <View flexDirection="row" alignItems="center">
-          <TextInput style={{backgroundColor:"transparent",width:"65%"}} mode="flat" value={name?name:text} onChangeText={text => setName(text)}/>
+          <TextInput style={{backgroundColor:"transparent",width:"65%"}} mode="flat" value={name} onChangeText={text => setName(text)}/>
           <IconButton style={{backgroundColor:theme.colors.primary}} icon="check" size={20} iconColor={theme.colors.primaryContainer} onPress={() => editNameHandler()}/>
           <IconButton style={{backgroundColor:theme.colors.primary}} icon="close" size={20} iconColor={theme.colors.primaryContainer} onPress={() => {setName(text);setEditMode(false)}}/>
         </View>

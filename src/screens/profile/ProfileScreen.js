@@ -3,7 +3,7 @@ import { View, Dimensions, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ProfileFlatlistComponent from "./ProfileFlatlistComponent";
 import AuthContext from "../../store/auth-context";
-import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
+import { useTheme, Button, Portal, Modal, Text, Avatar, IconButton } from "react-native-paper";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import useAxios from "../../services";
 
@@ -37,6 +37,7 @@ const ProfileScreen = () => {
     .catch(err => console.log("err from profile",err))
   },[edited])
 
+
   return (
     <View style={{ flex: 1, justifyContent: "flex-start" }}>
       <View
@@ -56,14 +57,14 @@ const ProfileScreen = () => {
             justifyContent: "center",
             alignItems: "center",
             elevation: 10,
+            overflow:'hidden'
           }}
         >
-          <Icon
-            name="user"
-            size={deviceWidth * 0.2}
-            color={theme.colors.primary}
-          />
+          {user.profileImage ? <Avatar.Image size={deviceWidth * 0.28} source={{
+              uri: user.profileImage
+            }} />:<Avatar.Text size={deviceWidth * 0.28} label={user.name? user.name[0]:"Sorry"} />}
         </View>
+        <IconButton icon="pen" style={{position:'absolute',right:10,top:10,borderWidth:2,borderRadius:8}} onPress={() => alert("soo you wanna change profile picture too")} iconColor={theme.colors.primary}/>
       </View>
 
       <View
