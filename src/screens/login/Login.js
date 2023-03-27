@@ -29,6 +29,7 @@ export default Login = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [token, setToken] = useState(null);
+  const [loading,setLoading] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -91,6 +92,7 @@ export default Login = ({ navigation }) => {
 
   const getUserInfo = async () => {
     try {
+      setLoading(true);
       if (token) {
         const response = await fetch(
           "https://www.googleapis.com/userinfo/v2/me",
@@ -113,13 +115,16 @@ export default Login = ({ navigation }) => {
             AsyncStorage.setItem("name", res?.data?.user?.name);
             AsyncStorage.setItem("role", res?.data?.user?.role);
             AsyncStorage.setItem("email", res?.data?.user?.email);
-            AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
+            AsyncStorage.setItem("profile", res?.data?.user?.profileImage || "");
+            setLoading(false);
           })
           .catch((err) => {
+            setLoading(false);
             Alert("error", "Somthing Went Wrong", err?.response?.data?.message);
           });
       }
     } catch (err) {
+      setLoading(false);
       Alert("error", "Somthing Went Wrong");
     }
   };
@@ -180,7 +185,7 @@ export default Login = ({ navigation }) => {
         />
         {signUp ? (
           <Button
-            disabled={authCtx.isLoading}
+            disabled={authCtx.isLoading || loading}
             loading={authCtx.isLoading}
             mode="contained"
             style={styles.button}
@@ -191,7 +196,7 @@ export default Login = ({ navigation }) => {
           </Button>
         ) : (
           <Button
-            disabled={authCtx.isLoading}
+            disabled={authCtx.isLoading || loading}
             loading={authCtx.isLoading}
             mode="contained"
             style={styles.button}
@@ -222,8 +227,9 @@ export default Login = ({ navigation }) => {
           )}
           <View style={{ marginTop: 4 }}>
             <Button
-              mode="elevated"
-              disabled={!request}
+              mode="text"
+              disabled={!request || loading}
+              loading={loading}
               icon={() => (
                 <Image
                   source={require("../../../assets/google.png")}
@@ -232,9 +238,7 @@ export default Login = ({ navigation }) => {
               )}
               style={[styles.button]}
               onPress={() => promptAsync()}
-            >
-              {" "}
-              Continue With Google
+            > Continue With Google
             </Button>
           </View>
         </View>
