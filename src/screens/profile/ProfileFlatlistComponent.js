@@ -43,8 +43,9 @@ export default ProfileFlatlistComponent = ({ text, icon ,editable,setEdited,edit
       <View style={{}}>
         {editMode?
         <View flexDirection="row" alignItems="center">
-          <TextInput style={{backgroundColor:"transparent",width:"70%"}} mode="flat" value={name} onChangeText={text => setName(text)}/>
-          <IconButton icon="check" size={20} iconColor={theme.colors.primary} onPress={() => editNameHandler()}/>
+          <TextInput style={{backgroundColor:"transparent",width:"65%"}} mode="flat" value={name?name:text} onChangeText={text => setName(text)}/>
+          <IconButton style={{backgroundColor:theme.colors.primary}} icon="check" size={20} iconColor={theme.colors.primaryContainer} onPress={() => editNameHandler()}/>
+          <IconButton style={{backgroundColor:theme.colors.primary}} icon="close" size={20} iconColor={theme.colors.primaryContainer} onPress={() => {setName(text);setEditMode(false)}}/>
         </View>
           :
           <View flexDirection="row" alignItems="center">
