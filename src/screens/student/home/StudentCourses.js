@@ -27,7 +27,7 @@ export default StudentCourses = ({ joinCourse }) => {
   }, [isFocused, joinCourse, refresh]);
 
   return (
-    <View flex={1}>
+    <View flex={1} paddingHorizontal={8}>
       <FlatList
         data={courses}
         renderItem={({ item }) => <StudentSingleCourse item={item} />}

@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import { View, Dimensions, Pressable, StyleSheet } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Dimensions, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import IconAntDesign from "react-native-vector-icons/AntDesign";
 import ProfileFlatlistComponent from "./ProfileFlatlistComponent";
 import AuthContext from "../../store/auth-context";
 import { useTheme, Button, Portal, Modal, Text } from "react-native-paper";
 import FloatingActionButton from "../../components/FloatingActionButton";
+import useAxios from "../../services";
 
 const deviceHeigth = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -13,7 +13,10 @@ const deviceWidth = Dimensions.get("window").width;
 const ProfileScreen = () => {
   const [portalVisibility, setPortalVisibility] = React.useState(false);
   const authCtx = useContext(AuthContext);
+  const [user,setUser] = useState({name:"",email:"",role:""});
+  const [edited,setEdited] = useState(true);
   const theme = useTheme();
+  const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
     portalContainer: {
@@ -27,6 +30,12 @@ const ProfileScreen = () => {
       alignSelf: "center",
     },
   });
+
+  useEffect(() => {
+    axiosInstance.get("/user/me")
+    .then(res => setUser(res?.data?.data))
+    .catch(err => console.log("err from profile",err))
+  },[edited])
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-start" }}>
@@ -63,10 +72,9 @@ const ProfileScreen = () => {
           justifyContent: "flex-start",
         }}
       >
-        <ProfileFlatlistComponent icon="user" text={authCtx.name} />
-        <ProfileFlatlistComponent icon="registered" text={authCtx.role} />
-        <ProfileFlatlistComponent icon="envelope" text={authCtx.email} />
-        {/* <ProfileFlatlistComponent icon="phone" text="Contact Number" /> */}
+        <ProfileFlatlistComponent icon="user" text={user.name} editable={true} setEdited={setEdited} edited={edited}/>
+        <ProfileFlatlistComponent icon="registered" text={user.role} />
+        <ProfileFlatlistComponent icon="envelope" text={user.email} />
       </View>
       <FloatingActionButton
         icon="logout"

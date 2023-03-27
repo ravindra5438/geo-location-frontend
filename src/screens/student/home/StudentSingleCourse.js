@@ -1,7 +1,7 @@
 import { Button, Text } from "react-native-paper";
 import { useState } from "react";
 import * as Location from "expo-location";
-import { StyleSheet } from "react-native";
+import { StyleSheet,View } from "react-native";
 import Alert from "../../../components/alert";
 import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 import useAxios from "../../../services";
@@ -58,7 +58,9 @@ function StudentSingleCourse({ item }) {
 
   return (
     <FlatlistSingleItemContainer>
-      <Text variant="titleLarge">{item.courseName.toUpperCase()}</Text>
+      <View style={{maxWidth:'70%'}}>
+        <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
+      </View>
       <Button
         mode="contained"
         disabled={!item.activeClass || markAtt}

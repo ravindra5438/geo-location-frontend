@@ -65,7 +65,7 @@ export const AuthContextProvider = (props) => {
           AsyncStorage.setItem("name", res?.data?.user?.name);
           AsyncStorage.setItem("role", res?.data?.user?.role);
           AsyncStorage.setItem("email", res?.data?.user?.email);
-          AsyncStorage.setItem("profile", res?.data?.user?.profileImage);
+          AsyncStorage.setItem("profile", res?.data?.user?.profileImage || "");
         })
         .catch((err) => {
           Alert("error", "Sorry", err?.response?.data?.message);

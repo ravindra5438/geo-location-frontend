@@ -67,7 +67,7 @@ const SingleCourseHome = ({ item }) => {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         },
-        radius: 15,
+        radius: item.radius,
       })
       .then(function (res) {
         setClassStarted(true);
