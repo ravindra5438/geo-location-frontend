@@ -64,7 +64,6 @@ const ProfileScreen = () => {
               uri: user.profileImage
             }} />:<Avatar.Text size={deviceWidth * 0.28} label={user.name? user.name[0]:"Sorry"} />}
         </View>
-        <IconButton icon="pen" style={{position:'absolute',right:10,top:10,borderWidth:2,borderRadius:8}} onPress={() => alert("soo you wanna change profile picture too")} iconColor={theme.colors.primary}/>
       </View>
 
       <View
