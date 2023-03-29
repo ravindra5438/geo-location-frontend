@@ -13,6 +13,8 @@ import AuthStack from "./authStack/AuthStack";
 import TeacherTab from "./HomeStack/TeacherTab";
 import StudentTab from "./HomeStack/StudentTab";
 import { useNetInfo } from "@react-native-community/netinfo";
+import useAxios from "../services";
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,7 +23,7 @@ const myTheme = {
   colors: {
     primary: "#404258",
     onPrimary: "#fff",
-    primaryContainer: "#FFE9A0",
+    primaryContainer:"#FFE9A0",//"rgb(0,255,170)"
     onPrimaryContainer: "rgb(56, 0, 56)",
     secondary: "rgb(109, 88, 105)",
     onSecondary: "rgb(255, 255, 255)",
@@ -62,12 +64,13 @@ const myTheme = {
   },
 };
 
-export default function MainStack() {
+export default function MainStack({expoPushToken}) {
   const netinfo = useNetInfo();
   const authCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [Student, setStudent] = useState(false);
+  const axiosInstance = useAxios();
 
   const prepare = async () => {
     try {
@@ -91,6 +94,17 @@ export default function MainStack() {
   useEffect(() => {
     prepare();
   }, [authCtx.token]);
+
+  useEffect(() => {
+    try {
+      console.log("token",expoPushToken)
+      axiosInstance.put("/user",{token:expoPushToken}).then(res => {
+        console.log("\n\n\n\n\n\nsuccess", "expo-token sent\n\n\n\n\n\n", res?.data?.message);
+      }).catch(err => console.log(err.response.data))
+    } catch (error) {
+        console.log(error)
+    }
+  },[])
 
   if (!netinfo.isConnected) {
     return (

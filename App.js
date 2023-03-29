@@ -10,7 +10,6 @@ import Toast from "react-native-toast-message";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -59,10 +58,13 @@ export default function App() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
+  
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
+    registerForPushNotificationsAsync().then((token) =>{
       setExpoPushToken(token)
+    }
     );
+
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
@@ -85,7 +87,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthContextProvider>
-        <MainStack />
+        <MainStack expoPushToken={expoPushToken} />
         <Toast />
         <StatusBar style="inverted" backgroundColor="#404258" />
       </AuthContextProvider>

@@ -19,6 +19,7 @@ import Moddal from "../../../components/Moddal";
 import useAxios from "../../../services";
 import * as DocumentPicker from "expo-document-picker";
 import * as Location from "expo-location";
+import NotifyModal from "../../../components/NotifyModal";
 
 const deviceWidth = Dimensions.get("window").width * 0.96;
 
@@ -36,6 +37,7 @@ export default function SingleCourse({
   const [showModel, setShowModel] = useState(false);
   const [courseLock, setCourseLock] = useState(item.isActive);
   const [classStarted,setClassStarted] = useState(false);
+  const [showNotifyModal,setShowNotifyModal] = useState(false);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -279,13 +281,9 @@ export default function SingleCourse({
                   ClassInfo
                 </Button>
               </View>
+              <View style={styles.rowContainer}>
               <Button
-                style={{
-                  borderRadius: 4,
-                  width: "96%",
-                  alignSelf: "center",
-                  marginTop: 8,
-                }}
+                style={styles.button}
                 onPress={() =>
                   navigation.navigate("Enrolled Students", {
                     courseId: item._id,
@@ -296,6 +294,14 @@ export default function SingleCourse({
               >
                 Enrolled Students
               </Button>
+              <Button 
+                style={styles.button} 
+                mode="contained" 
+                icon="message"
+                onPress={() => {setShowNotifyModal(true)}}
+                > Notify
+              </Button>
+              </View>
             </MotiView>
           )}
         </Pressable>
@@ -326,7 +332,7 @@ export default function SingleCourse({
           Start Class
         </Button>
       </Moddal>
-
+      <NotifyModal courseId={item._id} showNotifyModal={showNotifyModal} setShowNotifyModal={setShowNotifyModal}/>
       {showDelete && (
         <Button onPress={() => deleteId(item._id)} icon="delete" />
       )}
