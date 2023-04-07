@@ -24,6 +24,7 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.gkv.gkvapp"
     },
     "web": {
