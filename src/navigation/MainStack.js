@@ -15,7 +15,6 @@ import StudentTab from "./HomeStack/StudentTab";
 import { useNetInfo } from "@react-native-community/netinfo";
 import useAxios from "../services";
 
-
 SplashScreen.preventAutoHideAsync();
 
 const myTheme = {
@@ -23,7 +22,7 @@ const myTheme = {
   colors: {
     primary: "#404258",
     onPrimary: "#fff",
-    primaryContainer:"#FFE9A0",//"rgb(0,255,170)"
+    primaryContainer: "#FFE9A0", //"rgb(0,255,170)"
     onPrimaryContainer: "rgb(56, 0, 56)",
     secondary: "rgb(109, 88, 105)",
     onSecondary: "rgb(255, 255, 255)",
@@ -64,7 +63,7 @@ const myTheme = {
   },
 };
 
-export default function MainStack({expoPushToken}) {
+export default function MainStack({ expoPushToken }) {
   const netinfo = useNetInfo();
   const authCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,16 +94,14 @@ export default function MainStack({expoPushToken}) {
     prepare();
   }, [authCtx.token]);
 
-  useEffect(() => {
-    try {
-      console.log("token",expoPushToken)
-      axiosInstance.put("/user",{token:expoPushToken}).then(res => {
-        console.log("\n\n\n\n\n\nsuccess", "expo-token sent\n\n\n\n\n\n", res?.data?.message);
-      }).catch(err => console.log(err.response.data))
-    } catch (error) {
-        console.log(error)
-    }
-  },[])
+  if (expoPushToken) {
+    axiosInstance
+      .put("/user", { token: expoPushToken })
+      .then((res) => {
+        console.log("expo-token sent", res?.data?.message);
+      })
+      .catch((err) => console.log(err.response.data));
+  }
 
   if (!netinfo.isConnected) {
     return (
@@ -128,7 +125,7 @@ export default function MainStack({expoPushToken}) {
   return (
     <PaperProvider theme={myTheme}>
       <View flex={1}>
-      {!user ? <AuthStack /> : Student ? <StudentTab /> : <TeacherTab />}
+        {!user ? <AuthStack /> : Student ? <StudentTab /> : <TeacherTab />}
       </View>
     </PaperProvider>
   );

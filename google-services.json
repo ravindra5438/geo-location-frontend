@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "761450022754",
+    "project_id": "gkv-app",
+    "storage_bucket": "gkv-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761450022754:android:7ef5fe35a8bbab07cace3b",
+        "android_client_info": {
+          "package_name": "com.gkv.gkvapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "761450022754-5c6gs13aniu6mr8mq1rkrfd9jk5j6tgd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gkv.gkvapp",
+            "certificate_hash": "071fbb8d5880ff57879d795e32a049ed0fc6ee0f"
+          }
+        },
+        {
+          "client_id": "761450022754-ihmubnknakakukfe505fgoio0p0kort4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6Eikk6zkxqLxZf3jasjJcy4GScPqIlvs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "761450022754-ihmubnknakakukfe505fgoio0p0kort4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
