@@ -62,7 +62,7 @@ const ProfileScreen = () => {
         >
           {user.profileImage ? <Avatar.Image size={deviceWidth * 0.28} source={{
               uri: user.profileImage
-            }} />:<Avatar.Text size={deviceWidth * 0.28} label={user.name? user.name[0]:"Sorry"} />}
+            }} />:<Avatar.Text size={deviceWidth * 0.28} label={user.name? user.name[0].toUpperCase():"Sorry"} />}
         </View>
       </View>
 

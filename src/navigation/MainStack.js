@@ -72,8 +72,14 @@ export default function MainStack({ expoPushToken }) {
   const axiosInstance = useAxios();
 
   const prepare = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
+      if(authCtx.token){
+        console.log("token",expoPushToken)
+        await axiosInstance.put("/user",{token:expoPushToken}).then(res => {
+          console.log("\n\n\n\n\n\nsuccess", "expo-token sent\n\n\n\n\n\n", res?.data?.message);
+        }).catch(err => console.log(err.response.data))
+      }
       await AsyncStorage.getItem("token").then((data) => {
         setUser(data);
       });
@@ -81,6 +87,7 @@ export default function MainStack({ expoPushToken }) {
       await AsyncStorage.getItem("role").then((data) => {
         setStudent(data == "student" ? true : false);
       });
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch {
       (e) => console.warn(e);
@@ -103,6 +110,7 @@ export default function MainStack({ expoPushToken }) {
       .catch((err) => console.log(err.response.data));
   }
 
+  
   if (!netinfo.isConnected) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

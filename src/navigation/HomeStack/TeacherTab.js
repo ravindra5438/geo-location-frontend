@@ -5,6 +5,7 @@ import TeacherStack from "./teacherStack/TeacherStack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme } from "react-native-paper";
 import CreateCourse from "../../screens/teacher/home/CreateCourse";
+import TeacherCourses from "../../screens/teacher/courses/TeacherCourses";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -28,7 +29,7 @@ function TabNav() {
       }}
     >
       <Tab.Screen name="Home" component={TeacherHome} />
-      <Tab.Screen name="Courses" component={TeacherStack} />
+      <Tab.Screen name="Courses" component={TeacherCourses} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
@@ -37,17 +38,7 @@ function TabNav() {
 function TeacherTab() {
   const theme = useTheme();
   return (
-    <Stack.Navigator
-    //   screenOptions={{
-    //     headerShadowVisible: false,
-    //     headerTitle: "GeoAtt",
-    //     headerTintColor: theme.colors.primaryContainer,
-    //     headerTitleAlign: "center",
-    //     headerStyle: {
-    //       backgroundColor: theme.colors.primary,
-    //     },
-    //   }}
-    >
+    <Stack.Navigator>
       <Stack.Screen
         options={({ navigation }) => ({
           headerShadowVisible: false,
@@ -64,6 +55,20 @@ function TeacherTab() {
         name="GeoAtt"
         component={TabNav}
       />
+      <Stack.Screen
+        options={({ navigation }) => ({
+          headerShown:false,
+          headerShadowVisible: true,
+          headerTintColor: theme.colors.primaryContainer,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+        })}
+        name="Classes"
+        component={TeacherStack}
+      />
+
     </Stack.Navigator>
   );
 }

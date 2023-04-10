@@ -1,11 +1,12 @@
 import { View, StyleSheet, Dimensions, FlatList } from "react-native";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator,  IconButton } from "react-native-paper";
 import { useTheme, DataTable } from "react-native-paper";
 import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import useAxios from "../../../services";
 import FloatingActionButton from "../../../components/FloatingActionButton";
+import SearchBar from "../../../components/SearchBar";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -18,6 +19,7 @@ export default StudentPerClass = ({ route, navigation }) => {
   const { classId } = route.params;
   const [students, setStudents] = useState(null);
   const [refresh, setRefresh] = useState(false);
+  const [queryString,setQueryString] = useState("");
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "green",
@@ -28,11 +30,23 @@ export default StudentPerClass = ({ route, navigation }) => {
     },
   });
 
+  
+
+  useEffect(() => {
+    console.log(navigation);
+    navigation.setOptions({
+      headerRight: () => (
+        <SearchBar setQueryString={setQueryString}/>
+      ),
+    });
+  },[navigation.isFocused])
+
+
   useEffect(() => {
     console.log("refreshed");
     setLoading(true);
     getClassById(classId);
-  }, [isFocused, refresh]);
+  }, [navigation.isFocused, refresh]);
 
   const getClassById = async (classId) => {
     await axiosInstance

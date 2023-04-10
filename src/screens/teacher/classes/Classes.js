@@ -10,6 +10,7 @@ import FloatingActionButton from "../../../components/FloatingActionButton";
 
 export default Classes = ({ route, navigation }) => {
   const axiosInstance = useAxios();
+  // console.log(route)
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const [deleteClassId, setDeleteClassId] = useState(null);
@@ -42,14 +43,14 @@ export default Classes = ({ route, navigation }) => {
   useEffect(() => {
     setLoading(true);
     getClassByCourseId(courseId);
-  }, [isFocused]);
+  }, [navigation.isFocused]);
 
   const getClassByCourseId = async (courseId) => {
     await axiosInstance
       .get(`/getClassesByCourseId?courseId=${courseId}`, { courseId: courseId })
       .then(function (res) {
         setClasses(res?.data?.data);
-        console.log(res?.data?.data);
+        console.log("res from classes\n\n",res?.data?.data);
         setLoading(false);
       })
       .catch(function (error) {
@@ -69,7 +70,7 @@ export default Classes = ({ route, navigation }) => {
       {loading ? (
         <ActivityIndicator size="large" color="green" style={{ flex: 1 }} />
       ) : (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 ,padding:8}}>
           <FlatList
             data={classes}
             ListEmptyComponent={MyListEmpty}

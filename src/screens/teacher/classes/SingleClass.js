@@ -19,7 +19,7 @@ export default SingleClass = ({ item, navigation, setDeleteClassId }) => {
       }}
     >
       <MotiView
-        animate={{ width: deleteClass ? deviceWidth - 100 : deviceWidth }}
+        animate={{ width: deleteClass ? "70%" : "100%" }}
       >
         <Pressable
           onLongPress={() => {

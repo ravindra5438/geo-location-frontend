@@ -275,8 +275,12 @@ export default function SingleCourse({
                   style={styles.button}
                   icon="table"
                   onPress={() =>
-                    navigation.navigate("CLASSES", { courseId: item._id })
-                  }
+                    {
+                      navigation.navigate('Classes', {
+                        screen: 'CLASSES',
+                        params: { courseId:item._id },
+                      });
+                  }}
                 >
                   ClassInfo
                 </Button>
@@ -284,10 +288,11 @@ export default function SingleCourse({
               <View style={styles.rowContainer}>
               <Button
                 style={styles.button}
-                onPress={() =>
-                  navigation.navigate("Enrolled Students", {
-                    courseId: item._id,
-                  })
+                onPress={() =>{navigation.navigate('Classes', {
+                  screen: 'Enrolled Students',
+                  params: { courseId:item._id },
+                });
+              }
                 }
                 mode="contained"
                 icon="account-supervisor"
@@ -298,7 +303,13 @@ export default function SingleCourse({
                 style={styles.button} 
                 mode="contained" 
                 icon="message"
-                onPress={() => {setShowNotifyModal(true)}}
+                onPress={() => {
+                  navigation.navigate('Classes', {
+                    screen: 'NOTIFY',
+                    params: { courseId:item._id },
+                  });
+                }
+              }
                 > Notify
               </Button>
               </View>
