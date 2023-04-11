@@ -1,7 +1,7 @@
 import { Button, Text } from "react-native-paper";
 import { useState } from "react";
 import * as Location from "expo-location";
-import { StyleSheet,View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Alert from "../../../components/alert";
 import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 import useAxios from "../../../services";
@@ -17,9 +17,22 @@ function StudentSingleCourse({ item }) {
     },
   });
 
-  const getLocation = async (item) => {
+  const getLocation = async (item, timeOut = 6000) => {
     try {
       setMarkAtt(true);
+      const controller = new AbortController();
+
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve()
+        }, timeOut);
+      });
+
+      let timmy = setTimeout(() => {
+        controller.abort();
+        Alert("error", "Sorry", "sorry something went wrong, please try again");
+      }, timeOut);
+
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert("error", "Dismissed", "Permission to access location was denied");
@@ -38,8 +51,8 @@ function StudentSingleCourse({ item }) {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
           },
-          deviceId:deviceId
-        })
+          deviceId: deviceId
+        }, { signal: controller.signal })
         .then(function (res) {
           console.log(res?.data);
           Alert("success", "SUCCESS", res?.data?.message);
@@ -47,8 +60,12 @@ function StudentSingleCourse({ item }) {
         })
         .catch(function (error) {
           console.log(error);
-          Alert("error", "Sorry", error?.response?.data?.message);
+          if (error?.response?.data?.message) {
+            Alert("error", "Sorry", error?.response?.data?.message);
+          }
           setMarkAtt(false);
+        }).then((data) => {
+          clearTimeout(timmy);
         });
     } catch (error) {
       setMarkAtt(false);
@@ -58,7 +75,7 @@ function StudentSingleCourse({ item }) {
 
   return (
     <FlatlistSingleItemContainer>
-      <View style={{maxWidth:'70%'}}>
+      <View style={{ maxWidth: '70%' }}>
         <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
       </View>
       <Button

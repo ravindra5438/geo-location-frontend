@@ -23,63 +23,83 @@ const SingleCourseHome = ({ item }) => {
   useEffect(() => {
     console.log(item.activeClass);
     setClassStarted(item.activeClass)
-  },[item.activeClass])
+  }, [item.activeClass])
 
   const endClassHandler = async (item) => {
     try {
       setIsLoading(true);
-    await axiosInstance
-      .post(`/dismissClass`, { courseId: item._id })
-      .then(function (res) {
-        console.log(res.data);
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
-    setClassStarted(false);
-    setIsLoading(false);
+      await axiosInstance
+        .post(`/dismissClass`, { courseId: item._id })
+        .then(function (res) {
+          console.log(res.data);
+          Alert("success", "SUCCESS", res.data.message);
+        })
+        .catch(function (error) {
+          console.log(error);
+          Alert("error", "Sorry", error.response.data.message);
+        });
+      setClassStarted(false);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
-    
+
   };
 
-  const getLocation = async (item) => {
-    try{
-    setIsLoading(true);
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    console.log("\n\nstatus\n\n",status)
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
+  const getLocation = async (item, timeOut = 6000) => {
+    try {
+      setIsLoading(true);
+      const controller = new AbortController();
 
-    let location = await Location.getCurrentPositionAsync({});
-    console.log("\n\nlocation\n\n",location)
-    
-
-    axiosInstance
-      .post(`/startClass`, {
-        courseId: item._id,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-        radius: item.radius,
-      })
-      .then(function (res) {
-        setClassStarted(true);
-        setIsLoading(false)
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        setIsLoading(false)
-        console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve()
+        }, timeOut);
       });
-    }catch(error) {
+
+      let timmy = setTimeout(() => {
+        controller.abort();
+        setIsLoading(false);
+        Alert("error", "Sorry", "sorry something went wrong, please try again");
+      }, timeOut);
+
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log("\n\nstatus\n\n", status)
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log("\n\nlocation\n\n", location)
+
+
+      axiosInstance
+        .post(`/startClass`, {
+          courseId: item._id,
+          location: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+          radius: item.radius,
+        }, {
+          signal: controller.signal
+        })
+        .then(function (res) {
+          setClassStarted(true);
+          setIsLoading(false)
+          Alert("success", "SUCCESS", res.data.message);
+        })
+        .catch(function (error) {
+          setIsLoading(false)
+          if (error?.response?.data?.message) {
+            Alert("error", "Sorry", error?.response);
+          }
+          console.log(error);
+        }).then((data) => {
+          clearTimeout(timmy);
+        })
+    } catch (error) {
       console.log(error)
     }
   };

@@ -29,7 +29,7 @@ export default Login = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [token, setToken] = useState(null);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -73,7 +73,7 @@ export default Login = ({ navigation }) => {
       })
       .catch((err) => {
         setShowModal(false);
-        Alert("error", "sorry", "something went wrong");
+        Alert("error", "sorry", err.response.data.message);
         console.log("err: ", err);
       });
   };
@@ -269,7 +269,7 @@ export default Login = ({ navigation }) => {
               onPress={() => forgetPasswordHandler()}
               mode="contained"
             >
-              Send Email
+              {" "}Send Email
             </Button>
           </View>
         </Modal>

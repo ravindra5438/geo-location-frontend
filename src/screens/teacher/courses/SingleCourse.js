@@ -36,8 +36,8 @@ export default function SingleCourse({
   const [radius, setRadius] = useState(item.radius);
   const [showModel, setShowModel] = useState(false);
   const [courseLock, setCourseLock] = useState(item.isActive);
-  const [classStarted,setClassStarted] = useState(false);
-  const [showNotifyModal,setShowNotifyModal] = useState(false);
+  const [classStarted, setClassStarted] = useState(false);
+  const [showNotifyModal, setShowNotifyModal] = useState(false);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -48,11 +48,12 @@ export default function SingleCourse({
       justifyContent: "space-between",
     },
     container: {
-      elevation:10,
       margin: 8,
-      paddingHorizontal:8,
+      paddingHorizontal: 8,
       borderRadius: 8,
-      justifyContent:'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      elevation: 3,
     },
     rowHandler: {
       flexDirection: "row",
@@ -103,7 +104,7 @@ export default function SingleCourse({
 
   useEffect(() => {
     setClassStarted(item.activeClass);
-  },[item.activeClass])
+  }, [item.activeClass])
 
   const sendAttendanceToMail = async (item) => {
     await axiosInstance
@@ -130,7 +131,21 @@ export default function SingleCourse({
       });
   };
 
-  const getLocation = async (item) => {
+  const getLocation = async (item, timeOut = 6000) => {
+
+    const controller = new AbortController();
+
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve()
+      }, timeOut);
+    });
+
+    let timmy = setTimeout(() => {
+      controller.abort();
+      Alert("error", "Sorry", "sorry something went wrong, please try again");
+    }, timeOut);
+
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Permission to access location was denied");
@@ -146,6 +161,8 @@ export default function SingleCourse({
           longitude: location.coords.longitude,
         },
         radius: radius,
+      }, {
+        signal: controller.signal
       })
       .then(function (res) {
         setClassStarted(true);
@@ -154,9 +171,13 @@ export default function SingleCourse({
       })
       .catch(function (error) {
         setShowModel(false);
+        if (error?.response?.data?.message) {
+          Alert("error", "Sorry", error?.response);
+        }
         console.log(error);
-        Alert("error", "Sorry", error.response.data.message);
-      });
+      }).then((data) => {
+        clearTimeout(timmy);
+      })
   };
 
   return (
@@ -177,7 +198,7 @@ export default function SingleCourse({
         }}
         transition={{
           type: "timing",
-          duration:200,
+          duration: 200,
         }}
         style={styles.container}
       >
@@ -192,15 +213,15 @@ export default function SingleCourse({
           }}
         >
           <View style={styles.rowContainer}>
-            
-              <Text
-                style={{ maxWidth: "62%", textAlign: "left" }}
-                variant="titleMedium"
-                numberOfLines={2}
-              >
-                {item.courseName.toUpperCase()}
-              </Text>
-              <View
+
+            <Text
+              style={{ maxWidth: "62%", textAlign: "left" }}
+              variant="titleMedium"
+              numberOfLines={2}
+            >
+              {item.courseName.toUpperCase()}
+            </Text>
+            <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -226,14 +247,14 @@ export default function SingleCourse({
                   }}
                 />
               )}
-            <Text variant="titleSmall">{item.courseCode}</Text>
+              <Text variant="titleSmall">{item.courseCode}</Text>
             </View>
           </View>
           {index === currentIndex && (
             <MotiView
               from={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ type: "timing", duration: 300 ,delay:200}}
+              transition={{ type: "timing", duration: 300, delay: 200 }}
             >
               <View style={styles.rowContainer}>
                 <Button
@@ -274,44 +295,44 @@ export default function SingleCourse({
                   mode="contained"
                   style={styles.button}
                   icon="table"
-                  onPress={() =>
-                    {
-                      navigation.navigate('Classes', {
-                        screen: 'CLASSES',
-                        params: { courseId:item._id },
-                      });
+                  onPress={() => {
+                    navigation.navigate('Classes', {
+                      screen: 'CLASSES',
+                      params: { courseId: item._id },
+                    });
                   }}
                 >
                   ClassInfo
                 </Button>
               </View>
               <View style={styles.rowContainer}>
-              <Button
-                style={styles.button}
-                onPress={() =>{navigation.navigate('Classes', {
-                  screen: 'Enrolled Students',
-                  params: { courseId:item._id },
-                });
-              }
-                }
-                mode="contained"
-                icon="account-supervisor"
-              >
-                Enrolled Students
-              </Button>
-              <Button 
-                style={styles.button} 
-                mode="contained" 
-                icon="message"
-                onPress={() => {
-                  navigation.navigate('Classes', {
-                    screen: 'NOTIFY',
-                    params: { courseId:item._id },
-                  });
-                }
-              }
+                <Button
+                  style={styles.button}
+                  onPress={() => {
+                    navigation.navigate('Classes', {
+                      screen: 'Enrolled Students',
+                      params: { courseId: item._id },
+                    });
+                  }
+                  }
+                  mode="contained"
+                  icon="account-supervisor"
+                >
+                  Enrolled
+                </Button>
+                <Button
+                  style={styles.button}
+                  mode="contained"
+                  icon="message"
+                  onPress={() => {
+                    navigation.navigate('Classes', {
+                      screen: 'NOTIFY',
+                      params: { courseId: item._id },
+                    });
+                  }
+                  }
                 > Notify
-              </Button>
+                </Button>
               </View>
             </MotiView>
           )}
@@ -343,7 +364,7 @@ export default function SingleCourse({
           Start Class
         </Button>
       </Moddal>
-      <NotifyModal courseId={item._id} showNotifyModal={showNotifyModal} setShowNotifyModal={setShowNotifyModal}/>
+      <NotifyModal courseId={item._id} showNotifyModal={showNotifyModal} setShowNotifyModal={setShowNotifyModal} />
       {showDelete && (
         <Button onPress={() => deleteId(item._id)} icon="delete" />
       )}
