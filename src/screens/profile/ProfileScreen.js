@@ -13,8 +13,8 @@ const deviceWidth = Dimensions.get("window").width;
 const ProfileScreen = () => {
   const [portalVisibility, setPortalVisibility] = React.useState(false);
   const authCtx = useContext(AuthContext);
-  const [user,setUser] = useState({name:"",email:"",role:""});
-  const [edited,setEdited] = useState(true);
+  const [user, setUser] = useState({ name: "", email: "", role: "" });
+  const [edited, setEdited] = useState(true);
   const theme = useTheme();
   const axiosInstance = useAxios();
 
@@ -33,9 +33,9 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     axiosInstance.get("/user/me")
-    .then(res => setUser(res?.data?.data))
-    .catch(err => console.log("err from profile",err))
-  },[edited])
+      .then(res => setUser(res?.data?.data))
+      .catch(err => console.log("err from profile", err))
+  }, [edited])
 
 
   return (
@@ -72,7 +72,7 @@ const ProfileScreen = () => {
           justifyContent: "flex-start",
         }}
       >
-        <ProfileFlatlistComponent icon="user" text={user.name} editable={true} setEdited={setEdited} edited={edited}/>
+        <ProfileFlatlistComponent icon="user" text={user.name} editable={true} setEdited={setEdited} edited={edited} />
         <ProfileFlatlistComponent icon="registered" text={user.role} />
         <ProfileFlatlistComponent icon="envelope" text={user.email} />
       </View>

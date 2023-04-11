@@ -1,30 +1,30 @@
-/*use strict*/ 
+/*use strict*/
 import Icon from "react-native-vector-icons/FontAwesome";
 import { View } from "react-native";
 import { IconButton, Text, TextInput, useTheme } from "react-native-paper";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import useAxios from "../../services";
 import Alert from "../../components/alert"
 
-export default ProfileFlatlistComponent = ({ text, icon ,editable,setEdited,edited}) => {
+export default ProfileFlatlistComponent = ({ text, icon, editable, setEdited, edited }) => {
   const theme = useTheme();
-  const [editMode,setEditMode] = useState(false);
-  const [name,setName] = useState(text);
+  const [editMode, setEditMode] = useState(false);
+  const [name, setName] = useState(text);
   const axiosInstance = useAxios();
 
-  useEffect(() => { setName(text);console.log(text)}, [text] )
+  useEffect(() => { setName(text); console.log(text) }, [text])
 
 
   const editNameHandler = async () => {
     try {
-      await axiosInstance.put("/user",{name:name}).then(res => {
+      await axiosInstance.put("/user", { name: name }).then(res => {
         setEdited(!edited);
         setEditMode(false)
         Alert("success", "success", res?.data?.message);
       }).catch(err => console.log(err))
-  } catch (error) {
-      console.log(error)
-  }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -44,19 +44,19 @@ export default ProfileFlatlistComponent = ({ text, icon ,editable,setEdited,edit
         <Icon name={icon} size={20} color={theme.colors.primaryContainer} />
       </View>
       <View style={{}}>
-        {editMode?
-        <View flexDirection="row" alignItems="center">
-          <TextInput style={{backgroundColor:"transparent",width:"60%"}} mode="flat" value={name} onChangeText={text => setName(text)}/>
-          <IconButton style={{backgroundColor:theme.colors.primary}} icon="check" size={20} iconColor={theme.colors.primaryContainer} onPress={() => editNameHandler()}/>
-          <IconButton style={{backgroundColor:theme.colors.primary}} icon="close" size={20} iconColor={theme.colors.primaryContainer} onPress={() => {setName(text);setEditMode(false)}}/>
-        </View>
+        {editMode ?
+          <View flexDirection="row" alignItems="center">
+            <TextInput style={{ backgroundColor: "transparent", width: "60%" }} mode="flat" value={name} onChangeText={text => setName(text)} />
+            <IconButton style={{ backgroundColor: theme.colors.primary }} icon="check" size={20} iconColor={theme.colors.primaryContainer} onPress={() => editNameHandler()} />
+            <IconButton style={{ backgroundColor: theme.colors.primary }} icon="close" size={20} iconColor={theme.colors.primaryContainer} onPress={() => { setName(text); setEditMode(false) }} />
+          </View>
           :
           <View flexDirection="row" alignItems="center">
             <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>{text}</Text>
             {editable &&
-              <IconButton icon="pen" size={20} iconColor={theme.colors.primary} onPress={() => setEditMode(true)}/>
+              <IconButton icon="pen" size={20} iconColor={theme.colors.primary} onPress={() => setEditMode(true)} />
             }
-        </View>}
+          </View>}
       </View>
     </View>
   );
