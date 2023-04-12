@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme } from "react-native-paper";
 import StudentHome from "../../screens/student/home/StudentHome";
 import JoinCourse from "../../screens/student/JoinCourse";
+import Notification from "../../screens/student/home/notification/Notification";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -51,6 +52,18 @@ function StudentTab() {
         })}
         name="GeoAtt"
         component={TabNav}
+      />
+      <Stack.Screen
+        options={({ navigation}) => ({
+          headerTitle: "Notifications",
+          headerTintColor: theme.colors.primaryContainer,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          }
+        })}
+        name="Notifications"
+        component={Notification}
       />
     </Stack.Navigator>
   );
