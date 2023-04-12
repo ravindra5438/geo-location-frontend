@@ -13,7 +13,13 @@ import AuthStack from "./authStack/AuthStack";
 import TeacherTab from "./HomeStack/TeacherTab";
 import StudentTab from "./HomeStack/StudentTab";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { REACT_APP_URL } from "@env";
+import axios from "axios";
 import useAxios from "../services";
+import { expo } from "../../app.json";
+import AppUpdate from "../components/AppUpdate";
+
+const appVersion = expo.version;
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,15 +76,46 @@ export default function MainStack({ expoPushToken }) {
   const [user, setUser] = useState(null);
   const [Student, setStudent] = useState(false);
   const axiosInstance = useAxios();
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [notNow, setNotNow] = useState(true);
 
   const prepare = async () => {
     setIsLoading(true);
     try {
-      if(authCtx.token){
-        console.log("token",expoPushToken)
-        await axiosInstance.put("/user",{token:expoPushToken}).then(res => {
-          console.log("\n\n\n\n\n\nsuccess", "expo-token sent\n\n\n\n\n\n", res?.data?.message);
-        }).catch(err => console.log(err.response.data))
+      await axios(REACT_APP_URL)
+        .then((res) => {
+          const versionFromBackend = res?.data?.version.split(".");
+          const versionFromFrontend = appVersion.split(".");
+          const majorVersionFromBackend = +versionFromBackend[0];
+          const minorVersionFromBackend = +versionFromBackend[1];
+          const patchVersionFromBackend = +versionFromBackend[2];
+          const majorVersionFromFrontend = +versionFromFrontend[0];
+          const minorVersionFromFrontend = +versionFromFrontend[1];
+          const patchVersionFromFrontend = +versionFromFrontend[2];
+          if (
+            majorVersionFromBackend > majorVersionFromFrontend ||
+            minorVersionFromBackend > minorVersionFromFrontend ||
+            patchVersionFromBackend > patchVersionFromFrontend
+          ) {
+            if (majorVersionFromBackend > majorVersionFromFrontend) {
+              setNotNow(false);
+              setShowUpgrade(true);
+            } else {
+              setShowUpgrade(true);
+              setNotNow(true);
+            }
+          }
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
+      if (authCtx.token) {
+        await axiosInstance
+          .put("/user", { token: expoPushToken })
+          .then((res) => {
+            console.log(res?.data?.message);
+          })
+          .catch((err) => console.log(err.response.data));
       }
       await AsyncStorage.getItem("token").then((data) => {
         setUser(data);
@@ -110,7 +147,6 @@ export default function MainStack({ expoPushToken }) {
       .catch((err) => console.log(err.response.data));
   }
 
-  
   if (!netinfo.isConnected) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -127,6 +163,17 @@ export default function MainStack({ expoPushToken }) {
       <View style={{ flex: 1, justifyContent: "center" }}>
         <ActivityIndicator size="large" color="red" />
       </View>
+    );
+  }
+
+  if (showUpgrade) {
+    return (
+      <AppUpdate
+        notNow={notNow}
+        onPress={() => {
+          setShowUpgrade(false);
+        }}
+      />
     );
   }
 
