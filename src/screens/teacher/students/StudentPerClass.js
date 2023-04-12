@@ -1,15 +1,14 @@
-import { View, StyleSheet, Dimensions, FlatList } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { ActivityIndicator,  IconButton } from "react-native-paper";
-import { useTheme, DataTable } from "react-native-paper";
+import { useTheme, DataTable,Switch } from "react-native-paper";
 import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
 import useAxios from "../../../services";
 import FloatingActionButton from "../../../components/FloatingActionButton";
 import SearchBar from "../../../components/SearchBar";
+import SingleStudentPerClass from "./SingleStudentPerClass";
 
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
 
 export default StudentPerClass = ({ route, navigation }) => {
   const axiosInstance = useAxios();
@@ -26,7 +25,7 @@ export default StudentPerClass = ({ route, navigation }) => {
     },
     dataTableCenter: {
       alignItems: "center",
-      justifyContent: "flex-start",
+      justifyContent: "center",
     },
   });
 
@@ -43,18 +42,15 @@ export default StudentPerClass = ({ route, navigation }) => {
 
 
   useEffect(() => {
-    console.log("refreshed");
     setLoading(true);
     getClassById(classId);
   }, [navigation.isFocused, refresh]);
 
   const getClassById = async (classId) => {
     await axiosInstance
-      .get(`/getClassById?classId=${classId}`, {
-        classId: classId,
-      })
+      .get(`/class/students?classId=${classId}`)
       .then(function (res) {
-        setStudents(res?.data?.data?.students);
+        setStudents(res?.data?.data);
         setLoading(false);
       })
       .catch(function (error) {
@@ -89,11 +85,10 @@ export default StudentPerClass = ({ route, navigation }) => {
                   styles.dataTableCenter,
                   {
                     flex: 0.2,
-                    marginRight: 4,
                   },
                 ]}
               >
-                S.No
+                P/A
               </DataTable.Title>
               <DataTable.Title
                 textStyle={{ color: "green" }}
@@ -117,28 +112,7 @@ export default StudentPerClass = ({ route, navigation }) => {
               data={students}
               ListEmptyComponent={MyListEmpty}
               renderItem={({ item, index }) => (
-                <DataTable.Row>
-                  <DataTable.Cell
-                    textStyle={{ color: "green" }}
-                    style={[
-                      styles.dataTableCenter,
-                      {
-                        flex: 0.2,
-                        marginRight: 4,
-                      },
-                    ]}
-                  >
-                    {index + 1}
-                  </DataTable.Cell>
-                  <DataTable.Cell style={styles.dataTableCenter}>
-                    {item.name}
-                  </DataTable.Cell>
-                  <DataTable.Cell
-                    style={[styles.dataTableCenter, { flex: 0.4 }]}
-                  >
-                    {item.registrationNo}
-                  </DataTable.Cell>
-                </DataTable.Row>
+                <SingleStudentPerClass item={item} classId={classId} />
               )}
               keyExtractor={(item) => item._id}
             />
