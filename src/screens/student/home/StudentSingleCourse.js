@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import Alert from "../../../components/alert";
 import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemContainer";
 import useAxios from "../../../services";
-import * as Device from 'expo-device';
+import * as Device from "expo-device";
 
 function StudentSingleCourse({ item }) {
   const [markAtt, setMarkAtt] = useState(false);
@@ -24,12 +24,13 @@ function StudentSingleCourse({ item }) {
 
       new Promise((resolve) => {
         setTimeout(() => {
-          resolve()
+          resolve();
         }, timeOut);
       });
 
       let timmy = setTimeout(() => {
         controller.abort();
+        setMarkAtt(false);
         Alert("error", "Sorry", "sorry something went wrong, please try again");
       }, timeOut);
 
@@ -41,18 +42,22 @@ function StudentSingleCourse({ item }) {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      let deviceId = Device.osBuildId
-      console.log(deviceId)
+      let deviceId = Device.osBuildId;
+      console.log(deviceId);
 
       axiosInstance
-        .post(`/markAttendance`, {
-          courseId: item._id,
-          location: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+        .post(
+          `/markAttendance`,
+          {
+            courseId: item._id,
+            location: {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            },
+            deviceId: deviceId,
           },
-          deviceId: deviceId
-        }, { signal: controller.signal })
+          { signal: controller.signal }
+        )
         .then(function (res) {
           console.log(res?.data);
           Alert("success", "SUCCESS", res?.data?.message);
@@ -60,11 +65,12 @@ function StudentSingleCourse({ item }) {
         })
         .catch(function (error) {
           console.log(error);
+          setMarkAtt(false);
           if (error?.response?.data?.message) {
             Alert("error", "Sorry", error?.response?.data?.message);
           }
-          setMarkAtt(false);
-        }).then((data) => {
+        })
+        .then((data) => {
           clearTimeout(timmy);
         });
     } catch (error) {
@@ -75,7 +81,7 @@ function StudentSingleCourse({ item }) {
 
   return (
     <FlatlistSingleItemContainer>
-      <View style={{ maxWidth: '70%' }}>
+      <View style={{ maxWidth: "70%" }}>
         <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
       </View>
       <Button
