@@ -6,6 +6,7 @@ import AuthContext from "../../store/auth-context";
 import { useTheme, Button, Portal, Modal, Text, Avatar, IconButton } from "react-native-paper";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import useAxios from "../../services";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const deviceHeigth = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -33,7 +34,11 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     axiosInstance.get("/user/me")
-      .then(res => setUser(res?.data?.data))
+      .then(async (res) => {
+        console.log(res.data.data)
+        setUser(res?.data?.data)
+        await AsyncStorage.setItem("role",res?.data?.data?.role);
+      })
       .catch(err => console.log("err from profile", err))
   }, [edited])
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { StyleSheet, View, Text, SectionList} from 'react-native';
+import { StyleSheet, View, Text, SectionList, TouchableOpacity} from 'react-native';
 import { IconButton, TextInput,useTheme } from 'react-native-paper';
 import Message from '../../../../components/Message';
 import useAxios from '../../../../services';
@@ -29,11 +29,11 @@ const PushNotification = ({route,navigation}) => {
   const handleNotify = async () => {
     try{
       setIsLoading(true)
-    if(notification.title==="" || notification.message === "" || !courseId || !notification.title || !notification.message){
-      alert("error","missing value","please enter all values");
-      setIsLoading(false);
-      return;
-    }
+      if(notification.title==="" || notification.message === "" || !courseId || !notification.title || !notification.message){
+        alert("error","missing value","please enter all values");
+        setIsLoading(false);
+        return;
+      }
     await axiosInstance.
         post("/message",notification).then(res =>
               {
@@ -55,6 +55,18 @@ const PushNotification = ({route,navigation}) => {
       return({...notification,title:"",message:""})
     });
     setFetchData((fetchData) => (!fetchData));
+  }
+
+  const deleteMessageHandler = async (id) => {
+    try {
+      await axiosInstance.delete(`/message/${id}`).then(res => {
+        setFetchData((fetchData) => (!fetchData))
+      }).catch(err => {
+        alert("error","sorry",err?.response?.data?.message)
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const styles = StyleSheet.create({
@@ -92,12 +104,29 @@ const PushNotification = ({route,navigation}) => {
   
 
   const renderMessage = ({ item }) => {
+  const [showDelete,setShowDelete] = useState(false);
+
+  const handleShowDelete=()=>{
+    setShowDelete((prev)=>!prev);
+    setTimeout(()=>{
+      setShowDelete(false)
+    },3000)
+  }
+
     return (
-      <Message
-        title={item.title}
-        message={item.message}
-        isFromMe={true}
-      />
+      <View>
+        <TouchableOpacity onLongPress={handleShowDelete} onPress={()=>setShowDelete(false)}>
+              <Message
+                title={item.title}
+                message={item.message}
+                isFromMe={true}
+              />
+        </TouchableOpacity>
+        {
+          showDelete &&
+          <IconButton style={{position:'absolute'}} iconColor='#D21312' icon="delete" onPress={() => deleteMessageHandler(item._id)}/>
+        }
+      </View>
     );
   };
 
@@ -145,7 +174,7 @@ const PushNotification = ({route,navigation}) => {
           onSubmitEditing={() => {}}
           onChangeText={(text) => setNotification({...notification,title:text})}
         />
-        <IconButton icon="send" onPress={() => handleNotify()} style={{backgroundColor:"grey",width:'15%'}} iconColor={theme.colors.primaryContainer}/>
+        <IconButton icon="send" size={32} onPress={() => handleNotify()} style={{width:'15%'}}/>
         </View>
         <TextInput
           style={[styles.input]}
