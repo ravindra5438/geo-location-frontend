@@ -1,8 +1,10 @@
-import { View, Text } from 'react-native'
+import { View, Text,Dimensions } from 'react-native'
 import React from 'react'
 import { IconButton, TextInput } from 'react-native-paper'
 import { useTheme } from 'react-native-paper'
 import { useState } from 'react'
+
+const deviceWidth = Dimensions.get('window').width;
 
 const SearchBar = ({setQueryString}) => {
 
@@ -20,10 +22,14 @@ const SearchBar = ({setQueryString}) => {
             label="query" 
             style={{backgroundColor:'transparent'}} 
             onChangeText={text => setQueryString(text)}
-            contentStyle={{width:300}}
+            contentStyle={{width:deviceWidth*.6}}
         />
         }
-      <IconButton icon={searchField?"close":"magnify"} iconColor={theme.colors.primaryContainer} onPress={() => setSearchField(searchField => !searchField)}/>
+      <IconButton icon={searchField?"close":"magnify"} iconColor={theme.colors.primaryContainer} onPress={() => {
+        setSearchField(searchField => !searchField)
+        setQueryString("");
+        }
+        }/>
     </View>
   )
 }

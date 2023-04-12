@@ -51,8 +51,8 @@ export default function SingleCourse({
       margin: 8,
       paddingHorizontal: 8,
       borderRadius: 8,
-      justifyContent: 'center',
-      overflow: 'hidden',
+      justifyContent: "center",
+      overflow: "hidden",
       elevation: 3,
     },
     rowHandler: {
@@ -104,7 +104,7 @@ export default function SingleCourse({
 
   useEffect(() => {
     setClassStarted(item.activeClass);
-  }, [item.activeClass])
+  }, [item.activeClass]);
 
   const sendAttendanceToMail = async (item) => {
     await axiosInstance
@@ -132,17 +132,17 @@ export default function SingleCourse({
   };
 
   const getLocation = async (item, timeOut = 6000) => {
-
     const controller = new AbortController();
 
     new Promise((resolve) => {
       setTimeout(() => {
-        resolve()
+        resolve();
       }, timeOut);
     });
 
     let timmy = setTimeout(() => {
       controller.abort();
+      setShowModel(false);
       Alert("error", "Sorry", "sorry something went wrong, please try again");
     }, timeOut);
 
@@ -154,16 +154,20 @@ export default function SingleCourse({
 
     let location = await Location.getCurrentPositionAsync({});
     axiosInstance
-      .post(`/startClass`, {
-        courseId: item._id,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+      .post(
+        `/startClass`,
+        {
+          courseId: item._id,
+          location: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+          radius: radius,
         },
-        radius: radius,
-      }, {
-        signal: controller.signal
-      })
+        {
+          signal: controller.signal,
+        }
+      )
       .then(function (res) {
         setClassStarted(true);
         setShowModel(false);
@@ -175,9 +179,10 @@ export default function SingleCourse({
           Alert("error", "Sorry", error?.response);
         }
         console.log(error);
-      }).then((data) => {
-        clearTimeout(timmy);
       })
+      .then((data) => {
+        clearTimeout(timmy);
+      });
   };
 
   return (
@@ -213,7 +218,6 @@ export default function SingleCourse({
           }}
         >
           <View style={styles.rowContainer}>
-
             <Text
               style={{ maxWidth: "62%", textAlign: "left" }}
               variant="titleMedium"
@@ -296,8 +300,8 @@ export default function SingleCourse({
                   style={styles.button}
                   icon="table"
                   onPress={() => {
-                    navigation.navigate('Classes', {
-                      screen: 'CLASSES',
+                    navigation.navigate("Classes", {
+                      screen: "CLASSES",
                       params: { courseId: item._id },
                     });
                   }}
@@ -309,12 +313,11 @@ export default function SingleCourse({
                 <Button
                   style={styles.button}
                   onPress={() => {
-                    navigation.navigate('Classes', {
-                      screen: 'Enrolled Students',
+                    navigation.navigate("Classes", {
+                      screen: "Enrolled Students",
                       params: { courseId: item._id },
                     });
-                  }
-                  }
+                  }}
                   mode="contained"
                   icon="account-supervisor"
                 >
@@ -325,13 +328,14 @@ export default function SingleCourse({
                   mode="contained"
                   icon="message"
                   onPress={() => {
-                    navigation.navigate('Classes', {
-                      screen: 'NOTIFY',
+                    navigation.navigate("Classes", {
+                      screen: "NOTIFY",
                       params: { courseId: item._id },
                     });
-                  }
-                  }
-                > Notify
+                  }}
+                >
+                  {" "}
+                  Notify
                 </Button>
               </View>
             </MotiView>
@@ -364,7 +368,11 @@ export default function SingleCourse({
           Start Class
         </Button>
       </Moddal>
-      <NotifyModal courseId={item._id} showNotifyModal={showNotifyModal} setShowNotifyModal={setShowNotifyModal} />
+      <NotifyModal
+        courseId={item._id}
+        showNotifyModal={showNotifyModal}
+        setShowNotifyModal={setShowNotifyModal}
+      />
       {showDelete && (
         <Button onPress={() => deleteId(item._id)} icon="delete" />
       )}

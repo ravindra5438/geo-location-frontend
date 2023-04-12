@@ -18,7 +18,7 @@ const JoinCourse = ({ navigation, route }) => {
   const [courseCode, setCourseCode] = useState(null);
   const axiosInstance = useAxios();
   const theme = useTheme();
-  const [joinCourse, setJoinCourse] = useState(0);
+  const [joinCourse, setJoinCourse] = useState(Math.random());
 
   const styles = StyleSheet.create({
     portalContainer: {
@@ -57,6 +57,7 @@ const JoinCourse = ({ navigation, route }) => {
     } catch (err) {
       console.log(err);
     }
+    setJoinCourse(Math.random());
     navigation.navigate("Home", { joinCourse: joinCourse });
   };
 
