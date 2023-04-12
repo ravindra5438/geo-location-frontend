@@ -16,7 +16,8 @@ export default StudentPerClass = ({ route, navigation }) => {
   const theme = useTheme();
   const isFocused = useIsFocused();
   const { classId } = route.params;
-  const [students, setStudents] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [filteredStudent,setFilteredStudent] = useState(students);
   const [refresh, setRefresh] = useState(false);
   const [queryString,setQueryString] = useState("");
   const styles = StyleSheet.create({
@@ -51,6 +52,7 @@ export default StudentPerClass = ({ route, navigation }) => {
       .get(`/class/students?classId=${classId}`)
       .then(function (res) {
         setStudents(res?.data?.data);
+        setFilteredStudent(res?.data?.data);
         setLoading(false);
       })
       .catch(function (error) {
@@ -59,6 +61,18 @@ export default StudentPerClass = ({ route, navigation }) => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    const filteredResult = students.filter(student => {
+      console.log(student.name)
+      if (student.name.toLowerCase().trim().includes(queryString.toLowerCase().trim()) || student.registrationNo.includes(queryString.trim())) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    setFilteredStudent(filteredResult);
+  },[queryString])
 
   return (
     <View
@@ -109,7 +123,7 @@ export default StudentPerClass = ({ route, navigation }) => {
               </DataTable.Title>
             </DataTable.Header>
             <FlatList
-              data={students}
+              data={filteredStudent}
               ListEmptyComponent={MyListEmpty}
               renderItem={({ item, index }) => (
                 <SingleStudentPerClass item={item} classId={classId} />

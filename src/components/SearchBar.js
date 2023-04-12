@@ -25,7 +25,11 @@ const SearchBar = ({setQueryString}) => {
             contentStyle={{width:deviceWidth*.6}}
         />
         }
-      <IconButton icon={searchField?"close":"magnify"} iconColor={theme.colors.primaryContainer} onPress={() => setSearchField(searchField => !searchField)}/>
+      <IconButton icon={searchField?"close":"magnify"} iconColor={theme.colors.primaryContainer} onPress={() => {
+        setSearchField(searchField => !searchField)
+        setQueryString("");
+        }
+        }/>
     </View>
   )
 }
