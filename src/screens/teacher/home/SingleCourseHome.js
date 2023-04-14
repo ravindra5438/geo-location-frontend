@@ -47,9 +47,7 @@ const SingleCourseHome = ({ item }) => {
   };
 
   const getLocation = async (item, timeOut = 6000) => {
-    try {
-      setIsLoading(true);
-      const controller = new AbortController();
+    const controller = new AbortController();
 
       new Promise((resolve) => {
         setTimeout(() => {
@@ -60,17 +58,22 @@ const SingleCourseHome = ({ item }) => {
       let timmy = setTimeout(() => {
         controller.abort();
         setIsLoading(false);
-        Alert("error", "Sorry", "sorry something went wrong, please try again");
+        Alert("error", "Sorry", "little busy,please try again");
       }, timeOut);
 
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      console.log("\n\nstatus\n\n", status)
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
+    try {
+      setIsLoading(true);
+      
+      Location.requestForegroundPermissionsAsync().
+      then(res => {
+        console.log(res.status)
+      }).catch(err => {
+        clearTimeout();
         return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
+      })
+      Location.enableNetworkProviderAsync().then(res=>console.log("\n\n\nRajeev",res,"\n\n\nRajeev"))
+      
+      let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true,accuracy: Location.Accuracy.Highest});
       console.log("\n\nlocation\n\n", location)
 
 
@@ -87,19 +90,21 @@ const SingleCourseHome = ({ item }) => {
         })
         .then(function (res) {
           setClassStarted(true);
+          clearTimeout(timmy);
           setIsLoading(false)
           Alert("success", "SUCCESS", res.data.message);
         })
         .catch(function (error) {
           setIsLoading(false)
+          clearTimeout(timmy);
           if (error?.response?.data?.message) {
-            Alert("error", "Sorry", error?.response);
+            Alert("error", "Sorry", error?.response?.data?.message);
           }
           console.log(error);
-        }).then((data) => {
-          clearTimeout(timmy);
         })
     } catch (error) {
+      setIsLoading(false);
+      clearTimeout(timmy);
       console.log(error)
     }
   };
@@ -121,7 +126,7 @@ const SingleCourseHome = ({ item }) => {
             onPress={() => endClassHandler(item)}
             labelStyle={{ color: "red" }}
           >
-            End Class
+            End
           </Button>
         ) : (
           <Button
