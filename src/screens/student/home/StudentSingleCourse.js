@@ -20,26 +20,30 @@ function StudentSingleCourse({ item }) {
   });
 
   const getLocation = async (item, timeOut = 6000) => {
+    
+    const controller = new AbortController();
+
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, timeOut);
+    });
+
+    let timmy = setTimeout(() => {
+      controller.abort();
+      setMarkAtt(false);
+      Alert("error", "Sorry", "little busy, please try again");
+    }, timeOut);
+
     try {
       setMarkAtt(true);
-      const controller = new AbortController();
-
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, timeOut);
-      });
-
-      let timmy = setTimeout(() => {
-        controller.abort();
-        setMarkAtt(false);
-        Alert("error", "Sorry", "sorry something went wrong, please try again");
-      }, timeOut);
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert("error", "Dismissed", "Permission to access location was denied");
         console.log("Permission to access location was denied");
+        setMarkAtt(false);
+        clearTimeout(timmy);
         return;
       }
 
@@ -62,21 +66,21 @@ function StudentSingleCourse({ item }) {
         )
         .then(function (res) {
           console.log(res?.data);
+          clearTimeout(timmy);
           Alert("success", "SUCCESS", res?.data?.message);
           setMarkAtt(false);
         })
         .catch(function (error) {
           console.log(error);
+          clearTimeout(timmy);
           setMarkAtt(false);
           if (error?.response?.data?.message) {
             Alert("error", "Sorry", error?.response?.data?.message);
           }
         })
-        .then((data) => {
-          clearTimeout(timmy);
-        });
     } catch (error) {
       setMarkAtt(false);
+      clearTimeout(timmy);
       console.log(error);
     }
   };
