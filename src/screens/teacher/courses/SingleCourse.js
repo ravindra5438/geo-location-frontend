@@ -104,6 +104,7 @@ export default function SingleCourse({
 
   useEffect(() => {
     setClassStarted(item.activeClass);
+    setRadius(item.radius);
   }, [item.activeClass]);
 
   const sendAttendanceToMail = async (item) => {
@@ -143,46 +144,54 @@ export default function SingleCourse({
     let timmy = setTimeout(() => {
       controller.abort();
       setShowModel(false);
-      Alert("error", "Sorry", "sorry something went wrong, please try again");
+      Alert("error", "Sorry", "little busy, please try again");
     }, timeOut);
 
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
+    try {
 
-    let location = await Location.getCurrentPositionAsync({});
-    axiosInstance
-      .post(
-        `/startClass`,
-        {
-          courseId: item._id,
-          location: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          },
-          radius: radius,
-        },
-        {
-          signal: controller.signal,
-        }
-      )
-      .then(function (res) {
-        setClassStarted(true);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
         setShowModel(false);
-        Alert("success", "SUCCESS", res.data.message);
-      })
-      .catch(function (error) {
-        setShowModel(false);
-        if (error?.response?.data?.message) {
-          Alert("error", "Sorry", error?.response);
-        }
-        console.log(error);
-      })
-      .then((data) => {
         clearTimeout(timmy);
-      });
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      axiosInstance
+        .post(
+          `/startClass`,
+          {
+            courseId: item._id,
+            location: {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            },
+            radius: radius,
+          },
+          {
+            signal: controller.signal,
+          }
+        )
+        .then(function (res) {
+          setClassStarted(true);
+          clearTimeout(timmy);
+          setShowModel(false);
+          Alert("success", "SUCCESS", res.data.message);
+        })
+        .catch(function (error) {
+          setShowModel(false);
+          setRadius(item.radius);
+          clearTimeout(timmy);
+          if (error?.response?.data?.message) {
+            Alert("error", "Sorry", error?.response?.data?.message);
+          }
+          console.log(error);
+        })
+      } catch (error) {
+        clearTimeout(timmy);
+        console.log(error);
+      }
   };
 
   return (
@@ -348,6 +357,7 @@ export default function SingleCourse({
           backgroundColor={"#D4F6CC"}
           borderRadius={4}
           maxLength={3}
+          placeholder={item.radius.toString()}
           autoFocus={true}
           mode="flat"
           keyboardType="numeric"
