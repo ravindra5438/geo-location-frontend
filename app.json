@@ -26,7 +26,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.gkv.gkvapp",
-      "versionCode":2
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/gkvlogo.png"
