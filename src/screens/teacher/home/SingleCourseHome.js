@@ -71,8 +71,7 @@ const SingleCourseHome = ({ item }) => {
         clearTimeout();
         return;
       })
-      Location.enableNetworkProviderAsync().then(res=>console.log("\n\n\nRajeev",res,"\n\n\nRajeev"))
-      
+
       let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true,accuracy: Location.Accuracy.Highest});
       console.log("\n\nlocation\n\n", location)
 
