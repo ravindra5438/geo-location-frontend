@@ -94,20 +94,9 @@ export default Login = ({ navigation }) => {
     try {
       setLoading(true);
       if (token) {
-        const response = await fetch(
-          "https://www.googleapis.com/userinfo/v2/me",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const res = await response.json();
         axiosInstance
-          .post("/auth/authWithGoogle", {
-            email: res.email,
-            gId: res.id,
-            name: res.name,
-            profileImage: res.picture,
+          .post("/auth/google", {
+            userToken: token,
           })
           .then(async (res) => {
             authCtx.setToken(res?.data?.token);
@@ -115,7 +104,10 @@ export default Login = ({ navigation }) => {
             AsyncStorage.setItem("name", res?.data?.user?.name);
             AsyncStorage.setItem("role", res?.data?.user?.role);
             AsyncStorage.setItem("email", res?.data?.user?.email);
-            AsyncStorage.setItem("profile", res?.data?.user?.profileImage || "");
+            AsyncStorage.setItem(
+              "profile",
+              res?.data?.user?.profileImage || ""
+            );
             setLoading(false);
           })
           .catch((err) => {
@@ -238,7 +230,9 @@ export default Login = ({ navigation }) => {
               )}
               style={[styles.button]}
               onPress={() => promptAsync()}
-            > Continue With Google
+            >
+              {" "}
+              Continue With Google
             </Button>
           </View>
         </View>
@@ -269,7 +263,8 @@ export default Login = ({ navigation }) => {
               onPress={() => forgetPasswordHandler()}
               mode="contained"
             >
-              {" "}Send Email
+              {" "}
+              Send Email
             </Button>
           </View>
         </Modal>
