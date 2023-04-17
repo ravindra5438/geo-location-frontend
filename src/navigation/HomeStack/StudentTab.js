@@ -40,7 +40,7 @@ function StudentTab() {
       <Stack.Screen
         options={({ navigation, route }) => ({
           headerShadowVisible: false,
-          headerTitle: "GeoAtt",
+          headerTitle: "GKV APP",
           headerTintColor: theme.colors.primaryContainer,
           headerTitleAlign: "center",
           headerStyle: {
@@ -50,17 +50,17 @@ function StudentTab() {
             <JoinCourse navigation={navigation} route={route} {...props} />
           ),
         })}
-        name="GeoAtt"
+        name="GKV APP"
         component={TabNav}
       />
       <Stack.Screen
-        options={({ navigation}) => ({
+        options={({ navigation }) => ({
           headerTitle: "Notifications",
           headerTintColor: theme.colors.primaryContainer,
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
-          }
+          },
         })}
         name="Notifications"
         component={Notification}
