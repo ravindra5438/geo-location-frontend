@@ -19,8 +19,7 @@ function StudentSingleCourse({ item }) {
     },
   });
 
-  const getLocation = async (item, timeOut = 6000) => {
-    
+  const getLocation = async (item, timeOut = 15000) => {
     const controller = new AbortController();
 
     new Promise((resolve) => {
@@ -77,7 +76,7 @@ function StudentSingleCourse({ item }) {
           if (error?.response?.data?.message) {
             Alert("error", "Sorry", error?.response?.data?.message);
           }
-        })
+        });
     } catch (error) {
       setMarkAtt(false);
       clearTimeout(timmy);
@@ -90,9 +89,17 @@ function StudentSingleCourse({ item }) {
       <View style={{ maxWidth: "70%" }}>
         <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
       </View>
-      <IconButton icon="bell" iconColor="red" size={20} style={{position:'absolute',bottom:-24}} onPress={() => navigation.navigate("Notifications",{
-        courseId:item._id
-      })}/>
+      <IconButton
+        icon="bell"
+        iconColor="red"
+        size={20}
+        style={{ position: "absolute", bottom: -24 }}
+        onPress={() =>
+          navigation.navigate("Notifications", {
+            courseId: item._id,
+          })
+        }
+      />
       <Button
         mode="contained"
         disabled={!item.activeClass || markAtt}

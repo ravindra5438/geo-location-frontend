@@ -22,8 +22,8 @@ const SingleCourseHome = ({ item }) => {
 
   useEffect(() => {
     console.log(item.activeClass);
-    setClassStarted(item.activeClass)
-  }, [item.activeClass])
+    setClassStarted(item.activeClass);
+  }, [item.activeClass]);
 
   const endClassHandler = async (item) => {
     try {
@@ -43,68 +43,74 @@ const SingleCourseHome = ({ item }) => {
     } catch (error) {
       console.log(error);
     }
-
   };
 
-  const getLocation = async (item, timeOut = 6000) => {
+  const getLocation = async (item, timeOut = 15000) => {
     const controller = new AbortController();
 
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve()
-        }, timeOut);
-      });
-
-      let timmy = setTimeout(() => {
-        controller.abort();
-        setIsLoading(false);
-        Alert("error", "Sorry", "little busy,please try again");
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
       }, timeOut);
+    });
+
+    let timmy = setTimeout(() => {
+      controller.abort();
+      setIsLoading(false);
+      Alert("error", "Sorry", "little busy,please try again");
+    }, timeOut);
 
     try {
       setIsLoading(true);
-      
-      Location.requestForegroundPermissionsAsync().
-      then(res => {
-        console.log(res.status)
-      }).catch(err => {
-        clearTimeout();
-        return;
-      })
 
-      let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true,accuracy: Location.Accuracy.Highest});
-      console.log("\n\nlocation\n\n", location)
+      Location.requestForegroundPermissionsAsync()
+        .then((res) => {
+          console.log(res.status);
+        })
+        .catch((err) => {
+          clearTimeout();
+          return;
+        });
 
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true,
+        accuracy: Location.Accuracy.Highest,
+      });
+      console.log("\n\nlocation\n\n", location);
 
       axiosInstance
-        .post(`/startClass`, {
-          courseId: item._id,
-          location: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+        .post(
+          `/startClass`,
+          {
+            courseId: item._id,
+            location: {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            },
+            radius: item.radius,
           },
-          radius: item.radius,
-        }, {
-          signal: controller.signal
-        })
+          {
+            signal: controller.signal,
+          }
+        )
         .then(function (res) {
           setClassStarted(true);
           clearTimeout(timmy);
-          setIsLoading(false)
+          setIsLoading(false);
           Alert("success", "SUCCESS", res.data.message);
         })
         .catch(function (error) {
-          setIsLoading(false)
+          setIsLoading(false);
           clearTimeout(timmy);
           if (error?.response?.data?.message) {
             Alert("error", "Sorry", error?.response?.data?.message);
           }
           console.log(error);
-        })
+        });
     } catch (error) {
       setIsLoading(false);
       clearTimeout(timmy);
-      console.log(error)
+      console.log(error);
     }
   };
 
