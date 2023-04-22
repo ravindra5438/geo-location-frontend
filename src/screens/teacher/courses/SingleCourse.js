@@ -38,6 +38,7 @@ export default function SingleCourse({
   const [courseLock, setCourseLock] = useState(item.isActive);
   const [classStarted, setClassStarted] = useState(false);
   const [showNotifyModal, setShowNotifyModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const axiosInstance = useAxios();
 
   const styles = StyleSheet.create({
@@ -108,14 +109,17 @@ export default function SingleCourse({
   }, [item.activeClass]);
 
   const sendAttendanceToMail = async (item) => {
+    setLoading(true);
     await axiosInstance
       .get(`/sendAttendanceViaMail?courseId=${item._id}`)
       .then(function (res) {
         Alert("success", "SUCCESS", res?.data?.message);
+        setLoading(false);
       })
       .catch(function (error) {
         console.log(error);
         Alert("error", "Sorry", error?.response?.data?.message);
+        setLoading(false);
       });
   };
 
@@ -133,6 +137,7 @@ export default function SingleCourse({
   };
 
   const getLocation = async (item, timeOut = 15000) => {
+    setLoading(true);
     const controller = new AbortController();
 
     new Promise((resolve) => {
@@ -145,6 +150,7 @@ export default function SingleCourse({
       controller.abort();
       setShowModel(false);
       Alert("error", "Sorry", "little busy, please try again");
+      setLoading(false);
     }, timeOut);
 
     try {
@@ -153,6 +159,7 @@ export default function SingleCourse({
         console.log("Permission to access location was denied");
         setShowModel(false);
         clearTimeout(timmy);
+        setLoading(false);
         return;
       }
 
@@ -176,12 +183,14 @@ export default function SingleCourse({
           setClassStarted(true);
           clearTimeout(timmy);
           setShowModel(false);
+          setLoading(false);
           Alert("success", "SUCCESS", res.data.message);
         })
         .catch(function (error) {
           setShowModel(false);
           setRadius(item.radius);
           clearTimeout(timmy);
+          setLoading(false);
           if (error?.response?.data?.message) {
             Alert("error", "Sorry", error?.response?.data?.message);
           }
@@ -189,6 +198,7 @@ export default function SingleCourse({
         });
     } catch (error) {
       clearTimeout(timmy);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -270,7 +280,7 @@ export default function SingleCourse({
             >
               <View style={styles.rowContainer}>
                 <Button
-                  disabled={classStarted}
+                  disabled={classStarted || loading}
                   mode="contained"
                   onPress={() => setShowModel(true)}
                   style={styles.button}
@@ -366,6 +376,8 @@ export default function SingleCourse({
         />
         <Button
           mode="contained"
+          disabled={loading}
+          loading={loading}
           style={{
             borderRadius: 4,
             marginTop: 8,
