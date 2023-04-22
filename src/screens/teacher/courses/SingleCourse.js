@@ -132,7 +132,7 @@ export default function SingleCourse({
       });
   };
 
-  const getLocation = async (item, timeOut = 6000) => {
+  const getLocation = async (item, timeOut = 15000) => {
     const controller = new AbortController();
 
     new Promise((resolve) => {
@@ -148,7 +148,6 @@ export default function SingleCourse({
     }, timeOut);
 
     try {
-
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Permission to access location was denied");
@@ -187,11 +186,11 @@ export default function SingleCourse({
             Alert("error", "Sorry", error?.response?.data?.message);
           }
           console.log(error);
-        })
-      } catch (error) {
-        clearTimeout(timmy);
-        console.log(error);
-      }
+        });
+    } catch (error) {
+      clearTimeout(timmy);
+      console.log(error);
+    }
   };
 
   return (
