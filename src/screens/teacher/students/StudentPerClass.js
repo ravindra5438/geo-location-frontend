@@ -1,6 +1,6 @@
 import { View, StyleSheet, FlatList } from "react-native";
-import { ActivityIndicator,  IconButton } from "react-native-paper";
-import { useTheme, DataTable,Switch } from "react-native-paper";
+import { ActivityIndicator, IconButton } from "react-native-paper";
+import { useTheme, DataTable, Switch } from "react-native-paper";
 import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
 import { useIsFocused } from "@react-navigation/native";
@@ -9,7 +9,6 @@ import FloatingActionButton from "../../../components/FloatingActionButton";
 import SearchBar from "../../../components/SearchBar";
 import SingleStudentPerClass from "./SingleStudentPerClass";
 
-
 export default StudentPerClass = ({ route, navigation }) => {
   const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
@@ -17,9 +16,9 @@ export default StudentPerClass = ({ route, navigation }) => {
   const isFocused = useIsFocused();
   const { classId } = route.params;
   const [students, setStudents] = useState([]);
-  const [filteredStudent,setFilteredStudent] = useState(students);
+  const [filteredStudent, setFilteredStudent] = useState(students);
   const [refresh, setRefresh] = useState(false);
-  const [queryString,setQueryString] = useState("");
+  const [queryString, setQueryString] = useState("");
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "green",
@@ -30,17 +29,12 @@ export default StudentPerClass = ({ route, navigation }) => {
     },
   });
 
-  
-
   useEffect(() => {
     console.log(navigation);
     navigation.setOptions({
-      headerRight: () => (
-        <SearchBar setQueryString={setQueryString}/>
-      ),
+      headerRight: () => <SearchBar setQueryString={setQueryString} />,
     });
-  },[navigation.isFocused])
-
+  }, [navigation.isFocused]);
 
   useEffect(() => {
     setLoading(true);
@@ -63,16 +57,16 @@ export default StudentPerClass = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    const filteredResult = students.filter(student => {
-      console.log(student.name)
-      if (student.name.toLowerCase().trim().includes(queryString.toLowerCase().trim()) || student.registrationNo.includes(queryString.trim())) {
-        return true;
-      } else {
-        return false;
-      }
-    })
+    const filteredResult = students.filter(
+      (student) =>
+        student.name
+          ?.toLowerCase()
+          .trim()
+          .includes(queryString.toLowerCase().trim()) ||
+        student.registrationNo.includes(queryString.trim())
+    );
     setFilteredStudent(filteredResult);
-  },[queryString])
+  }, [queryString]);
 
   return (
     <View
