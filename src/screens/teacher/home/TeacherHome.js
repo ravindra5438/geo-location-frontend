@@ -6,7 +6,6 @@ import { useTheme } from "react-native-paper";
 import useAxios from "../../../services";
 import CoursesHome from "./CoursesHome";
 
-
 export default TeacherHome = () => {
   const axiosInstance = useAxios();
   const theme = useTheme();
@@ -23,7 +22,7 @@ export default TeacherHome = () => {
 
   useEffect(() => {
     axiosInstance
-      .get("/getCourses")
+      .get("/course")
       .then(function (res) {
         console.log("courses from Home", res.data);
         setCourses(res?.data?.data);

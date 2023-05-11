@@ -104,6 +104,9 @@ export default Login = ({ navigation }) => {
             userToken: token,
           })
           .then(async (res) => {
+            if (res.data.user.role === "admin") {
+              return Alert("error", "Sorry", "This App is not for the Admin");
+            }
             authCtx.setToken(res?.data?.token);
             AsyncStorage.setItem("token", res?.data?.token);
             AsyncStorage.setItem("name", res?.data?.user?.name);

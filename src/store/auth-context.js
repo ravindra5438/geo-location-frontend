@@ -60,6 +60,9 @@ export const AuthContextProvider = (props) => {
         },
       })
         .then(async (res) => {
+          if (res.data.user.role === "admin") {
+            return Alert("error", "Sorry", "This App is not for the Admin");
+          }
           setToken(res?.data?.token);
           AsyncStorage.setItem("token", res?.data?.token);
           AsyncStorage.setItem("name", res?.data?.user?.name);

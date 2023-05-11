@@ -83,7 +83,7 @@ export default function SingleCourse({
         console.log(data);
 
         await axiosInstance
-          .post("/inviteStudentsToEnrollCourse", data, {
+          .post("/course/invite", data, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -111,7 +111,7 @@ export default function SingleCourse({
   const sendAttendanceToMail = async (item) => {
     setLoading(true);
     await axiosInstance
-      .get(`/sendAttendanceViaMail?courseId=${item._id}`)
+      .post(`/course/attendance?courseId=${item._id}`)
       .then(function (res) {
         Alert("success", "SUCCESS", res?.data?.message);
         setLoading(false);
@@ -125,7 +125,7 @@ export default function SingleCourse({
 
   const courseLockHandler = async (toggle) => {
     await axiosInstance
-      .post("/toggleCourseEnrollment", { courseId: item._id, toggle: toggle })
+      .post(`/course/${item._id}`, { toggle })
       .then((res) => {
         Alert("success", "SUCCESS", res?.data?.message);
         setCourseLock(!courseLock);
@@ -166,7 +166,7 @@ export default function SingleCourse({
       let location = await Location.getCurrentPositionAsync({});
       axiosInstance
         .post(
-          `/startClass`,
+          `/class`,
           {
             courseId: item._id,
             location: {

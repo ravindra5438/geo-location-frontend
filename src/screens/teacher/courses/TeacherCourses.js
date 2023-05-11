@@ -28,7 +28,7 @@ export default TeacherCourses = ({ navigation }) => {
 
   useEffect(() => {
     axiosInstance
-      .get("/getCourses")
+      .get("/course")
       .then(function (res) {
         console.log(res.data);
         setCourses(res?.data?.data);
@@ -43,7 +43,7 @@ export default TeacherCourses = ({ navigation }) => {
     if (!deleteCourseId) return;
 
     axiosInstance
-      .delete(`/deleteCourseById?courseId=${deleteCourseId}`)
+      .delete(`/class/${deleteCourseId}`)
       .then(function (res) {
         removeId();
       })

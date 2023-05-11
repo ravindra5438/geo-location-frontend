@@ -51,8 +51,8 @@ function StudentSingleCourse({ item }) {
       console.log(deviceId);
 
       axiosInstance
-        .post(
-          `/markAttendance`,
+        .put(
+          `/class`,
           {
             courseId: item._id,
             location: {
