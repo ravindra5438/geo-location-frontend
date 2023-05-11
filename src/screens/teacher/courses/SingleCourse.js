@@ -125,7 +125,7 @@ export default function SingleCourse({
 
   const courseLockHandler = async (toggle) => {
     await axiosInstance
-      .post(`/course/${item._id}`, { toggle })
+      .put(`/course/${item._id}`, { toggle })
       .then((res) => {
         Alert("success", "SUCCESS", res?.data?.message);
         setCourseLock(!courseLock);

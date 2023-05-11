@@ -43,7 +43,7 @@ export default TeacherCourses = ({ navigation }) => {
     if (!deleteCourseId) return;
 
     axiosInstance
-      .delete(`/class/${deleteCourseId}`)
+      .delete(`/course/${deleteCourseId}`)
       .then(function (res) {
         removeId();
       })
