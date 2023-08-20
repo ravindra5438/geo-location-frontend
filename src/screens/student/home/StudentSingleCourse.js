@@ -1,4 +1,4 @@
-import { Button, IconButton, Text } from "react-native-paper";
+import { Button, IconButton, Text ,useTheme} from "react-native-paper";
 import { useState } from "react";
 import * as Location from "expo-location";
 import { StyleSheet, View } from "react-native";
@@ -7,11 +7,14 @@ import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemC
 import useAxios from "../../../services";
 import * as Device from "expo-device";
 import { useNavigation } from "@react-navigation/native";
+import Moddal from "../../../components/Moddal";
 
 function StudentSingleCourse({ item }) {
   const [markAtt, setMarkAtt] = useState(false);
   const axiosInstance = useAxios();
   const navigation = useNavigation();
+  const [displayCard,setDisplayCard] = useState(false);
+  const [showModel,setShowModel] = useState(false);
 
   const styles = StyleSheet.create({
     button: {
@@ -84,22 +87,47 @@ function StudentSingleCourse({ item }) {
     }
   };
 
+  const leaveCourseHandler = async (courseId) => {
+    axiosInstance.put(`/course/${courseId}`)
+      .then((res) => {
+        console.log(res.data)
+        Alert("success", "SUCCESS", res?.data?.message);
+        setDisplayCard(true);
+      })
+      .catch((err) => {
+        Alert("error", "Sorry", err?.response?.data?.message);
+      });
+  };
+
+
+
+
+
   return (
-    <FlatlistSingleItemContainer>
+    <FlatlistSingleItemContainer style={{marginBottom:20,display:displayCard?"none":"flex"}}>
       <View style={{ maxWidth: "70%" }}>
         <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
       </View>
-      <IconButton
-        icon="bell"
-        iconColor="red"
-        size={20}
-        style={{ position: "absolute", bottom: -24 }}
-        onPress={() =>
-          navigation.navigate("Notifications", {
-            courseId: item._id,
-          })
-        }
-      />
+      <View style={{position:"absolute",flexDirection:"row",bottom:-24}}>
+        <IconButton
+          icon="bell-alert-outline"
+          iconColor="red"
+          size={20}
+          onPress={() =>
+            navigation.navigate("Notifications", {
+              courseId: item._id,
+            })
+          }
+        />
+        <IconButton
+          icon="account-minus-outline"
+          iconColor="red"
+          size={20}
+          onPress={() => {
+            setShowModel(true);
+          }}
+        />
+      </View>
       <Button
         mode="contained"
         disabled={!item.activeClass || markAtt}
@@ -109,6 +137,13 @@ function StudentSingleCourse({ item }) {
       >
         Mark
       </Button>
+      <Moddal showModel={showModel} setShowModel={setShowModel} style={{padding:16}}>
+        <Text style={{textAlign:'center',color:'grey'}}>Are you sure,you want to unenroll from this course?</Text>
+        <Button textColor="red" onPress={() => {
+          leaveCourseHandler(item._id);
+          setShowModel(false);
+          }}>delete</Button>
+      </Moddal>
     </FlatlistSingleItemContainer>
   );
 }
