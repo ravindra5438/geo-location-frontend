@@ -1,4 +1,4 @@
-import { Button, IconButton, Text ,useTheme} from "react-native-paper";
+import { Button, IconButton, Text } from "react-native-paper";
 import { useState } from "react";
 import * as Location from "expo-location";
 import { StyleSheet, View } from "react-native";
@@ -13,8 +13,8 @@ function StudentSingleCourse({ item }) {
   const [markAtt, setMarkAtt] = useState(false);
   const axiosInstance = useAxios();
   const navigation = useNavigation();
-  const [displayCard,setDisplayCard] = useState(false);
-  const [showModel,setShowModel] = useState(false);
+  const [displayCard, setDisplayCard] = useState(false);
+  const [showModel, setShowModel] = useState(false);
 
   const styles = StyleSheet.create({
     button: {
@@ -88,9 +88,10 @@ function StudentSingleCourse({ item }) {
   };
 
   const leaveCourseHandler = async (courseId) => {
-    axiosInstance.put(`/course/${courseId}`)
+    axiosInstance
+      .put(`/course/${courseId}`)
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         Alert("success", "SUCCESS", res?.data?.message);
         setDisplayCard(true);
       })
@@ -99,16 +100,14 @@ function StudentSingleCourse({ item }) {
       });
   };
 
-
-
-
-
   return (
-    <FlatlistSingleItemContainer style={{marginBottom:20,display:displayCard?"none":"flex"}}>
+    <FlatlistSingleItemContainer
+      style={{ marginBottom: 20, display: displayCard ? "none" : "flex" }}
+    >
       <View style={{ maxWidth: "70%" }}>
         <Text variant="titleMedium">{item.courseName.toUpperCase()}</Text>
       </View>
-      <View style={{position:"absolute",flexDirection:"row",bottom:-24}}>
+      <View style={{ position: "absolute", flexDirection: "row", bottom: -24 }}>
         <IconButton
           icon="bell-alert-outline"
           iconColor="red"
@@ -137,12 +136,23 @@ function StudentSingleCourse({ item }) {
       >
         Mark
       </Button>
-      <Moddal showModel={showModel} setShowModel={setShowModel} style={{padding:16}}>
-        <Text style={{textAlign:'center',color:'grey'}}>Are you sure,you want to unenroll from this course?</Text>
-        <Button textColor="red" onPress={() => {
-          leaveCourseHandler(item._id);
-          setShowModel(false);
-          }}>delete</Button>
+      <Moddal
+        showModel={showModel}
+        setShowModel={setShowModel}
+        style={{ padding: 16 }}
+      >
+        <Text style={{ textAlign: "center", color: "grey" }}>
+          Are you sure,you want to unenroll from this course?
+        </Text>
+        <Button
+          textColor="red"
+          onPress={() => {
+            leaveCourseHandler(item._id);
+            setShowModel(false);
+          }}
+        >
+          Unenroll
+        </Button>
       </Moddal>
     </FlatlistSingleItemContainer>
   );
