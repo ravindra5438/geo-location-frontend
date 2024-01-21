@@ -3,7 +3,7 @@
     "name": "GKV App",
     "slug": "gkv-app",
     "scheme": "com.gkv.gkvapp",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -26,7 +26,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.gkv.gkvapp",
-      "versionCode": 5
+      "versionCode": 6
     },
     "web": {
       "favicon": "./assets/gkvlogo.png"
