@@ -13,9 +13,12 @@
       "backgroundColor": "#000000"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/265fbf65-f2a5-4f0f-a44b-24a65292631b"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -36,6 +39,9 @@
         "projectId": "265fbf65-f2a5-4f0f-a44b-24a65292631b"
       }
     },
-    "owner": "gkv-app"
+    "owner": "gkv-app",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }
