@@ -29,7 +29,7 @@ export default Classes = ({ route, navigation }) => {
     if (!deleteClassId) return;
 
     axiosInstance
-      .delete(`/deleteClassById?classId=${deleteClassId}`)
+      .delete(`/class/${deleteClassId}`)
       .then(function (res) {
         removeId();
         setDeleteClassId(null);
@@ -47,10 +47,10 @@ export default Classes = ({ route, navigation }) => {
 
   const getClassByCourseId = async (courseId) => {
     await axiosInstance
-      .get(`/getClassesByCourseId?courseId=${courseId}`, { courseId: courseId })
+      .get(`/class?courseId=${courseId}`)
       .then(function (res) {
         setClasses(res?.data?.data);
-        console.log("res from classes\n\n",res?.data?.data);
+        console.log("res from classes\n\n", res?.data?.data);
         setLoading(false);
       })
       .catch(function (error) {
@@ -70,7 +70,7 @@ export default Classes = ({ route, navigation }) => {
       {loading ? (
         <ActivityIndicator size="large" color="green" style={{ flex: 1 }} />
       ) : (
-        <View style={{ flex: 1 ,padding:8}}>
+        <View style={{ flex: 1, padding: 8 }}>
           <FlatList
             data={classes}
             ListEmptyComponent={MyListEmpty}

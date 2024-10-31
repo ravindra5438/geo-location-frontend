@@ -15,7 +15,7 @@ export default StudentCourses = ({ joinCourse }) => {
 
   useEffect(() => {
     axiosInstance
-      .get(`/getCourses`)
+      .get(`/course`)
       .then(function (res) {
         console.log(res.data);
         setCourses(res.data.data);

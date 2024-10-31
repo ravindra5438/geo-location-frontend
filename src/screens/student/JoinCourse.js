@@ -44,7 +44,7 @@ const JoinCourse = ({ navigation, route }) => {
     }
     try {
       await axiosInstance
-        .post(`/enrollCourse`, { courseCode: courseCod })
+        .post(`/course/enroll`, { courseCode: courseCod })
         .then((res) => {
           Alert("success", "success", res.data.message);
           setJoinCourse(Math.random());

@@ -37,7 +37,7 @@ const CreateCourse = ({ navigation }) => {
 
   const createCourseHandler = async () => {
     await axiosInstance
-      .post("/createCourse", { courseName: courseName })
+      .post("/course", { courseName: courseName })
       .then(function (res) {
         console.log(res?.data);
         Alert("success", "SUCCESS", res?.data?.message);
@@ -84,7 +84,12 @@ const CreateCourse = ({ navigation }) => {
               setCourseName(text);
             }}
           />
-          <Text style={{color:'grey',alignSelf:"flex-start"}} variant="labelSmall">max-length 40</Text>
+          <Text
+            style={{ color: "grey", alignSelf: "flex-start" }}
+            variant="labelSmall"
+          >
+            max-length 40
+          </Text>
           <Button
             style={{ width: "60%", borderRadius: 8, marginTop: 16 }}
             mode="contained"

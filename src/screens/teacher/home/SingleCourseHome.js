@@ -29,7 +29,7 @@ const SingleCourseHome = ({ item }) => {
     try {
       setIsLoading(true);
       await axiosInstance
-        .post(`/dismissClass`, { courseId: item._id })
+        .put(`/class`, { courseId: item._id })
         .then(function (res) {
           console.log(res.data);
           Alert("success", "SUCCESS", res.data.message);
@@ -80,7 +80,7 @@ const SingleCourseHome = ({ item }) => {
 
       axiosInstance
         .post(
-          `/startClass`,
+          `/class`,
           {
             courseId: item._id,
             location: {

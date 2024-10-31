@@ -35,9 +35,7 @@ const StudentsEnrolled = ({ route, navigation }) => {
 
   const getCourseById = async (courseId) => {
     await axiosInstance
-      .get(`/getCourseById?courseId=${courseId}`, {
-        courseId: courseId,
-      })
+      .get(`/course/${courseId}`)
       .then(function (res) {
         setStudents(res?.data?.data?.students);
         setLoading(false);
