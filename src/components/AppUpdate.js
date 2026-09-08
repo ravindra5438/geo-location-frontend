@@ -8,18 +8,18 @@ import {
   Linking,
   StyleSheet,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AppUpdate = (props) => {
   const playstore_url =
     "https://play.google.com/store/apps/details?id=com.gkv.gkvapp";
+  // Rendered outside any navigator, so it gets no insets of its own. Android
+  // is always edge-to-edge from SDK 54, and backgroundColor/translucent on
+  // StatusBar are no-ops there.
+  const insets = useSafeAreaInsets();
   return (
-    <>
-      <StatusBar
-        barStyle="dark-content"
-        hidden={false}
-        backgroundColor="#D1CECE"
-        translucent={true}
-      />
+    <View style={{ flex: 1, paddingTop: insets.top }}>
+      <StatusBar barStyle="dark-content" hidden={false} />
       <View style={styles.container}>
         <Image
           style={{ width: "100%", marginTop: 0 }}
@@ -90,7 +90,7 @@ const AppUpdate = (props) => {
           />
         </View>
       )}
-    </>
+    </View>
   );
 };
 

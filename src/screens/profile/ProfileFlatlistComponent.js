@@ -1,12 +1,12 @@
 /*use strict*/
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "@expo/vector-icons/FontAwesome";
 import { View } from "react-native";
 import { IconButton, Text, TextInput, useTheme } from "react-native-paper";
 import { useState, useEffect } from "react";
 import useAxios from "../../services";
 import Alert from "../../components/alert";
 
-export default ProfileFlatlistComponent = ({
+const ProfileFlatlistComponent = ({
   text,
   icon,
   editable,
@@ -102,3 +102,5 @@ export default ProfileFlatlistComponent = ({
     </View>
   );
 };
+
+export default ProfileFlatlistComponent;

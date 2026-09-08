@@ -1,6 +1,6 @@
 import Toast from "react-native-toast-message";
 
-export default Alert = (type, heading, text) => {
+const Alert = (type, heading, text) => {
   Toast.show({
     type: type,
     position: "bottom",
@@ -8,3 +8,5 @@ export default Alert = (type, heading, text) => {
     text2: text,
   });
 };
+
+export default Alert;

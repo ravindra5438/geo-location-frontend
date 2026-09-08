@@ -3,13 +3,14 @@ import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme, DataTable, Switch } from "react-native-paper";
 import { useEffect, useState } from "react";
 import Alert from "../../../components/alert";
+import MyListEmpty from "../../../components/MyListEmpty";
 import { useIsFocused } from "@react-navigation/native";
 import useAxios from "../../../services";
 import FloatingActionButton from "../../../components/FloatingActionButton";
 import SearchBar from "../../../components/SearchBar";
 import SingleStudentPerClass from "./SingleStudentPerClass";
 
-export default StudentPerClass = ({ route, navigation }) => {
+const StudentPerClass = ({ route, navigation }) => {
   const axiosInstance = useAxios();
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
@@ -134,3 +135,5 @@ export default StudentPerClass = ({ route, navigation }) => {
     </View>
   );
 };
+
+export default StudentPerClass;

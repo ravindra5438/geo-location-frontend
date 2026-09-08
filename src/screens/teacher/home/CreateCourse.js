@@ -1,5 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import React from "react";
+import Alert from "../../../components/alert";
 import { IconButton } from "react-native-paper";
 import {
   useTheme,

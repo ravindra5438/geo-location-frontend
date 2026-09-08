@@ -8,7 +8,7 @@ import SingleClass from "./SingleClass";
 import useAxios from "../../../services";
 import FloatingActionButton from "../../../components/FloatingActionButton";
 
-export default Classes = ({ route, navigation }) => {
+const Classes = ({ route, navigation }) => {
   const axiosInstance = useAxios();
   // console.log(route)
   const [loading, setLoading] = useState(true);
@@ -92,3 +92,5 @@ export default Classes = ({ route, navigation }) => {
     </View>
   );
 };
+
+export default Classes;

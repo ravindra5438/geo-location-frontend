@@ -3,15 +3,10 @@
     "name": "GKV App",
     "slug": "gkv-app",
     "scheme": "com.gkv.gkvapp",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#000000"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/265fbf65-f2a5-4f0f-a44b-24a65292631b"
@@ -29,7 +24,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.gkv.gkvapp",
-      "versionCode": 7
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/gkvlogo.png"
@@ -42,6 +37,21 @@
     "owner": "gkv-app",
     "runtimeVersion": {
       "policy": "appVersion"
-    }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font",
+      "expo-web-browser",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#000000",
+          "enableFullScreenImage_legacy": true
+        }
+      ]
+    ]
   }
 }

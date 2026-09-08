@@ -6,7 +6,7 @@ import FlatlistSingleItemContainer from "../../../components/FlatlistSingleItemC
 
 const deviceWidth = Dimensions.get("window").width;
 
-export default SingleClass = ({ item, navigation, setDeleteClassId }) => {
+const SingleClass = ({ item, navigation, setDeleteClassId }) => {
   const theme = useTheme();
   const [deleteClass, setDeleteClass] = useState(false);
 
@@ -58,3 +58,5 @@ export default SingleClass = ({ item, navigation, setDeleteClassId }) => {
     </View>
   );
 };
+
+export default SingleClass;

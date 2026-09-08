@@ -6,7 +6,7 @@ import { useTheme } from "react-native-paper";
 import useAxios from "../../../services";
 import CoursesHome from "./CoursesHome";
 
-export default TeacherHome = () => {
+const TeacherHome = () => {
   const axiosInstance = useAxios();
   const theme = useTheme();
   const isFocused = useIsFocused();
@@ -37,3 +37,5 @@ export default TeacherHome = () => {
     </View>
   );
 };
+
+export default TeacherHome;

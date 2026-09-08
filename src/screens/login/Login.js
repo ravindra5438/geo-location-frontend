@@ -23,7 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default Login = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
   const [user, setUser] = useState({ name: "", email: "", password: "" });
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
@@ -280,3 +280,5 @@ export default Login = ({ navigation }) => {
     </ScrollView>
   );
 };
+
+export default Login;

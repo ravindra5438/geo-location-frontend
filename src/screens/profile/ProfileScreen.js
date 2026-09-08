@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "@expo/vector-icons/FontAwesome";
 import ProfileFlatlistComponent from "./ProfileFlatlistComponent";
 import AuthContext from "../../store/auth-context";
 import { useTheme, Button, Portal, Modal, Text, Avatar, IconButton } from "react-native-paper";

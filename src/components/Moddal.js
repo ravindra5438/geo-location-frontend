@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Modal, Portal } from "react-native-paper";
 
-export default Moddal = ({ showModel, setShowModel, children,style }) => {
+const Moddal = ({ showModel, setShowModel, children,style }) => {
   const hideModal = () => setShowModel(false);
   const containerStyle = {
     backgroundColor: "white",
@@ -23,3 +23,5 @@ export default Moddal = ({ showModel, setShowModel, children,style }) => {
     </Portal>
   );
 };
+
+export default Moddal;

@@ -3,7 +3,7 @@ import { Text, useTheme } from "react-native-paper";
 
 const deviceHeight = Dimensions.get("window").height;
 
-export default MyListEmpty = () => {
+const MyListEmpty = () => {
   const theme = useTheme();
   return (
     <View
@@ -18,3 +18,5 @@ export default MyListEmpty = () => {
     </View>
   );
 };
+
+export default MyListEmpty;

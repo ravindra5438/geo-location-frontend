@@ -7,7 +7,7 @@ import myListEmpty from "../../../components/MyListEmpty";
 import StudentSingleCourse from "./StudentSingleCourse";
 import FloatingActionButton from "../../../components/FloatingActionButton";
 
-export default StudentCourses = ({ joinCourse }) => {
+const StudentCourses = ({ joinCourse }) => {
   const axiosInstance = useAxios();
   const [courses, setCourses] = useState(null);
   const [refresh, setRefresh] = useState(false);
@@ -41,3 +41,5 @@ export default StudentCourses = ({ joinCourse }) => {
     </View>
   );
 };
+
+export default StudentCourses;

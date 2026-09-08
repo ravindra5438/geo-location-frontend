@@ -10,7 +10,7 @@ import useAxios from "../../../services";
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
-export default TeacherCourses = ({ navigation }) => {
+const TeacherCourses = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(null);
@@ -79,3 +79,5 @@ export default TeacherCourses = ({ navigation }) => {
     </View>
   );
 };
+
+export default TeacherCourses;

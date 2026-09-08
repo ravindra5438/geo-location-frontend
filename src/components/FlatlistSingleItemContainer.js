@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
-export default FlatlistSingleItemContainer = ({ children, style }) => {
+const FlatlistSingleItemContainer = ({ children, style }) => {
   const theme = useTheme();
   const styles = StyleSheet.create({
     courseContainer: {
@@ -18,3 +18,5 @@ export default FlatlistSingleItemContainer = ({ children, style }) => {
   });
   return <View style={[styles.courseContainer, style]}>{children}</View>;
 };
+
+export default FlatlistSingleItemContainer;

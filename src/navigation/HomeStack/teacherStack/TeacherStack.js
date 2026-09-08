@@ -8,7 +8,7 @@ import PushNotification from "../../../screens/teacher/courses/notify/PushNotifi
 
 const Stack = createNativeStackNavigator();
 
-export default TeacherStack = () => {
+const TeacherStack = () => {
   const theme = useTheme();
 
   return (
@@ -39,3 +39,5 @@ export default TeacherStack = () => {
     </Stack.Navigator>
   );
 };
+
+export default TeacherStack;
